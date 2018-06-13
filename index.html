@@ -818,6 +818,7 @@
 </head>
 <body>
 <div id="resume" >
+    <!-- 기본정보 -->
     <header id="header" class="clear center-view">
         <div class="center-view">
             <img src=".\image\GrowthSpace.png" class="my-image">
@@ -834,44 +835,59 @@
         </div>
     </header>
     <br>
+    <!-- 개인 작품 -->
     <section class="section">
         <header>
-            <h2 class="section-title">Personal Piece</h2>
+            <h2 class="section-title">Personal Piece<span class="item-count">(2)</span></h2>
         </header>
-        <section id="references">
-            <div class="item">
+        <section id="piece">
+            <section class="piece-item">
+                <label for="piece-item-0"></label>
                 <header>
-                    <div class="personal-piece">Read Numbers</div>
+                    <div class="piece">Read Numbers</div>
                     <div class="date">
                         <span class="startDate">December 2017</span>
+                        <span class="endDate">- Hold Job</span>
+                    </div>
+                    <div class="website">
+                        <div>
+                            <span class="fa fa-external-link"></span>
+                            <a target="_blank" href="https://readnumbers.github.io/">https://readnumbers.github.io/</a>
+                        </div>
+                        <div>
+                            <span class="fa fa-github github social"></span>
+                            <a target="_blank" href="https://github.com/CloneProject/miseongshin-TellMeThisNumber">https://github.com/CloneProject/miseongshin-TellMeThisNumber</a>
+                            <!--  <img src=".\image\GrowthSpace-ReadNumber2.png" class="piece-image"> -->
+                        </div>
+                    </div>
+                </header>     
+                <br>           
+                <label for="Piece-item-1"></label>
+                <header>
+                    <div class="piece">SOANDO MISO Pension</div>
+                    <div class="date">
+                        <span class="startDate">Jun 2018</span>
                         <span class="endDate">- Current</span>
                     </div>
                     <div class="website">
-                    <div>
-                        <span class="fa fa-external-link"></span>
-                        <a target="_blank" href="https://readnumbers.github.io/">https://readnumbers.github.io/</a>
+                        <div>
+                            <span class="fa fa-external-link"></span>
+                            <a target="_blank" href="https://soanmiso.github.io/">https://soanmiso.github.io/</a>
+                        </div>
+                        <div>
+                            <span class="fa fa-github github social"></span>
+                            <a target="_blank" href="https://github.com/soanmiso/soanmiso.github.io">https://github.com/soanmiso/soanmiso.github.io</a>
+                        </div>
+                        <div>
+                            <span class="fa fa-external-link"></span>
+                            <a target="_blank" href="https://p.w3layouts.com/demos_new/template_demo/07-04-2018/bake-demo_Free/1027606894/web/index.html">Original template</a>
+                        </div>
                     </div>
-                    <div>
-                        <span class="fa fa-github github social"></span>
-                        <a target="_blank" href="https://github.com/CloneProject/miseongshin-TellMeThisNumber">https://github.com/CloneProject/miseongshin-TellMeThisNumber</a>
-                    </div>
-            </div>
                 </header>  
-                <img src=".\image\GrowthSpace-ReadNumber2.png" class="piece-image">
-            </div>
+            </section>
         </section>
     </section>
-<!--     <section class="section main-summary">
-        <section>
-            <div><p>Richard hails from Tulsa. He has earned degrees from the University of Oklahoma and Stanford. (Go
-                Sooners and Cardinals!) Before starting Pied Piper, he worked for Hooli as a part time software
-                developer. While his work focuses on applied information theory, mostly optimizing lossless compression
-                schema of both the length-limited and adaptive variants, his non-work interests range widely, everything
-                from quantum computing to chaos theory. He could tell you about it, but THAT would NOT be a
-                “length-limited” conversation!</p></div>
-        </section>
-    </section> -->
-    <section class="section margin1">
+    <section class="section">
         <header>
             <h2 class="section-title">Skills</h2>
         </header>
@@ -890,20 +906,6 @@
                     <li>hybris</li>
                 </ul>
             </div>
-<!--             <div class="item">
-                <h3 class="name">
-                    Compression
-                </h3>
-                <div class="level master">
-                    <em>Master</em>
-                    <div class="bar"></div>
-                </div>
-                <ul class="keywords">
-                    <li>Mpeg</li>
-                    <li>MP4</li>
-                    <li>GIF</li>
-                </ul>
-            </div> -->
         </section>
     </section>
     <section class="section">
@@ -924,83 +926,19 @@
                 <label for="work-item-1"></label>
                 <header>
                     <div class="position">Staff/Ecommerce business</div>
-                    <div class="company">Oway Soft</div>
-                </header>                
-            </section>
-<!--             <section class="work-item">
-                <input id="work-item-0" type="checkbox" class="toggle-item" checked="checked">
-                <label for="work-item-0"></label>
-                <header>
-                    <div class="position">CEO/President</div>
-                    <div class="company">Pied Piper</div>
-                    <div class="date">
-                        <span class="startDate">December 2013</span>
-                        <span class="endDate">- December 2014</span>
-                    </div>
-                </header>
-                <span class="website">
-                    <a target="_blank" href="http://piedpiper.com">http://piedpiper.com</a>
-                </span>
-                <div class="item" id="work-item">
-                    <div class="summary">
-                        <p></p>
-                        <p>Pied Piper is a multi-platform technology based on a proprietary universal compression
-                            algorithm that has consistently fielded high Weisman Scores™ that are not merely
-                            competitive, but approach the theoretical limit of lossless compression.</p>
-                        <p></p>
-                    </div>
-                    <ul class="highlights">
-                        <li><p>Build an algorithm for artist to detect if their music was violating copy right
-                            infringement laws</p></li>
-                        <li><p>Successfully won Techcrunch Disrupt</p></li>
-                        <li><p>Optimized an algorithm that holds the current world record for Weisman Scores</p></li>
-                    </ul>
-                </div>
-            </section> -->
-        </section>
-    </section>
-<!--     <section class="section">
-        <header>
-            <h2 class="section-title">Volunteer</h2>
-        </header>
-        <section id="volunteer">
-            <section class="volunteer-item">
-                <input id="volunteer-item-0" type="checkbox" class="toggle-item" checked="checked">
-                <label for="volunteer-item-0"></label>
-                <header>
-                    <div class="header-left">
-                        <div class="position">
-                            Teacher
-                        </div>
-                        <div class="organization">
-                            CoderDojo
-                        </div>
-                    </div>
+                    <div class="company">OWAY Soft</div>   
                     <div class="date">
                         <span class="startDate">
-                            January 2012
+                            December 2016
                         </span>
                         <span class="endDate">
-                            - January 2013
+                            - Current
                         </span>
-                    </div>
-                </header>
-                <div class="website">
-                    <a target="_blank" href="http://coderdojo.com/">http://coderdojo.com/</a>
-                </div>
-                <div class="item">
-                    <div class="summary">
-                        <p></p>
-                        <p>Global movement of free coding clubs for young people.</p>
-                        <p></p>
-                    </div>
-                    <ul class="highlights">
-                        <li><p>Awarded 'Teacher of the Month'</p></li>
-                    </ul>
-                </div>
+                    </div>    
+                </header>                         
             </section>
         </section>
-    </section> -->
+    </section>
     <section class="section">
         <header>
             <h2 class="section-title">Education <span class="item-count">(1)</span></h2>
@@ -1028,83 +966,9 @@
                         </span>
                     </div>
                 </header>
-                
-<!--                 <ul class="courses">
-                    <li>DB1101 - Basic SQL</li>
-                    <li>CS2011 - Java Introduction</li>
-                </ul>
-                <div class="item">
-                    <div class="gpa">
-                        <strong> Grade:</strong> <span>4.0</span>
-                    </div>
-                </div> -->
             </section>
         </section>
     </section>
-<!--     <section class="section">
-        <header>
-            <h2 class="section-title">Awards</h2>
-        </header>
-        <section id="awards">
-            <section class="award-item">
-                <input id="award-item-0" type="checkbox" class="toggle-item" checked="checked">
-                <label for="award-item-0"></label>
-                <header>
-                    <div class="header-left">
-                        <div class="title">
-                            Digital Compression Pioneer Award
-                        </div>
-                        <div class="awarder">
-                            Techcrunch
-                        </div>
-                    </div>
-                    <div class="date">
-                        2014
-                    </div>
-                </header>
-                <div class="item">
-                    <div class="summary">
-                        <p></p>
-                        <p>There is no spoon.</p>
-                        <p></p>
-                    </div>
-                </div>
-            </section>
-        </section>
-    </section> -->
-<!--     <section class="section">
-        <header>
-            <h2 class="section-title">Publications</h2>
-        </header>
-        <section id="publications">
-            <section class="publication-item">
-                <input id="publication-item-0" type="checkbox" class="toggle-item" checked="checked">
-                <label for="publication-item-0"></label>
-                <header>
-                    <div class="header-left">
-                        <span class="name">
-                            <span class="website">
-                                <a target="_blank" href="http://en.wikipedia.org/wiki/Silicon_Valley_(TV_series)">Video compression for 3d media</a>
-                            </span>
-                        </span>
-                        <span class="publisher">
-                            in Hooli
-                        </span>
-                    </div>
-                    <span class="date">
-                        1 October 2014
-                    </span>
-                </header>
-                <div class="item">
-                    <div class="summary">
-                        <p></p>
-                        <p>Innovative middle-out compression algorithm that changes the way we store data.</p>
-                        <p></p>
-                    </div>
-                </div>
-            </section>
-        </section>
-    </section> -->
     <br>
     <section class="section margin1">
         <header>
@@ -1153,17 +1017,16 @@
         </header>
         <section id="others">
             <section class="others-item">
+                <label for="others-item-0"></label>
                 <header>
-                    <div class="header-left">
-                        <div class="otherType">
-                            Site Administrator/
-                        </div>
-                        <div class="area">
-                            Membership process, subtitles, etc.
-                        </div>
-                        <div class="institution">
-                            StyleKIN(DAUM CAFE)
-                        </div>
+                    <div class="otherType">
+                        Site Administrator
+                    </div>
+                    <div class="do">
+                        Membership process, subtitles, etc.
+                    </div>
+                    <div class="institution">
+                        StyleKIN(DAUM CAFE)
                     </div>
                     <div class="date">
                         <span class="startDate">
@@ -1171,6 +1034,26 @@
                         </span>
                         <span class="endDate">
                             - 2009
+                        </span>
+                    </div>
+                </header>
+                <label for="others-item-1"></label>
+                <header>
+                     <div class="otherType">
+                        Exchange student
+                    </div>
+                    <div class="info">
+                        Scholarships for Study in Japan - JASSO
+                    </div>
+                    <div class="institution">
+                         FUKUOKA UNIVERSITY
+                    </div>
+                    <div class="date">
+                        <span class="startDate">
+                            2009
+                        </span>
+                        <span class="endDate">
+                            - 2010
                         </span>
                     </div>
                 </header>
