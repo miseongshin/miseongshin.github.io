@@ -1,0 +1,16 @@
+@font-face {
+    font-family: 'SDSamliphopangche_Basic';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts-20-12@1.0/SDSamliphopangche_Basic.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {font-family: "SDSamliphopangche_Basic", Georgia, Serif;}
+h1, h2, h3, h4, h5, h6 {
+  font-family: "SDSamliphopangche_Basic";
+  letter-spacing: 5px;
+}
+
+.title-image{
+	width: 100px;
+}

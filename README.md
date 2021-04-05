@@ -1,2 +1,0 @@
-# miseongshin.github.io
-profiles
