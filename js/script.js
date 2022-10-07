@@ -1,6 +1,6 @@
 
-if(document.domain =="1028web.com"){
-    if (navigator.language != "ko-KR"){
+if(document!=null && document.domain !=null && document.domain.indexOf("1028web.com")>=0){
+    if (navigator.language.indexOf("ko") < 0){
         if(document.location.pathname !="/en/index.html"){
             location.href="/en/index.html";
         }
@@ -55,7 +55,7 @@ function draw()
 
 let cnt = 0;
 function changeContents(){
-    if (color == GOLD && cnt < 3){
+    if (color === GOLD && cnt < 3){
         color =SILVER;
         contents = QUESTION_MARK;
     } else {
@@ -68,5 +68,5 @@ function changeContents(){
 setInterval(draw, 100);
 setInterval(changeContents,10000);
 
-addEventListener('resize',(event)=> {location.reload();})
+addEventListener('resize',()=> {location.reload();})
 
