@@ -1,234 +1,43 @@
 <!DOCTYPE html>
 <html lang="ko">
-    <head>
-        <title>1028web.com</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="사랑과 정리를 위한 사이트">
-        <meta property="og:title" content="1028web.com">
-        <meta property="og:image" content="./images/logo_300_og_image.jpg">
-        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        <link rel="stylesheet" href="css/style.css">
-        <link rel="stylesheet" href="css/resume.css">
-        <link rel="shortcut icon" href="./images/favicon/favicon.ico" type="image/x-icon">
+<head>
+    <title>1028web.com</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="편안한 마음에 도움이 되는 웹사이트를 만듭니다.">
+    <meta property="og:title" content="1028web.com">
+    <meta property="og:image" content="./images/log/android-icon-192x192.png">
+    <link rel="shortcut icon" href="./images/logo/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="57x57" href="./images/logo/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="./images/logo/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./images/logo/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="./images/logo/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./images/logo/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="./images/logo/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="./images/logo/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="./images/logo/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./images/logo/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="./images/logo/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/logo/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="./images/logo/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/logo/favicon-16x16.png">
+    <link rel="manifest" href="./images/logo/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="./../images/logo/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <script src="https://kit.fontawesome.com/def66b134a.js" crossorigin="anonymous"></script>
 
-    </head>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
 <body>
-
-<!-- Navbar (sit on top) -->
-<div class="w3-top">
-  <div class="w3-bar w3-card" style=" background-color: #B191C2">
-    <a href="https://github.com/miseongshin/diary" class="w3-bar-item w3-button site-image"><img src="./images/logo_300_diary_working.jpg"></a>
-    <a href="http://blog.1028web.com" class="w3-bar-item w3-button site-image"><img src="./images/logo_blog_300_og_image.jpg"></a>
-    <a href="https://1028web.com/wat/index.html" class="w3-bar-item w3-button site-image"><img src="./images/logo_300_wat_og_image.jpg"></a>
-
-    <!-- Right-sided navbar links. Hide them on small screens -->
-    <div class="">
-      <!--<a href="#about" class="w3-bar-item w3-button">만든사람</a>
-       <a href="#menu" class="w3-bar-item w3-button">Menu</a>
-      <a href="#contact" class="w3-bar-item w3-button">Contact</a> -->
-    </div>
-  </div>
+<canvas id="c"></canvas>
+<div>
+    <img src="./images/logo_empty.png">
+    <h2>오늘 10분 <a href="https://today10min.com">today10min.com</a> 제작중</h2>
+    <h3 class="bottom-text2">편안한 마음에 도움이 되는 웹사이트를 만듭니다.</h3>
+    <h3 class="bottom-text">- 1028web <a href="https://blog.1028web.com" target="_blank"><i class="fa fa-blog"></i></a></h3>
 </div>
-
-<!-- Header -->
-<header class="w3-display-container w3-content w3-wide" style="max-width:1600px;min-width:360px;height: 300px" id="home">
-
-</header>
-
-<!-- Page content -->
-<div class="w3-content" style="max-width:1100px">
-
-  <!-- About Section -->
-<!--   <div class="w0-row w3-padding-64" id="about">
-    <div class="w3-col m6 w3-padding-large w3-hide-small">
-     <img src="/w3images/tablesetting2.jpg" class="w3-round w3-image w3-opacity-min" alt="Table Setting" width="600" height="750">
-    </div>
-
-    <div class="w3-col m6 w3-padding-large">
-      <h1 class="w3-center">About Catering</h1><br>
-      <h5 class="w3-center">Tradition since 1889</h5>
-      <p class="w3-large">The Catering was founded in blabla by Mr. Smith in lorem ipsum dolor sit amet, consectetur adipiscing elit consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute iruredolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.We only use <span class="w3-tag w3-light-grey">seasonal</span> ingredients.</p>
-      <p class="w3-large w3-text-grey w3-hide-medium">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod temporincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </div>
-  </div> -->
-  
-  <!-- <hr> -->
-  
-  <!-- Menu Section -->
-<!--   <div class="w3-row w3-padding-64" id="menu">
-    <div class="w3-col l6 w3-padding-large">
-      <h1 class="w3-center">Our Menu</h1><br>
-      <h4>Bread Basket</h4>
-      <p class="w3-text-grey">Assortment of fresh baked fruit breads and muffins 5.50</p><br>
-    
-      <h4>Honey Almond Granola with Fruits</h4>
-      <p class="w3-text-grey">Natural cereal of honey toasted oats, raisins, almonds and dates 7.00</p><br>
-    
-      <h4>Belgian Waffle</h4>
-      <p class="w3-text-grey">Vanilla flavored batter with malted flour 7.50</p><br>
-    
-      <h4>Scrambled eggs</h4>
-      <p class="w3-text-grey">Scrambled eggs, roasted red pepper and garlic, with green onions 7.50</p><br>
-    
-      <h4>Blueberry Pancakes</h4>
-      <p class="w3-text-grey">With syrup, butter and lots of berries 8.50</p>    
-    </div>
-    
-    <div class="w3-col l6 w3-padding-large">
-      <img src="/w3images/tablesetting.jpg" class="w3-round w3-image w3-opacity-min" alt="Menu" style="width:100%">
-    </div>
-  </div>
- -->
-  <!-- <hr> -->
-
-  <!-- Contact Section -->
-  <!-- <div class="w3-container w3-padding-64" id="contact">
-    <h1>Contact</h1><br>
-    <p>We offer full-service catering for any event, large or small. We understand your needs and we will cater the food to satisfy the biggerst criteria of them all, both look and taste. Do not hesitate to contact us.</p>
-    <p class="w3-text-blue-grey w3-large"><b>Catering Service, 42nd Living St, 43043 New York, NY</b></p>
-    <p>You can also contact us by phone 00553123-2323 or email catering@catering.com, or you can send us a message here:</p>
-    <form action="/action_page.php" target="_blank">
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Name" required name="Name"></p>
-      <p><input class="w3-input w3-padding-16" type="number" placeholder="How many people" required name="People"></p>
-      <p><input class="w3-input w3-padding-16" type="datetime-local" placeholder="Date and time" required name="date" value="2020-11-16T20:00"></p>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Message \ Special requirements" required name="Message"></p>
-      <p><button class="w3-button w3-light-grey w3-section" type="submit">SEND MESSAGE</button></p>
-    </form>
-  </div> -->
-  
-<!-- End page content -->
-</div>
-
-<!-- Footer -->
-<footer class="w3-centerw3-padding-32">
-<!--   <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-text-green">w3.css</a></p>
- --></footer>
-
-
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<div id="resume" >
-    <!-- 기본정보 -->
-    <header id="header" class="clear center-view">
-        <div class="center-view">
-            <h1 class="name">Miseong Shin</h1>
-            <h2 class="label">Web Developer</h2>
-            <div> 
-                <span class="fa fa-github github social"></span>
-                <a target="_blank" href="https://github.com/miseongshin">https://github.com/miseongshin/</a>
-            </div>
-            <div>
-                <span class="fa blog fa-external-link social"></span>
-                <a target="_blank" href="http://drengineer.tistory.com/">http://drengineer.tistory.com/</a>
-            </div>
-            <div>
-                <span class="fa blog fa-external-link social"></span>   
-                <a target="_blank" href="http://blog.1028web.com/">http://blog.1028web.com/ _ 옮기고 있는 블로그</a>
-            </div>
-        </div>
-    </header>
-    <br>
-    <!-- 개인 작품 -->
-    <section class="section">
-        <header>
-            <h2 class="section-title">Personal Piece<span class="item-count">(4)</span></h2>
-        </header>
-        <section id="piece">
-            <section class="piece-item">
-            	<label for="piece-item-0"></label>
-                <header>
-                    <div class="piece">10:28 Table Clock</div>
-                    <div class="discription">HTML, Javascript</div>
-                    <div class="date">
-                        <span class="startDate">Apr 2021</span>
-                        <span class="endDate">- Apr 2021</span>
-                    </div>
-                    <div class="website">
-                        <div>
-                            <span class="fa fa-external-link"></span>
-                            <a target="_blank" href="https://1028web.com/wat/index.html">https://1028web.com/wat/index.html</a>
-                        </div>
-                        <div>
-                            <span class="fa fa-github github social"></span>
-                            <a target="_blank" href="https://github.com/miseongshin/wat">https://github.com/miseongshin/wat</a>
-                        </div>
-                    </div>
-                </header> 
-                <br />
-                <label for="piece-item-1"></label>
-                <header>
-                    <div class="piece">SOANDO MISO Pension</div>
-                    <div class="discription">HTML, Javascript (on service)</div>
-                    <div class="date">
-                        <span class="startDate">Jun 2018</span>
-                        <span class="endDate">- Jul 2018</span>
-                    </div>
-                    <div class="website">
-                        <div>
-                            <span class="fa fa-external-link"></span>
-                            <a target="_blank" href="http://soanmiso.com/">http://soanmiso.com/</a>
-                        </div>
-                        <div>
-                            <span class="fa fa-github github social"></span>
-                            <a target="_blank" href="https://github.com/soanmiso/soanmiso.github.io">https://github.com/soanmiso/soanmiso.github.io/</a>
-                        </div>
-                        <div>
-                            <span class="fa fa-external-link"></span>
-                            <a target="_blank" href="https://w3layouts.com/gusto-personal-website-flat-bootstrap-responsive-web-template/">Original template</a>
-                        </div>
-                    </div>
-                </header> 
-                <br>
-                <label for="Piece-item-2"></label>
-                <header>
-                    <div class="piece">Read Numbers</div>
-                    <div class="discription">HTML, Javascript, css</div>
-                    <div class="date">
-                        <span class="startDate">Dec 2017</span>
-                        <span class="endDate">- Mar 2018</span>
-                    </div>
-                    <div class="website">
-                        <div>
-                            <span class="fa fa-external-link social"></span>
-                            <a target="_blank" href="https://readnumbers.github.io/">https://readnumbers.github.io/</a>
-                        </div>
-                        <div>
-                            <span class="fa fa-github github social"></span>
-                            <a target="_blank" href="https://github.com/readnumbers/ReadNumbers.github.io">https://github.com/readnumbers/ReadNumbers.github.io</a>
-                            (<a target="_blank" href="https://github.com/CloneProject">https://github.com/CloneProject</a>)
-                            <!--  <img src=".\image\GrowthSpace-ReadNumber2.png" class="piece-image"> -->
-                        </div>
-                    </div>
-                </header>     
-                <br> 
-                <label for="Piece-item-3"></label>           
-                <header>
-                    <div class="piece">History Tour Route</div>
-                    <div class="discription">Java, Javascript, AngularJS, Oracle, Mybatis, Spring, HTML, CSS</div>
-                    <div class="date">
-                        <span class="startDate">Aug 2016</span>
-                        <span class="endDate">- Oct 2016</span>
-                    </div>
-                    <div class="website">
-                        <div>
-                            <span class="fa fa-external-link social"></span>
-                            <a target="_blank" href="http://drengineer.tistory.com/220">Go to View Description</a>
-                        </div>
-                        <div>
-                            <span class="fa fa-github github social"></span>
-                            <a target="_blank" href="https://github.com/miseongshin/root2016">https://github.com/miseongshin/root2016</a>
-                        </div>
-                    </div>
-                </header> 
-            </section>
-        </section>
-    </section>
-</div>
-</body>
-</html>
-
+<script src="./js/script.js"></script>
 </body>
 </html>

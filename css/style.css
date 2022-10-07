@@ -4,13 +4,83 @@
     font-weight: normal;
     font-style: normal;
 }
-
-body {font-family: "SDSamliphopangche_Basic", Georgia, Serif;}
-h1, h2, h3, h4, h5, h6 {
-  font-family: "SDSamliphopangche_Basic";
-  letter-spacing: 5px;
+/*
+* Jeju Gothic (Korean) http://www.google.com/fonts/earlyaccess
+*/
+@font-face {
+    font-family: 'Jeju Gothic';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./../fonts/jeju/JejuGothic-Regular.eot);
+    src: url(./../fonts/jeju/JejuGothic-Regular.eot?#iefix) format('embedded-opentype'),
+    url(./../fonts/jeju/JejuGothic-Regular.woff2) format('woff2'),
+    url(./../fonts/jeju/JejuGothic-Regular.woff) format('woff'),
+    url(./../fonts/jeju/JejuGothic-Regular.ttf) format('truetype');
 }
 
-.title-image{
-	width: 100px;
+* {margin: 0; padding: 0;}
+body {
+    background: black;
+    position:absolute;
+    z-index: 99;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    text-align:center;
+    font-family: 'Jeju Gothic', sans-serif;
+}
+canvas {
+    position: absolute;
+    display: block;
+    z-index: 2;
+}
+div {
+    position:absolute;
+    top:40%;
+    left:50%;
+    width: 80%;
+    height: 45%;
+    background:rgb(0,0,0,0.8);
+    transform:translate(-50%, -50%);
+    z-index: 99;
+    vertical-align: middle;
+}
+h1,h2,h3,h4,h5,h6{
+    color: silver;
+}
+a{
+    color: green;
+    text-decoration:none;
+}
+a:hover{
+    color: darkgreen;
+    text-decoration:none;
+    cursor:pointer;
+}
+img {
+    max-width: 100%;
+}
+
+.prepare-img {
+    max-width: 80px;
+    background: white;
+    filter : grayscale(90);
+}
+
+.bottom-text{
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+}
+.bottom-text2{
+    position: fixed;
+    bottom: 50px;
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    div {
+        height: 55%;
+    }
 }
