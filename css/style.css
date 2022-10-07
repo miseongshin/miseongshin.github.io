@@ -11,11 +11,11 @@
     font-family: 'Jeju Gothic';
     font-style: normal;
     font-weight: 400;
-    src: url(./../fonts/jeju/JejuGothic-Regular.eot);
-    src: url(./../fonts/jeju/JejuGothic-Regular.eot?#iefix) format('embedded-opentype'),
-    url(./../fonts/jeju/JejuGothic-Regular.woff2) format('woff2'),
-    url(./../fonts/jeju/JejuGothic-Regular.woff) format('woff'),
-    url(./../fonts/jeju/JejuGothic-Regular.ttf) format('truetype');
+    src: url(./fonts/jeju/JejuGothic-Regular.eot);
+    src: url(./fonts/jeju/JejuGothic-Regular.eot?#iefix) format('embedded-opentype'),
+    url(./fonts/jeju/JejuGothic-Regular.woff2) format('woff2'),
+    url(./fonts/jeju/JejuGothic-Regular.woff) format('woff'),
+    url(./fonts/jeju/JejuGothic-Regular.ttf) format('truetype');
 }
 
 * {margin: 0; padding: 0;}
