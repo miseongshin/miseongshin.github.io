@@ -1,9 +1,13 @@
 
 if(document.domain =="1028web.com"){
-    if (navigator.language != "ko-KR" && document.location.pathname !="/en/index.html"){
-        location.href="/en/index.html";
+    if (navigator.language != "ko-KR"){
+        if(document.location.pathname !="/en/index.html"){
+            location.href="/en/index.html";
+        }
     } else {
-        location.href="/index.html";
+        if(document.location.pathname !="/index.html") {
+            location.href = "/index.html";
+        }
     }
 }
 
