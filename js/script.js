@@ -1,6 +1,6 @@
 
 if(document.domain =="1028web.com"){
-    if (navigator.language != "ko-KR"){
+    if (navigator.language != "ko-KR" && document.location.pathname !="/en/index.html"){
         location.href="/en/index.html";
     } else {
         location.href="/index.html";
