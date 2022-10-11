@@ -37,17 +37,17 @@ canvas {
 }
 div {
     position:absolute;
-    top:40%;
+    top:50%;
     left:50%;
-    width: 80%;
-    height: 45%;
-    background:rgb(0,0,0,0.8);
+	max-width:400px;
+    background:rgb(0,0,0,0.5);
     transform:translate(-50%, -50%);
     z-index: 99;
     vertical-align: middle;
 }
 h1,h2,h3,h4,h5,h6{
     color: silver;
+	margin-top:5px;
 }
 a{
     color: green;
@@ -61,22 +61,14 @@ a:hover{
 img {
     max-width: 100%;
 }
+.mt5{
+	margin-top:10px;
+}
 
 .prepare-img {
     max-width: 80px;
     background: white;
     filter : grayscale(90);
-}
-
-.bottom-text{
-    position: fixed;
-    bottom: 20px;
-    width: 100%;
-}
-.bottom-text2{
-    position: fixed;
-    bottom: 50px;
-    width: 100%;
 }
 
 @media (max-width: 600px) {
