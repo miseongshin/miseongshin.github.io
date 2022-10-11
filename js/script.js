@@ -18,7 +18,7 @@ const ctx = c.getContext("2d");
 
 const GOLD="gold";
 const SILVER="silver";
-const SUN="☀";
+const SUN="☆";
 const QUESTION_MARK="?";
 
 c.height = window.innerHeight;
