@@ -1,42 +1,263 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <title>10000000000</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="편안한 마음에 도움이 되는 웹사이트를 만듭니다.">
-    <meta property="og:title" content="shinmiseong.com">
-    <meta property="og:image" content="http://shinmiseong.com/images/log/android-icon-192x192.png">
-    <link rel="shortcut icon" href="./images/logo/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" sizes="57x57" href="./images/logo/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="./images/logo/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="./images/logo/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="./images/logo/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="./images/logo/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="./images/logo/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="./images/logo/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="./images/logo/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="./images/logo/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="./images/logo/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="./images/logo/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="./images/logo/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./images/logo/favicon-16x16.png">
-    <link rel="manifest" href="./images/logo/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="./../images/logo/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
-    <script src="https://kit.fontawesome.com/def66b134a.js" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shin Miseong Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Montserrat:wght@700;900&family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffb400'><path d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/></svg>">
+    <style>
+        :root {
+            --primary-color: #333;
+            --accent-color: #ffb400;
+            --text-muted: #888;
+            --icon-black: #222;
+        }
 
-    <link rel="stylesheet" href="./css/style.css">
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #ffffff;
+            color: var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; 
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 40px 0;
+        }
+
+        /* --- 애니메이션 효과 (위치 고정) --- */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .header, .portfolio-container, .info-box {
+            animation: fadeIn 0.8s ease-in-out forwards;
+        }
+
+        .lang-switch {
+            position: fixed;
+            top: 25px;
+            right: 30px;
+            z-index: 100;
+        }
+        .lang-btn {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 12px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .lang-btn.active { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+
+        .header {
+            margin-bottom: 30px;
+            text-align: center;
+            width: 100%;
+            padding: 0 20px;
+        }
+        .main-title { 
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 62px;
+            font-weight: 900; 
+            letter-spacing: 8px;
+            display: inline-block;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            transform: scale(1.1, 0.85); 
+            line-height: 1;
+        }
+        .contact-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 10px;
+            flex-wrap: wrap; 
+        }
+        .contact-group a { 
+            color: var(--text-muted); 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            transition: 0.3s;
+            word-break: break-all; /* 모바일 주소 잘림 방지 */
+        }
+        .contact-group a:hover { color: var(--primary-color); text-decoration: underline; }
+
+        .tistory-logo {
+            width: 18px;
+            height: 18px;
+            background-color: var(--icon-black);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        .portfolio-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            height: 650px; 
+            margin: 0 auto;
+        }
+
+        .center-img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -40%);
+            width: 300px;
+            z-index: 5;
+            transition: filter 0.3s ease;
+        }
+        .center-img:hover { filter: drop-shadow(0 0 10px rgba(255,180,0,0.2)); }
+
+        .info-box { 
+            width: 280px; 
+            position: absolute; 
+            transition: all 0.3s ease; 
+        }
+        .info-box:hover { color: #000; }
+        .info-box:hover .project-title { border-bottom-color: var(--accent-color); }
+
+        .year { 
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px; font-weight: 700; 
+            color: var(--accent-color); 
+            margin-bottom: 5px; 
+            display: block; 
+        }
+        .project-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; display: block; border-bottom: 2px solid #eee; padding-bottom: 5px; transition: border-color 0.3s ease; }
+        .details { list-style: none; font-size: 13px; color: var(--text-muted); line-height: 2; }
+        .details a { color: var(--primary-color); font-weight: 600; text-decoration: none; }
+        .item-git-icon { font-size: 14px; margin-right: 8px; color: var(--primary-color); vertical-align: middle; }
+
+        @media (min-width: 1025px) {
+            .pos-left-bottom { top: 400px; left: calc(50% - 520px); text-align: right; }
+            .pos-left-top { top: 140px; left: calc(50% - 480px); text-align: right; }
+            .pos-center-top { top: 0; left: 50%; transform: translateX(-50%); text-align: center; }
+            .pos-right-top { top: 140px; right: calc(50% - 480px); text-align: left; }
+            .pos-right-bottom { top: 400px; right: calc(50% - 520px); text-align: left; }
+        }
+
+        @media (max-width: 1024px) {
+            body { justify-content: flex-start; padding: 60px 20px; }
+            .header { margin-bottom: 40px; }
+            .main-title { font-size: 44px; transform: scale(1, 0.9); }
+            .contact-group { font-size: 12px; gap: 10px; flex-direction: column; }
+            .portfolio-container { display: flex; flex-direction: column; align-items: center; height: auto; }
+            .center-img { position: relative; width: 260px; margin: 40px 0; transform: none; left: auto; top: auto; }
+            .info-box { position: static; width: 100%; max-width: 500px; margin-bottom: 40px; text-align: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 15px; }
+            .details { display: inline-block; text-align: left; }
+        }
+    </style>
 </head>
 <body>
-<canvas id="c"></canvas>
-<div>
-    <img src="./images/logo/apple-icon-180x180.png">
-    <h2 class="">10000000000</h2>
-    <h3 class="mt5">편안한 마음에 도움이 되는 웹사이트를 만듭니다. <a href="https://freewebsite1028.tistory.com/" target="_blank"><i class="fa fa-blog"></i></a></h3>   
-</div>
-<script src="./js/script.js"></script>
+
+    <div class="lang-switch">
+        <button class="lang-btn" data-lang-btn="ko">KO</button>
+        <button class="lang-btn" data-lang-btn="en">EN</button>
+    </div>
+
+    <div class="header">
+        <h1 id="name-title" class="main-title"></h1>
+        <div class="contact-group">
+            <a id="header-git-link" href="https://github.com/miseongshin" target="_blank">
+                <i class="fa-brands fa-github" style="font-size: 20px; color: var(--primary-color);"></i>
+                <span id="git-text">github.com/miseongshin</span>
+            </a>
+            <a href="https://freewebsite1028.tistory.com/" target="_blank">
+                <span class="tistory-logo">T</span> <span>freewebsite1028.tistory.com</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="portfolio-container">
+        <img src="./mimimi.png" alt="Character" class="center-img">
+        <div id="p1" class="info-box pos-left-bottom"></div>
+        <div id="p2" class="info-box pos-left-top"></div>
+        <div id="p3" class="info-box pos-center-top"></div>
+        <div id="p4" class="info-box pos-right-top"></div>
+        <div id="p5" class="info-box pos-right-bottom"></div>
+    </div>
+
+    <script>
+        const translations = {
+            ko: {
+				title: "신미성 웹사이트",
+                name: "신미성",
+                gitDisplay: "github.com/miseongshin",
+                projects: {
+                    p1: { year: "2018.06", title: "정적 호스팅 페이지", labelDesign: "원본 디자인 :", design: "w3layouts.com", designUrl: "https://w3layouts.com/gusto-personal-website-flat-bootstrap-responsive-web-template/", labelLive: "제작 주소 :", live: "소안도미소펜션", liveUrl: "https://soanmiso.com/", gitUrl: "https://github.com/soanmiso/soanmiso.github.io" },
+                    p2: { year: "2025.12", title: "정적 호스팅 페이지", labelDesign: "원본 디자인 :", design: "raviriley.github.io", designUrl: "https://raviriley.github.io/agency-jekyll-theme-starter/", labelLive: "제작 주소 :", live: "라온필하모닉합창단", liveUrl: "https://raonphil.com/", gitUrl: "https://github.com/raonphilchior" },
+                    p3: { year: "2025.12 ~", title: "웹사이트(제작중)", labelDesign: "", design: "", designUrl: "#", labelLive: "(진행)", live: "단짠♥", liveUrl: "#", gitUrl: "#" },
+                    //p4: { year: "년도 입력", title: "프로젝트 제목", labelDesign: "디자인:", design: "내용", designUrl: "#", labelLive: "주소:", live: "사이트이름", liveUrl: "#", gitUrl: "#" },
+                    //p5: { year: "년도 입력", title: "프로젝트 제목", labelDesign: "디자인:", design: "내용", designUrl: "#", labelLive: "주소:", live: "사이트이름", liveUrl: "#", gitUrl: "#" }
+                }
+            },
+            en: {
+				title: "Shin Miseong Website",
+                name: "SHIN MISEONG",
+                gitDisplay: "GITHUB.COM/MISEONGSHIN",
+                projects: {
+                    p1: { year: "2018.06", title: "Static Hosting Site", labelDesign: "Design Source:", design: "W3Layouts", designUrl: "https://w3layouts.com/gusto-personal-website-flat-bootstrap-responsive-web-template/", labelLive: "Live Preview:", live: "Soanmiso Pension", liveUrl: "https://soanmiso.com/", gitUrl: "https://github.com/soanmiso/soanmiso.github.io" },
+                    p2: { year: "2025.12", title: "Static Hosting Site", labelDesign: "Design Source:", design: "raviriley", designUrl: "https://raviriley.github.io/agency-jekyll-theme-starter/", labelLive: "Live Preview:", live: "Raon Philharmonic Choir", liveUrl: "https://raonphil.com/", gitUrl: "https://github.com/raonphilchior" },
+                    p3: { year: "2025.12 ~", title: "Website in Progress", labelDesign: "", design: "", designUrl: "#", labelLive: "(in Progress)", live: "honeysalt♥", liveUrl: "#", gitUrl: "#" },
+                    //p4: { year: "Year", title: "Project Title", labelDesign: "Design:", design: "Source", designUrl: "#", labelLive: "Live:", live: "Name", liveUrl: "#", gitUrl: "#" },
+                    //p5: { year: "Year", title: "Project Title", labelDesign: "Design:", design: "Source", designUrl: "#", labelLive: "Live:", live: "Name", liveUrl: "#", gitUrl: "#" }
+                }
+            }
+        };
+
+        function updateContent(lang) {
+            const data = translations[lang];
+            document.getElementById('name-title').textContent = data.name;
+            document.getElementById('git-text').textContent = data.gitDisplay;
+
+            for (let i = 1; i <= 5; i++) {
+                const container = document.getElementById('p' + i);
+                if (container) container.style.display = 'none';
+            }
+
+            Object.keys(data.projects).forEach(id => {
+                const project = data.projects[id];
+                const container = document.getElementById(id);
+                if (!container) return;
+
+                container.style.display = 'block';
+
+                let designHtml = (project.labelDesign && project.design) ? `<li>- ${project.labelDesign} <a href="${project.designUrl}" target="_blank">${project.design}</a></li>` : '';
+                let gitIconHtml = project.gitUrl && project.gitUrl !== "#" ? `<a href="${project.gitUrl}" target="_blank" class="item-git-icon"><i class="fa-brands fa-github"></i></a>` : '';
+                let liveHtml = (project.labelLive && project.live) ? `<li>- ${project.labelLive} ${gitIconHtml}<a href="${project.liveUrl}" target="_blank">${project.live}</a></li>` : '';
+
+                container.innerHTML = `<span class="year">${project.year}</span><span class="project-title">${project.title}</span><ul class="details">${designHtml}${liveHtml}</ul>`;
+            });
+
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.langBtn === lang));
+            document.title = translations[lang].title;
+            document.documentElement.lang = lang;
+        }
+
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => updateContent(btn.dataset.langBtn)));
+        updateContent(navigator.language.includes('en') ? 'en' : 'ko');
+    </script>
 </body>
 </html>

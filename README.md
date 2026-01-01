@@ -1,7 +1,17 @@
-1028web.com  
-새롭고, 편안하고, 도움이 되는 웹사이트 제작 
+# shinmiseong.com
 
-### Project 1. 하루 10분씩 웹 사이트 만들기.
-# todays10min.com
-- 2022.10.07 시작 
-- 내가 잘하는 것에 집중하고 만들 것. 
+<p align="left">
+  <img src="https://img.shields.io/badge/AI_Collaborated-Google_Gemini-4285F4?style=flat-square&logo=googlegemini&logoColor=white" />
+  <img src="https://img.shields.io/badge/Platform-GitHub_Pages-181717?style=flat-square&logo=github&logoColor=white" />
+</p>
+
+### 신미성 웹사이트 소개
+구글 제미나이로 만든 웹페이지입니다. (2025년 12월 31일 제작)
+
+### About Project
+This is a website created with Google Gemini. (Created on December 31, 2025)
+
+---
+
+### Link
+**Official Domain :** [shinmiseong.com](http://shinmiseong.com)
