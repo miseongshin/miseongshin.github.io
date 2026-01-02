@@ -198,32 +198,73 @@
     </footer>
 
     <script>
-        const translations = {
-            ko: {
-                slogan: "그대 인생 참 살맛나기를...",
-                title: '단짠<span class="title-heart">♥</span> 포트폴리오',
-                card1: {
-                    title: "기획 개요",
-                    body: "<b>배경 및 목적</b> 삶에 지혜를 주는 생각 정리 툴 및 정보 가이드 제공<br><b>핵심 컨셉</b> 사용자 경험 중심의 생각정리 인터페이스<br><b>비즈니스 목표</b> 서비스 런칭을 통한 실제 수익 10만 원 달성"
-                },
-                card2: {
-                    title: "기술 스택 및 일정",
-                    body: "<b>Frontend, Backend, DB & AI</b> Vue.js, SpringBoot3, PostgreSQL 및 AI 기술 적용<br><b>1차 개발 일정 (2025.01.02 ~ 01.05)</b> 프로젝트 서버 아키텍처 및 만달아트 모듈 구현<br><b>수행형 인터페이스</b> 무료 생각정리 툴"
-                }
-            },
-            en: {
-                slogan: "May your life be truly delightful...",
-                title: 'HONEY SALT<span class="title-heart">LOVE</span> PORTFOLIO',
-                card1: {
-                    title: "Project Overview",
-                    body: "<b>Background & Purpose</b> Providing thought organization tools and information guides that give wisdom to life.<br><b>Core Concept</b> User experience-centered thought organization interface.<br><b>Business Goal</b> Achieving an actual profit of 100,000 KRW through service launch."
-                },
-                card2: {
-                    title: "Tech Stack & Schedule",
-                    body: "<b>Frontend, Backend, DB & AI</b> Vue.js, Spring Boot 3, PostgreSQL, and AI technology application<br><b>Phase 1 Schedule (2025.01.02 ~ 01.05)</b> Server architecture setup and Mandal-art module implementation<br><b>Action-oriented Interface</b> Free thought organization tool"
-                }
-            }
-        };
+		const translations = {
+			ko: {
+				slogan: "생각의 구조화가 만드는 선명한 삶.",
+				title: '단짠<span class="title-heart">♥</span> 포트폴리오',
+				card1: {
+					title: "기획 개요",
+					body: `
+					<b>기획 배경 및 목적</b><br>
+					파편화된 아이디어를 시각적으로 구조화하는 도구를 제공하여, 
+					사용자의 의사결정을 돕고 실질적인 생산성 향상을 지향합니다.<br><br>
+		
+					<b>핵심 컨셉</b><br>
+					인지적 부하를 최소화하고 사고의 흐름을 극대화하는 UX 중심 인터페이스<br><br>
+		
+					<b>비즈니스 목표</b><br>
+					서비스 런칭을 통한 MVP(Minimum Viable Product, 최소 기능 제품) 검증 및 실제 수익화 모델 구현
+					`
+				},
+				card2: {
+					title: "기술 스택 및 일정",
+					body: `
+					<b>Full-Stack AI Architecture</b><br>
+					Vue.js, Spring Boot 3, PostgreSQL, AI 기술 적용<br><br>
+		
+					<b>1차 개발 일정 (Milestone)</b><br>
+					2025.01.02 ~ 01.05<br>
+					서버 아키텍처 설계 및 만달아트 기반 데이터 시각화 모듈 구현<br><br>
+		
+					<b>개발 방향</b><br>
+					사용자 접근성을 높인 웹 기반의 오픈 소스형 사고 정리 도구
+					`
+				}
+			},
+		
+			en: {
+				slogan: "Structuring thoughts for a clearer life.",
+				title: 'HONEY SALT<span class="title-heart">LOVE</span> PORTFOLIO',
+				card1: {
+					title: "Project Overview",
+					body: `
+					<b>Background & Vision</b><br>
+					Providing a visual structuring tool for fragmented ideas to enhance 
+					user decision-making and practical productivity.<br><br>
+		
+					<b>Core Concept</b><br>
+					A UX-centric interface designed to minimize cognitive load and maximize focus.<br><br>
+		
+					<b>Business Goal</b><br>
+					MVP(Minimum Viable Product) validation through official launch and implementation of a sustainable monetization model.
+					`
+				},
+				card2: {
+					title: "Tech Stack & Roadmap",
+					body: `
+					<b>Tech Stack</b><br>
+					Vue.js, Spring Boot 3, PostgreSQL, and AI Integration<br><br>
+		
+					<b>Phase 1 Milestone</b><br>
+					Jan 2, 2025 – Jan 5, 2025<br>
+					Scalable server architecture design and implementation of Mandal-art visualization module.<br><br>
+		
+					<b>Development Focus</b><br>
+					An action-oriented, web-based tool for structured thinking.
+					`
+				}
+			}
+		};
 
         function updateLanguage(lang, updateUrl = true) {
             const data = translations[lang] || translations['ko'];
