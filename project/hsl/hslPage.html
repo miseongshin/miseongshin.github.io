@@ -8,7 +8,7 @@
 	<meta property="og:description" content="기록과 작업들 / Notes, work, and experiments." />
 	<meta property="og:url" content="https://shinmiseong.com/" />
 	<meta property="og:type" content="website" />
-    <title>단짠♥ 포트폴리오 · Shin Miseong</title>
+    <title>단짠♥ Honey Salt Love Portfolio -신미성 · Shin Miseong</title>
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&family=Montserrat:wght@700;900&family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">
 	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffb400'><path d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/></svg>">
     <style>
@@ -213,7 +213,7 @@
             },
             en: {
                 slogan: "May your life be truly delightful...",
-                title: 'HONEY SALT LOVE PORTFOLIO',
+                title: 'HONEY SALT<span class="title-heart">LOVE</span> PORTFOLIO',
                 card1: {
                     title: "Project Overview",
                     body: "<b>Background & Purpose</b> Providing thought organization tools and information guides that give wisdom to life.<br><b>Core Concept</b> User experience-centered thought organization interface.<br><b>Business Goal</b> Achieving an actual profit of 100,000 KRW through service launch."
@@ -225,8 +225,8 @@
             }
         };
 
-        function updateLanguage(lang) {
-            const data = translations[lang];
+        function updateLanguage(lang, updateUrl = true) {
+            const data = translations[lang] || translations['ko'];
             document.getElementById('header-slogan').textContent = data.slogan;
             document.getElementById('page-title').innerHTML = data.title; // 하트 HTML 반영을 위해 innerHTML 사용
             document.getElementById('card-1-title').textContent = data.card1.title;
@@ -238,13 +238,43 @@
                 btn.classList.toggle('active', btn.dataset.langBtn === lang);
             });
             document.documentElement.lang = lang;
+
+            // URL 파라미터 업데이트
+            if (updateUrl) {
+                const newUrl = new URL(window.location);
+                newUrl.searchParams.set('lang', lang);
+                window.history.pushState({}, '', newUrl);
+            }
         }
 
+        // 버튼 클릭 이벤트
         document.querySelectorAll('.lang-btn').forEach(btn => {
             btn.addEventListener('click', () => updateLanguage(btn.dataset.langBtn));
         });
 
-        updateLanguage(navigator.language.includes('en') ? 'en' : 'ko');
+
+		document.querySelector('.home-btn').addEventListener('click', function(e) {
+			const urlParams = new URLSearchParams(window.location.search);
+			const lang = urlParams.get('lang');
+			if (lang) {
+				e.preventDefault();
+				window.location.href = `/?lang=${lang}`;
+			}
+		});
+
+        // 초기 실행 로직 (파라미터 우선순위 적용)
+        const init = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const langParam = urlParams.get('lang');
+            const browserLang = navigator.language.includes('en') ? 'en' : 'ko';
+            
+            const targetLang = (langParam === 'ko' || langParam === 'en') ? langParam : browserLang;
+            
+            // 파라미터가 이미 있는 경우만 updateUrl을 false로 하여 히스토리 중복 방지 가능
+            updateLanguage(targetLang, !!langParam);
+        };
+
+        init();
     </script>
 </body>
 </html>
