@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta property="og:image" content="https://shinmiseong.com/statics/image/common/og-title.png" />
+	<meta property="og:title" content="꿀방울 포트폴리오 / 신미성" />
+	<meta property="og:description" content="나를 돌보는 작은 습관을 만들어가는 자기돌봄 안드로이드 앱" />
+	<meta property="og:url" content="https://shinmiseong.com/portfolio/honeydrops/" />
+	<meta property="og:type" content="website" />
+    <title>꿀방울 포트폴리오 · 신미성</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Montserrat:wght@700;900&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffb400'><path d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/></svg>">
+    <style>
+        :root {
+            --primary-color: #333;
+            --accent-color: #f0a500;
+            --text-muted: #888;
+            --meta-color: #8f8a80;
+            --rule-color: #1f1f1f;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Open Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Nanum Gothic', sans-serif;
+            background: #eef3e6 url('../../statics/image/honeydrops/bg/forest_day.webp') no-repeat center center;
+            background-size: cover;
+            background-attachment: fixed;
+            color: var(--primary-color);
+            line-height: 1.75;
+            padding: 60px 20px 80px;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- 상단 네비게이션 (honeysaltlove 와 같은 위치 · 모양) --- */
+        .top-nav {
+            position: fixed;
+            top: 25px;
+            right: 30px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .home-btn {
+            background: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-family: 'Jua', 'Apple SD Gothic Neo', sans-serif;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            height: 32px;
+        }
+        .home-btn:hover { background: var(--accent-color); }
+
+        .wrap {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.94);
+            border-radius: 16px;
+            padding: 34px 56px 60px;
+            box-shadow: 0 10px 44px rgba(70, 90, 50, 0.12);
+            animation: fadeIn 0.6s ease-in-out forwards;
+        }
+
+        /* --- 표지 --- */
+        .head { text-align: center; margin-bottom: 26px; }
+        .head-title {
+            font-family: 'Jua', 'Apple SD Gothic Neo', sans-serif;
+            font-size: 60px;
+            color: var(--accent-color);
+            line-height: 1.15;
+            margin: 0;
+            letter-spacing: 0.01em;
+        }
+
+        /* --- 표지 아래 포스터 · 오프닝 영상 --- */
+        .hero {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 16px;
+            margin: 26px 0 0;
+        }
+        .hero img, .hero video {
+            height: 300px;
+            width: auto;
+            max-width: 100%;
+            display: block;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            background: #000;
+        }
+        /* --- 섹션 --- */
+        .sec { margin-bottom: 52px; scroll-margin-top: 24px; }
+        .sec:last-of-type { margin-bottom: 0; }
+        .sec-head {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--rule-color);
+            margin-bottom: 22px;
+        }
+        .sec-no {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--accent-color);
+        }
+        .sec-title { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+
+        /* --- 본문 요소 --- */
+        .lead { font-size: 16px; margin-bottom: 20px; }
+        .p { font-size: 15px; margin-bottom: 12px; }
+        .p:last-child { margin-bottom: 0; }
+        .sub {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent-color);
+            letter-spacing: 0.06em;
+            margin: 24px 0 8px;
+        }
+        .sub:first-child { margin-top: 0; }
+
+        .list { list-style: none; }
+        .list li {
+            font-size: 15px;
+            padding-left: 15px;
+            position: relative;
+            margin-bottom: 9px;
+        }
+        .list li::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 12px;
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--accent-color);
+        }
+        .list li:last-child { margin-bottom: 0; }
+
+        .spec { width: 100%; border-collapse: collapse; font-size: 15px; }
+        .spec th {
+            width: 104px;
+            text-align: left;
+            font-weight: 700;
+            vertical-align: top;
+            padding: 9px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .spec td {
+            padding: 9px 0;
+            border-bottom: 1px solid #f0f0f0;
+            color: #555;
+        }
+        .spec tr:last-child th, .spec tr:last-child td { border-bottom: 0; }
+        /* 영어는 머리글이 길어 한 줄에 안 들어간다 */
+        html[lang="en"] .spec th { width: 136px; }
+
+        code {
+            font-family: 'Montserrat', monospace;
+            font-size: 12px;
+            background: #f6f6f4;
+            border-radius: 3px;
+            padding: 1px 5px;
+        }
+
+        .flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 4px; }
+        .flow-step { display: flex; flex-direction: column; }
+        .flow-no {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            color: var(--accent-color);
+        }
+        .flow-where {
+            font-family: 'Open Sans', 'Apple SD Gothic Neo', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0;
+            color: var(--primary-color);
+            margin-left: 10px;
+        }
+        .flow-text { font-size: 14px; margin: 6px 0 14px; }
+        /* 글 길이가 달라도 사진 윗선을 맞춘다 */
+        .flow-step img { margin-top: auto; width: 100%; display: block; border: 1px solid #eee; border-radius: 10px; }
+        /* 06 은 그림이 있는 카드와 없는 카드가 섞인다 — 윗선만 맞추고 그림은 아래에 */
+        #s6 .flow { row-gap: 30px; }
+        #s6 .flow-step img { margin-top: 14px; }
+        /* 화면 일부만 잘라 쓴 그림 — 테두리 대신 여백으로 띄운다 */
+        #s6 .flow-step img.is-strip {
+            border: 0;
+            border-radius: 8px;
+            background: #fff;
+            padding: 8px 10px;
+            box-shadow: 0 2px 10px rgba(70, 90, 50, 0.10);
+        }
+
+        .media { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; margin-top: 24px; }
+        .media img, .media video {
+            height: 260px;
+            width: auto;
+            max-width: 100%;
+            display: block;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            background: #000;
+        }
+
+        .in-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            border-bottom: 1px solid #ddd;
+            transition: 0.2s;
+        }
+        .in-link:hover { color: var(--accent-color); border-color: var(--accent-color); }
+
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 52px;
+        }
+        .badges a { display: inline-flex; line-height: 0; transition: opacity 0.2s ease; }
+        .badges a:hover { opacity: 0.75; }
+        .badges img { height: 48px; width: auto; display: block; }
+
+        .foot {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #f0f0f0;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 860px) {
+            body { background-attachment: scroll; padding: 30px 14px 50px; }
+            .wrap { padding: 32px 22px 36px; border-radius: 12px; }
+            .head-title { font-size: 40px; }
+            .sec { margin-bottom: 40px; }
+            .sec-title { font-size: 19px; }
+            .spec th { width: 84px; }
+            .flow { grid-template-columns: 1fr; gap: 26px; }
+            .badges { gap: 10px; margin-top: 40px; }
+            .badges img { height: 40px; }
+            .flow-step img { margin-top: 0; }
+            .media img, .media video { height: auto; width: 100%; }
+            .hero img, .hero video { height: auto; width: 100%; }
+            .hero { margin: 20px 0 0; }
+        }
+
+        @media print {
+            body { background: #fff; padding: 0; }
+            .top-nav { display: none; }
+            .wrap { max-width: none; box-shadow: none; background: #fff; padding: 0; }
+            .sec { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <a href="/" class="home-btn" data-en="← Back">← 이전</a>
+    </div>
+
+    <div class="wrap">
+
+        <header class="head">
+            <h1 class="head-title" data-en="Honey Drops">꿀방울</h1>
+        </header>
+
+        <section class="sec" id="s1">
+            <div class="sec-head"><span class="sec-no">01</span><h2 class="sec-title" data-en="About the App">앱 소개</h2></div>
+            <p class="lead" data-en="An app for building small self-care habits">자기돌봄 습관 만들기 앱</p>
+            <table class="spec">
+                <tr><th data-en="Period">기간</th><td data-en="Jun 19 &ndash; Aug 25, 2026 (68 days)">2026.06.19 ~ 2026.08.25 (68일)</td></tr>
+                <tr><th data-en="Release">배포</th><td data-en="Aug 25, 2026 on Google Play">2026.08.25 Google Play 출시</td></tr>
+                <tr><th data-en="Role">역할</th><td data-en="Planning, screen design, content, development, localization, store listing, release">기획, 화면 설계, 콘텐츠 제작, 앱 개발, 다국어, 스토어 등록, 배포</td></tr>
+                <tr><th data-en="Stack">기술</th><td>React Native (Expo SDK 54) &middot; TypeScript &middot; SQLite &middot; Firebase Firestore</td></tr>
+                <tr><th data-en="AI">AI 활용</th><td>Claude &middot; ChatGPT &middot; Gemini</td></tr>
+                <tr><th data-en="About">앱 소개</th><td><a class="in-link" href="https://honeysaltlove.com/ko/app/honey-drops/" data-en-href="https://honeysaltlove.com/en/app/honey-drops/" target="_blank" rel="noopener" data-en="honeysaltlove.com/en/app/honey-drops">honeysaltlove.com/ko/app/honey-drops</a></td></tr>
+            </table>
+            <div class="hero">
+                <img src="https://honeysaltlove.com/images/menu/app/app_honey_drops_ko.png"
+                     data-en-src="https://honeysaltlove.com/images/menu/app/app_honey_drops_en.png"
+                     alt="Honey Drops poster" loading="lazy" onerror="hideBroken(this)">
+                <video src="https://honeysaltlove.com/video/ko/honey-drops-opening.mp4"
+                       data-en-src="https://honeysaltlove.com/video/en/honey-drops-opening.mp4"
+                       poster="https://honeysaltlove.com/video/ko/honey-drops-opening.jpg"
+                       data-en-poster="https://honeysaltlove.com/video/en/honey-drops-opening.jpg"
+                       controls autoplay muted loop playsinline preload="auto" onerror="hideBroken(this)"></video>
+            </div>
+        </section>
+
+        <section class="sec" id="s2">
+            <div class="sec-head"><span class="sec-no">02</span><h2 class="sec-title" data-en="Background &amp; Goals">기획 배경 및 목표</h2></div>
+            <span class="sub" data-en="Problem">문제</span>
+            <ul class="list">
+                <li data-en="Self-love is a practice. But practising it is hard.">자기사랑은 실천이다. 그런데 실천이 어렵다.</li>
+                <li data-en="Self-love also takes knowledge. But you don&rsquo;t know which knowledge you need.">자기사랑에도 지식이 필요하다. 그런데 어떤 지식이 필요한지 모른다.</li>
+            </ul>
+
+            <span class="sub" data-en="Approach">해결 방식</span>
+            <p class="p" data-en="Seven activity groups, split between what you already know but don&rsquo;t do and what you still need to learn. Small goals, stars and levels make practising feel closer to a game.">알지만 하지 않는 활동과 알고 익혀야 하는 활동을 7개로 그룹화하고, 작은 목표와 별 &middot; 레벨을 통해 게임처럼 실행하고 경험하도록 설계했다.</p>
+            <ul class="list">
+                <li data-en="&lt;b&gt;Know but don&rsquo;t do&lt;/b&gt; &mdash; Move &middot; Tidy &middot; Massage"><b>알지만 하지 않는 영역</b> &mdash; 움직이기 &middot; 청소하기 &middot; 주무르기</li>
+                <li data-en="&lt;b&gt;Need to learn&lt;/b&gt; &mdash; Automatic Behaviors &middot; Tomorrow &middot; Detox &middot; Reflect"><b>알고 익혀야 하는 영역</b> &mdash; 자동행동 &middot; 내일할일 &middot; 디톡스 &middot; 나를알기</li>
+            </ul>
+            <p class="p" style="margin-top:16px" data-en="Mind tools &mdash; emotion recognition, emotion processing, emotional needs &mdash; were added to support the activities that have to be learned.">또한 알고 익혀야 하는 활동의 실행을 돕기 위해 감정인식 &middot; 감정소화 &middot; 감정욕구 등의 마음도구를 추가했다.</p>
+
+            <span class="sub" data-en="Design principles">설계 원칙</span>
+            <ul class="list">
+                <li data-en="Scoped as a self-care tool that provides no medical diagnosis or treatment.">의료적 진단이나 치료를 제공하지 않는 자기돌봄 도구로 범위를 정했다.</li>
+                <li data-en="No community and no rankings, so nothing invites comparison or judgement by others.">커뮤니티와 랭킹을 제외해 타인과 비교하거나 평가받는 구조를 만들지 않았다.</li>
+                <li data-en="What the user writes is never sent to a server &mdash; it stays on the device, where not even the operator can read it.">사용자가 직접 작성한 기록은 서버로 전송하지 않고 기기에만 저장해, 운영자도 열람할 수 없도록 설계했다.</li>
+            </ul>
+        </section>
+
+        <section class="sec" id="s3">
+            <div class="sec-head"><span class="sec-no">03</span><h2 class="sec-title" data-en="Key Features">주요 기능</h2></div>
+            <ul class="list">
+                <li data-en="&lt;b&gt;Seven activities&lt;/b&gt; &mdash; Move &middot; Tidy &middot; Massage &middot; Automatic Behaviors &middot; Tomorrow &middot; Detox &middot; Reflect"><b>7가지 활동</b> &mdash; 움직이기 &middot; 청소하기 &middot; 주무르기 &middot; 자동행동 &middot; 내일할일 &middot; 디톡스 &middot; 나를알기</li>
+                <li data-en="&lt;b&gt;Stars and levels&lt;/b&gt; &mdash; Finishing an activity earns stars, and levelling up unlocks new tips. The tips explain why each activity and mind tool matters."><b>별과 레벨</b> &mdash; 활동을 하면 별을 받고, 레벨이 오르면 새로운 팁이 열린다. 팁을 통해 7가지 활동과 마음도구가 왜 필요한지 알 수 있다.</li>
+                <li data-en="&lt;b&gt;Mind tools&lt;/b&gt; &mdash; Emotion Processing &middot; Automatic Behaviors &middot; My First Aid &middot; Mandala Chart &middot; Future Me &middot; 30-Day Protector Training"><b>마음도구</b> &mdash; 감정소화 &middot; 자동행동 &middot; 내 응급처치법 &middot; 만다라트 &middot; 미래의나 &middot; 보호자 훈련 30일</li>
+                <li data-en="&lt;b&gt;My Records&lt;/b&gt; &mdash; Track activities and moods, and see which activities actually helped."><b>나의기록</b> &mdash; 활동과 감정을 기록하고, 어떤 활동이 나에게 도움이 되었는지 확인한다.</li>
+                <li data-en="&lt;b&gt;Nature sounds&lt;/b&gt; &mdash; Sounds matched to your mood play from an hour before bedtime until you sleep. Played by hand, they run for two hours."><b>자연의 소리</b> &mdash; 감정에 맞는 자연의 소리가 취침 1시간 전부터 취침 시각까지 자동으로 재생된다. 직접 재생하면 2시간 동안 들을 수 있다.</li>
+            </ul>
+        </section>
+
+        <section class="sec" id="s4">
+            <div class="sec-head"><span class="sec-no">04</span><h2 class="sec-title" data-en="Screens &amp; User Flow">화면 구성 및 사용자 흐름</h2></div>
+            <div class="flow">
+                <div class="flow-step">
+                    <span class="flow-no">STEP 1<span class="flow-where" data-en="Self-Care &mdash; Mood">자기돌봄 &mdash; 기분</span></span>
+                    <p class="flow-text" data-en="Opening the app asks how you feel today.">앱을 열면 오늘의 기분을 묻는다.</p>
+                    <img src="../../statics/image/honeydrops/ko/01-pm1-mood-1.webp" data-en-src="../../statics/image/honeydrops/en/01-pm1-mood-1.webp" alt="Choosing today&rsquo;s mood" loading="lazy">
+                </div>
+                <div class="flow-step">
+                    <span class="flow-no">STEP 2<span class="flow-where" data-en="Self-Care &mdash; Activity">자기돌봄 &mdash; 활동</span></span>
+                    <p class="flow-text" data-en="It shows today&rsquo;s activity. Tapping it reveals how to do it, and finishing earns stars.">오늘 할 활동을 보여준다. 활동을 누르면 실천 방법이 나오고, 완료하면 별이 쌓인다.</p>
+                    <img src="../../statics/image/honeydrops/ko/02-sm1-main-normal.webp" data-en-src="../../statics/image/honeydrops/en/02-sm1-main-normal.webp" alt="Today&rsquo;s activity" loading="lazy">
+                </div>
+                <div class="flow-step">
+                    <span class="flow-no">STEP 3<span class="flow-where" data-en="My Records">나의기록</span></span>
+                    <p class="flow-text" data-en="Completed activities can be reviewed in &lsquo;My Records&rsquo;.">완료한 활동은 &lsquo;나의기록&rsquo;에서 다시 확인할 수 있다.</p>
+                    <img src="../../statics/image/honeydrops/ko/04-sl1-records-1.webp" data-en-src="../../statics/image/honeydrops/en/05-sl1-records-1.webp" alt="My Records" loading="lazy">
+                </div>
+            </div>
+        </section>
+
+        <section class="sec" id="s5">
+            <div class="sec-head"><span class="sec-no">05</span><h2 class="sec-title" data-en="Tech Stack">기술 스택</h2></div>
+            <table class="spec">
+                <tr><th data-en="App">앱</th><td>React Native (Expo SDK 54) &middot; TypeScript</td></tr>
+                <tr><th data-en="Storage">저장</th><td>SQLite &middot; Firebase Firestore</td></tr>
+                <tr><th data-en="Ops">운영</th><td>Firebase Analytics &middot; Crashlytics</td></tr>
+                <tr><th data-en="Release">배포</th><td data-en="Expo &middot; production AAB &middot; Google Play">Expo &middot; 운영 AAB &middot; Google Play</td></tr>
+            </table>
+        </section>
+
+        <section class="sec" id="s6">
+            <div class="sec-head"><span class="sec-no">06</span><h2 class="sec-title" data-en="Implementation">핵심 기능 구현</h2></div>
+            <div class="flow">
+                <div class="flow-step">
+                    <span class="flow-no">01<span class="flow-where" data-en="Activity records, visualised">활동 기록 시각화</span></span>
+                    <img src="../../statics/image/honeydrops/feature/42-pl3-insights.webp" alt="도움돼요 분석 · 나에게 맞는 활동" loading="lazy" onerror="hideBroken(this)">
+                </div>
+                <div class="flow-step">
+                    <span class="flow-no">02<span class="flow-where" data-en="Day-start popup">하루 시작 팝업</span></span>
+                    <img src="../../statics/image/honeydrops/feature/21-pm2-morning-1.webp" alt="하루 시작 알림에서 열리는 화면" loading="lazy" onerror="hideBroken(this)">
+                </div>
+                <div class="flow-step">
+                    <span class="flow-no">03<span class="flow-where" data-en="On-device backup and restore">휴대폰 백업 &middot; 복원</span></span>
+                    <img src="../../statics/image/honeydrops/feature/07-si2-backup.webp" alt="어떤 기록을 복원할까요" loading="lazy" onerror="hideBroken(this)">
+                </div>
+                <div class="flow-step">
+                    <span class="flow-no">04<span class="flow-where" data-en="Countdown to bedtime">취침 시각까지 남은 시간 표시</span></span>
+                    <img class="is-strip" src="../../statics/image/honeydrops/feature/bedtime-countdown.webp" alt="자기돌봄 화면 첫 줄 · 취침까지 남은 시간" loading="lazy" onerror="hideBroken(this)">
+                </div>
+                <div class="flow-step">
+                    <span class="flow-no">05<span class="flow-where" data-en="Exporting written records to Excel">작성한 기록 엑셀로 내려받기</span></span>
+                    <img class="is-strip" src="../../statics/image/honeydrops/feature/excel-export.webp" alt="이용 설정 · 내 기록 내려받기" loading="lazy" onerror="hideBroken(this)">
+                </div>
+                <div class="flow-step">
+                    <span class="flow-no">06<span class="flow-where" data-en="Korean, English and Japanese">한국어 &middot; 영어 &middot; 일본어 지원</span></span>
+                    <img class="is-strip" src="../../statics/image/honeydrops/feature/language.webp" alt="앱 설정 · 언어 고르기" loading="lazy" onerror="hideBroken(this)">
+                </div>
+                <div class="flow-step">
+                    <span class="flow-no">07<span class="flow-where" data-en="Self-care content">자기돌봄 콘텐츠 제공</span></span>
+                    <img src="../../statics/image/honeydrops/feature/04-st1-mindtool.webp" alt="마음도구 · 감정인식 · 보호자 훈련 30일 · 콘텐츠" loading="lazy" onerror="hideBroken(this)">
+                </div>
+            </div>
+        </section>
+
+        <section class="sec" id="s7">
+            <div class="sec-head"><span class="sec-no">07</span><h2 class="sec-title" data-en="Testing &amp; Google Play Release">테스트 및 Google Play 배포</h2></div>
+            <table class="spec">
+                <tr><th data-en="Internal testing">내부 테스트</th><td data-en="Jul 21 &ndash; Aug 24, 2026">2026.07.21 ~ 2026.08.24</td></tr>
+                <tr><th data-en="Public release">정식 출시</th><td data-en="Aug 25, 2026 &mdash; Google Play">2026.08.25 &mdash; Google Play</td></tr>
+                <tr><th data-en="Build">빌드</th><td data-en="Expo &middot; production AAB">Expo &middot; 운영 AAB</td></tr>
+                <tr><th data-en="Monitoring">모니터링</th><td data-en="Firebase Analytics &middot; Crashlytics &middot; in-app feedback">Firebase Analytics &middot; Crashlytics &middot; 앱 안 피드백</td></tr>
+            </table>
+        </section>
+
+        <div class="badges">
+            <a href="https://play.google.com/store/apps/details?id=com.honeysalt.sleep&amp;hl=ko" target="_blank" rel="noopener">
+                <img src="../../statics/image/honeydrops/badge_ko.png" alt="Google Play 에서 다운로드" loading="lazy" onerror="hideBroken(this)">
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=com.honeysalt.sleep&amp;hl=en" target="_blank" rel="noopener">
+                <img src="../../statics/image/honeydrops/badge_en.png" alt="Get it on Google Play" loading="lazy" onerror="hideBroken(this)">
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=com.honeysalt.sleep&amp;hl=ja" target="_blank" rel="noopener">
+                <img src="../../statics/image/honeydrops/badge_ja.png" alt="Google Play で手に入れよう" loading="lazy" onerror="hideBroken(this)">
+            </a>
+        </div>
+
+        <footer class="foot">
+            <p>&copy; 2018&ndash;<span id="foot-year">2026</span> shinmiseong. All rights reserved.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // 그림·영상이 안 열리면 그 자리를 비운다. 남은 게 없으면 칸째로 없앱다.
+        function hideBroken(el) {
+            const box = el.closest('.media') || el.closest('.badges') || el.closest('.hero');
+            const link = el.closest('a');
+            if (link && box && box.classList.contains('badges')) { link.remove(); }
+            else { el.remove(); }
+            if (box && !box.children.length) box.remove();
+        }
+
+        // 메인에서 ?lang=en 으로 들어오면 영어로 그린다.
+        // 문구는 data-en 에, 그림·주소는 data-en-src / data-en-href 에 미리 담아둔다.
+        // 언어 고르는 버튼은 이 페이지에 두지 않는다.
+        const lang = new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'ko';
+
+        if (lang === 'en') {
+            document.documentElement.lang = 'en';
+            document.title = 'Honey Drops Portfolio · Shin Miseong';
+            document.querySelectorAll('[data-en]').forEach(el => { el.innerHTML = el.dataset.en; });
+            document.querySelectorAll('[data-en-src]').forEach(el => { el.src = el.dataset.enSrc; });
+            document.querySelectorAll('[data-en-poster]').forEach(el => { el.poster = el.dataset.enPoster; });
+            document.querySelectorAll('[data-en-href]').forEach(el => { el.href = el.dataset.enHref; });
+        }
+
+        // 메인으로 돌아갈 때도 보던 언어를 유지한다
+        document.querySelector('.home-btn').href = '/?lang=' + lang;
+
+        // 소리 없이 바로 재생하고 계속 돌다 (자동재생은 muted 여야 브라우저가 막지 않는다)
+        document.querySelectorAll('.hero video').forEach(v => {
+            v.muted = true;
+            v.loop = true;
+            v.play().catch(() => {});
+        });
+
+        // 카피라이트 연도는 해가 바뀌면 알아서 따라간다
+        document.getElementById('foot-year').textContent = new Date().getFullYear();
+    </script>
+
+</body>
+</html>

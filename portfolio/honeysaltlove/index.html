@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta property="og:image" content="https://shinmiseong.com/statics/image/common/og-title.png" />
+	<meta property="og:title" content="단짠♥ 포트폴리오 / 신미성" />
+	<meta property="og:description" content="삶의 지혜를 보고 직접 실천해보는 웹사이트" />
+	<meta property="og:url" content="https://shinmiseong.com/portfolio/honeysaltlove/" />
+	<meta property="og:type" content="website" />
+    <title>단짠♥ 포트폴리오 · 신미성</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Montserrat:wght@700;900&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e9bc2c'><path d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/></svg>">
+    <style>
+        /* honeysaltlove.com 에서 뽑은 색 */
+        :root {
+            --bg: #020202;
+            --surface: #0e0d0b;
+            --line: #262320;
+            --primary-color: #f5f4ed;
+            --accent-color: #e9bc2c;
+            --heart: #e41220;
+            --text-muted: #817e7d;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Open Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Nanum Gothic', sans-serif;
+            background: var(--bg);
+            color: var(--primary-color);
+            line-height: 1.75;
+            padding: 60px 20px 80px;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- 상단 네비게이션 --- */
+        .top-nav {
+            position: fixed;
+            top: 25px;
+            right: 30px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .home-btn {
+            background: var(--surface);
+            color: var(--primary-color);
+            border: 1px solid var(--line);
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-family: 'Jua', 'Apple SD Gothic Neo', sans-serif;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            height: 32px;
+        }
+        .home-btn:hover { background: var(--accent-color); color: #1a1408; border-color: var(--accent-color); }
+
+        .wrap {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-in-out forwards;
+        }
+
+        /* --- 표지 --- */
+        .head { text-align: center; margin-bottom: 40px; }
+        .head-title {
+            font-family: 'Jua', 'Apple SD Gothic Neo', sans-serif;
+            font-size: 60px;
+            line-height: 1.15;
+            letter-spacing: 0.01em;
+            color: var(--accent-color);
+        }
+        .head-title .heart { color: var(--heart); }
+        .wip {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 5px 15px;
+            border: 1px solid var(--accent-color);
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: var(--accent-color);
+        }
+
+        /* --- 섹션 --- */
+        .sec { margin-bottom: 52px; scroll-margin-top: 24px; }
+        .sec:last-of-type { margin-bottom: 0; }
+        .sec-head {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--line);
+            margin-bottom: 22px;
+        }
+        .sec-no {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--accent-color);
+        }
+        .sec-title { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+
+        /* --- 본문 요소 --- */
+        .lead { font-size: 16px; margin-bottom: 20px; }
+        .p { font-size: 15px; color: #cfccc7; margin-bottom: 12px; }
+        .p:last-child { margin-bottom: 0; }
+        .sub {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent-color);
+            letter-spacing: 0.06em;
+            margin: 24px 0 8px;
+        }
+        .sub:first-child { margin-top: 0; }
+
+        .list { list-style: none; }
+        .list li {
+            font-size: 15px;
+            color: #cfccc7;
+            padding-left: 15px;
+            position: relative;
+            margin-bottom: 9px;
+        }
+        .list li b { color: var(--primary-color); }
+        .list li::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 12px;
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--accent-color);
+        }
+        .list li:last-child { margin-bottom: 0; }
+
+        .spec { width: 100%; border-collapse: collapse; font-size: 15px; }
+        .spec th {
+            width: 104px;
+            text-align: left;
+            font-weight: 700;
+            vertical-align: top;
+            padding: 9px 0;
+            border-bottom: 1px solid var(--line);
+        }
+        .spec td {
+            padding: 9px 0;
+            border-bottom: 1px solid var(--line);
+            color: #a9a5a0;
+        }
+        .spec tr:last-child th, .spec tr:last-child td { border-bottom: 0; }
+        html[lang="en"] .spec th { width: 136px; }
+
+        .in-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(233, 188, 44, 0.35);
+            transition: 0.2s;
+        }
+        .in-link:hover { border-color: var(--accent-color); }
+
+        /* --- 사이트 화면 --- */
+        .shot { margin-top: 24px; }
+        .shot img {
+            width: 100%;
+            display: block;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+        }
+        .shot figcaption {
+            font-size: 13px;
+            color: #a9a5a0;
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        /* --- 사이트가 담고 있는 것 --- */
+        .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 18px 16px 20px;
+        }
+        .card-no {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+        }
+        .card-name { font-size: 16px; font-weight: 700; margin: 4px 0 2px; }
+        .card-kind { font-size: 12px; color: var(--accent-color); }
+        .card-body { font-size: 13px; color: #a9a5a0; margin-top: 10px; }
+
+        .foot {
+            margin-top: 56px;
+            padding-top: 24px;
+            border-top: 1px solid var(--line);
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 860px) {
+            body { padding: 30px 14px 50px; }
+            .head-title { font-size: 40px; }
+            .sec { margin-bottom: 40px; }
+            .sec-title { font-size: 19px; }
+            .spec th { width: 84px; }
+            .cards { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media print {
+            body { background: #fff; color: #222; padding: 0; }
+            .top-nav { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <a href="/" class="home-btn" data-en="← Back">← 이전</a>
+    </div>
+
+    <div class="wrap">
+
+        <header class="head">
+            <h1 class="head-title" data-en="HoneySalt<span class=&quot;heart&quot;>♥</span>Love">단짠<span class="heart">♥</span></h1>
+            <span class="wip" data-en="In progress">제작중</span>
+        </header>
+
+        <section class="sec" id="s1">
+            <div class="sec-head"><span class="sec-no">01</span><h2 class="sec-title" data-en="About the Project">프로젝트 소개</h2></div>
+            <p class="lead" data-en="A website for reading life&rsquo;s wisdom and putting it into practice">삶의 지혜를 보고 직접 실천해보는 웹사이트</p>
+            <table class="spec">
+                <tr><th data-en="Phase 1">1차</th><td data-en="Jan 30 &ndash; Aug 25, 2026">2026.01.30 ~ 2026.08.25</td></tr>
+                <tr><th data-en="Phase 2">2차</th><td data-en="From Aug 26, 2026">2026.08.26 ~ 진행 중</td></tr>
+                <tr><th data-en="Role">역할</th><td data-en="Planning, design, front-end, back-end, deployment">기획, 디자인, 프론트엔드, 백엔드, 배포</td></tr>
+                <tr><th data-en="Stack">기술</th><td>Vue 3 (Vite) &middot; Spring Boot 3 &middot; PostgreSQL</td></tr>
+                <tr><th data-en="Site">주소</th><td><a class="in-link" href="https://honeysaltlove.com" target="_blank" rel="noopener">honeysaltlove.com</a></td></tr>
+            </table>
+            <figure class="shot">
+                <img src="../../statics/image/honeysaltlove/home-ko.webp" data-en-src="../../statics/image/honeysaltlove/home-en.webp" alt="HoneySaltLove 메인 화면" loading="lazy" onerror="hideBroken(this)">
+                <figcaption data-en="Different starts, same peace &mdash; a life-wisdom system that protects you">다른 시작, 같은 평온 &mdash; 나를 지키는 삶의 지혜 시스템</figcaption>
+            </figure>
+        </section>
+
+        <section class="sec" id="s2">
+            <div class="sec-head"><span class="sec-no">02</span><h2 class="sec-title" data-en="Background &amp; Goals">기획 배경 및 목표</h2></div>
+
+            <span class="sub" data-en="Problem">문제</span>
+            <ul class="list">
+                <li data-en="Self-love takes knowledge too, but you don&rsquo;t know which knowledge you need.">자기사랑에도 지식이 필요하지만, 어떤 지식이 필요한지 모른다.</li>
+                <li data-en="Knowing and realising are not the same.">아는 것과 깨닫는 것은 다르다.</li>
+            </ul>
+
+            <span class="sub" data-en="Approach">해결 방식</span>
+            <p class="p" data-en="The site introduces two &mdash; thought, and activity.">생각과 활동을 소개한다.</p>
+            <ul class="list">
+                <li><b data-en="Thought">생각</b> &mdash; <span data-en="Self-love content drawn from the Buddha&rsquo;s &lsquo;Dhammapada&rsquo; and the mind tools of Honey Drops.">붓다의 『법구경』과 꿀방울의 마음도구를 바탕으로 자기사랑 콘텐츠를 제공한다.</span></li>
+                <li><b data-en="Activity">활동</b> &mdash; <span data-en="A Mandala chart gives a thought its shape; a Circle of Control shows which part is actually yours to change. The Honey Drops app carries small activities on into a self-care habit.">만다라트로 생각을 구체화하고, 통제의 원으로 내가 바꿀 수 있는 영역을 알아본다. 꿀방울 앱으로 작은 활동을 이어가며 자기돌봄 습관을 만든다.</span></li>
+            </ul>
+
+        </section>
+
+        <section class="sec" id="s3">
+            <div class="sec-head"><span class="sec-no">03</span><h2 class="sec-title" data-en="What the Site Holds">사이트가 담고 있는 것</h2></div>
+            <div class="cards">
+                <div class="card">
+                    <span class="card-no">01</span>
+                    <p class="card-name" data-en="Honey Drops">꿀방울</p>
+                    <span class="card-kind" data-en="App">앱</span>
+                    <p class="card-body" data-en="A self-care habit app, released on Google Play.">자기돌봄 습관 앱. Google Play 출시.</p>
+                </div>
+                <div class="card">
+                    <span class="card-no">02</span>
+                    <p class="card-name" data-en="Mandalart">만달아트</p>
+                    <span class="card-kind" data-en="Activity">활동</span>
+                    <p class="card-body" data-en="A 9&times;9 grid for breaking a big goal down. Downloadable as PDF.">큰 목표를 아홉 칸씩 쪼개는 틀. PDF 로 내려받는다.</p>
+                </div>
+                <div class="card">
+                    <span class="card-no">03</span>
+                    <p class="card-name" data-en="Circle of Control">통제의 원</p>
+                    <span class="card-kind" data-en="Activity">활동</span>
+                    <p class="card-body" data-en="Separating what can be controlled from what cannot.">내가 어쩔 수 있는 것과 없는 것을 가른다.</p>
+                </div>
+                <div class="card">
+                    <span class="card-no">04</span>
+                    <p class="card-name" data-en="Dhammapada">법구경</p>
+                    <span class="card-kind" data-en="Thought">생각</span>
+                    <p class="card-body" data-en="Verses left by the Buddha, translated and published as a reading page.">붓다가 남긴 구절. 번역해 읽는 페이지로 올렸다.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="sec" id="s4">
+            <div class="sec-head"><span class="sec-no">04</span><h2 class="sec-title" data-en="Tech Stack">기술 스택</h2></div>
+            <table class="spec">
+                <tr><th data-en="Front-end">프론트</th><td>Vue 3 (Vite) &middot; vue-router &middot; vue-i18n &middot; axios</td></tr>
+                <tr><th data-en="Back-end">백엔드</th><td>Spring Boot 3 (Java 17) &middot; Spring Security &middot; JPA</td></tr>
+                <tr><th data-en="Storage">저장</th><td>PostgreSQL</td></tr>
+                <tr><th data-en="Documents">문서</th><td data-en="html2canvas &middot; jsPDF &mdash; Mandala chart as PDF">html2canvas &middot; jsPDF &mdash; 만달아트 PDF 내려받기</td></tr>
+                <tr><th data-en="Analytics">분석</th><td>Google Analytics &middot; Google Tag Manager</td></tr>
+                <tr><th data-en="Deploy">배포</th><td data-en="GitHub Pages &middot; GitHub Actions (automatic)">GitHub Pages &middot; GitHub Actions 자동배포</td></tr>
+                <tr><th data-en="Languages">다국어</th><td data-en="11 languages &mdash; Korean &middot; English &middot; Japanese &middot; Chinese &middot; Spanish &middot; French &middot; German &middot; Portuguese &middot; Vietnamese &middot; Indonesian &middot; Thai">11개 언어 &mdash; 한국어 &middot; English &middot; 日本語 &middot; 中文 &middot; Espa&ntilde;ol &middot; Fran&ccedil;ais &middot; Deutsch &middot; Portugu&ecirc;s &middot; Ti&#7871;ng Vi&#7879;t &middot; Bahasa Indonesia &middot; &#3652;&#3607;&#3618;</td></tr>
+            </table>
+        </section>
+
+        <footer class="foot">
+            <p>&copy; 2018&ndash;<span id="foot-year">2026</span> shinmiseong. All rights reserved.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // 그림이 안 열리면 그 자리를 비운다
+        function hideBroken(el) {
+            const fig = el.closest('figure');
+            (fig || el).remove();
+        }
+
+        // 메인에서 ?lang=en 으로 들어오면 영어로 그린다.
+        // 문구는 data-en 에, 그림·주소는 data-en-src / data-en-href 에 미리 담아둔다.
+        // 언어 고르는 버튼은 이 페이지에 두지 않는다.
+        const lang = new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'ko';
+
+        if (lang === 'en') {
+            document.documentElement.lang = 'en';
+            document.title = 'HoneySaltLove Portfolio · Shin Miseong';
+            document.querySelectorAll('[data-en]').forEach(el => { el.innerHTML = el.dataset.en; });
+            document.querySelectorAll('[data-en-src]').forEach(el => { el.src = el.dataset.enSrc; });
+            document.querySelectorAll('[data-en-href]').forEach(el => { el.href = el.dataset.enHref; });
+        }
+
+        // 메인으로 돌아갈 때도 보던 언어를 유지한다
+        document.querySelector('.home-btn').href = '/?lang=' + lang;
+
+        // 카피라이트 연도는 해가 바뀌면 알아서 따라간다
+        document.getElementById('foot-year').textContent = new Date().getFullYear();
+    </script>
+
+</body>
+</html>
