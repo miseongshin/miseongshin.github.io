@@ -23,7 +23,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
   display: flex; flex-direction: column; gap: 56px; }
 header { display: flex; flex-direction: column; gap: 10px; }
-h1 { font-size: clamp(28px, 5vw, 38px); font-weight: 900; line-height: 1.25; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(28px, 5vw, 38px); font-weight: 900; line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
 h2 { font-size: 24px; font-weight: 700; margin: 0; }
 section > h3, #jpafold > h3, section > h3[id] { font-size: 19px !important; font-weight: 700; color: var(--fg); margin: 16px 0 6px !important; }
 section h4 { font-size: 16px !important; font-weight: 700; color: var(--fg); margin: 12px 0 4px !important; }
@@ -167,6 +167,21 @@ ul.plain { margin: 0; padding-left: 20px; display: flex; flex-direction: column;
 ul.plain li::marker { color: var(--honey); }
 ul.plain b { font-weight: 700; }
 @media (prefers-reduced-motion: no-preference) { details { transition: border-color .15s; } }
+
+/* 모바일 폭 — 긴 주소·코드가 화면 밖으로 밀지 않게 */
+section dl dd, section dl dt { min-width: 0; overflow-wrap: anywhere; word-break: keep-all; }
+.legendline li, ul.plain li, .step p { overflow-wrap: anywhere; }
+.step code { overflow-wrap: anywhere; word-break: break-all; }
+@media (max-width: 640px) {
+  body { font-size: 16px; }
+  .wrap { padding-top: 64px; } /* 오른쪽 위 '← 이전' 단추에 제목이 가리지 않게 */
+  section dl { grid-template-columns: 1fr !important; gap: 2px 0 !important; }
+  section dl dd { margin-bottom: 10px !important; }
+  #constraints > div { grid-template-columns: 1fr !important; gap: 2px !important; }
+  section h4, section h4 + ul.legendline, section h4 + ul.legendline + .diagram, #s1 ~ .diagram, #s1 ~ .erdcols, #constraints, #jpaDiagrams, section h4 + .erdcols,
+  section > h3 + dl, ul.kv.legendline[style], ul.plain[style], .cols.plainbox[style], div[style*="margin-left:20px"] { margin-left: 0 !important; padding-left: 0 !important; }
+  .legendline span { min-width: 0; display: block; }
+}
 </style>
 
 <div class="wrap">
@@ -1174,6 +1189,35 @@ mermaid.run().then(() => {
     svgs.forEach(s => { const w = Math.round(vw(s) * k); s.setAttribute('width', w); s.style.setProperty('width', w + 'px', 'important'); s.style.setProperty('max-width', 'none', 'important'); });
   }
 });
+</script>
+
+<!-- 이전 — 메인으로 돌아간다 (v1 · 꿀방울 포트폴리오와 같은 자리) -->
+<a href="/" id="backBtn">← 이전</a>
+<!-- 맨 위로 — 조금 내려가면 오른쪽 아래에 뜬다 -->
+<button type="button" id="toTop" aria-label="맨 위로" hidden>↑ TOP</button>
+<style>
+#backBtn { position: fixed; top: max(16px, env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); z-index: 50;
+  display: flex; align-items: center; height: 32px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--surface); color: var(--fg); font: 500 14px var(--f-body); text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+#backBtn:hover, #backBtn:focus-visible { background: var(--honey); border-color: var(--honey); color: #fff; outline: none; }
+@media print { #backBtn { display: none !important; } }
+#toTop { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 50;
+  padding: 10px 14px; border: 1px solid var(--honey); border-radius: 999px; background: var(--surface); color: var(--honey);
+  font: 700 14px var(--f-body); cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+#toTop:hover, #toTop:focus-visible { background: var(--honey); color: #fff; outline: none; }
+@media print { #toTop { display: none !important; } }
+</style>
+<script>
+(() => {
+  const b = document.getElementById('toTop');
+  const show = () => { b.hidden = window.scrollY < 400; };
+  window.addEventListener('scroll', show, { passive: true });
+  show();
+  b.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  // 메인으로 돌아갈 때 보던 언어를 유지한다
+  const lang = new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'ko';
+  document.getElementById('backBtn').href = '/?lang=' + lang;
+})();
 </script>
 </body>
 </html>
