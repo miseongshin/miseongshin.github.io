@@ -1,0 +1,1179 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>HoneySaltLove 2차 개발 · 지혜나눔 설계</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* 레이아웃: 위에 한눈에 보는 지도(글을 가운데 둔 네 갈래), 아래에 테이블별 접는 상자 */
+:root {
+  --bg: #ffffff; --surface: #ffffff; --line: #e6e6e6; --fg: #1f1c17; --muted: #6f6858;
+  --honey: #b98a00; --honey-soft: #fbf0cc; --fk: #2f6f9f;
+  --f-body: 'Noto Sans KR', system-ui, sans-serif; --f-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+}
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 18px; line-height: 1.65; }
+.wrap { max-width: 1400px; margin: 0; padding-block: 40px 80px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 56px; }
+header { display: flex; flex-direction: column; gap: 10px; }
+h1 { font-size: clamp(28px, 5vw, 38px); font-weight: 900; line-height: 1.25; margin: 0; text-wrap: balance; }
+h2 { font-size: 24px; font-weight: 700; margin: 0; }
+section > h3, #jpafold > h3, section > h3[id] { font-size: 19px !important; font-weight: 700; color: var(--fg); margin: 16px 0 6px !important; }
+section h4 { font-size: 16px !important; font-weight: 700; color: var(--fg); margin: 12px 0 4px !important; }
+.erdcols summary b { font-size: 15px !important; }
+#constraints, section dl { font-size: 15px !important; }
+section > h3 + dl { padding-left: 20px !important; margin-top: 0 !important; margin-bottom: 4px !important; }
+section > h3 { line-height: 1.3; }
+section h4, section h4 + ul.legendline, section h4 + ul.legendline + .diagram, #s1 ~ .diagram, #s1 ~ .erdcols, #constraints, #jpaDiagrams, section h4 + .erdcols { margin-left: 20px !important; }
+p { margin: 0; }
+.lead { color: var(--muted); }
+.meta { display: grid; grid-template-columns: 5em minmax(0, 1fr); margin: 0; font-size: 17px; border-top: 1px solid var(--line, #e4ddd0); }
+.meta dt, .meta dd { padding: 10px 0; border-bottom: 1px solid var(--line, #e4ddd0); align-self: stretch; }
+.meta dt { color: var(--muted); font-size: 15px; padding-top: 12px; }
+.meta dd { margin: 0; text-wrap: pretty; word-break: keep-all; overflow-wrap: anywhere; }
+section { display: flex; flex-direction: column; gap: 18px; }
+.sub { color: var(--muted); font-size: 16px; }
+
+/* ERD */
+.erd-title { margin: 8px 0 0; font-size: 18px; font-weight: 700; color: var(--honey); }
+.diagram { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: #ffffff; padding: 16px; }
+.diagram pre { margin: 0; min-width: 880px; }
+@media print { .wrap { max-width: none; } .diagram { overflow: visible; break-inside: avoid; } .diagram pre { min-width: 0; } .diagram svg { max-width: 100% !important; height: auto !important; } }
+.legendline { gap: 6px; }
+.legendline span { min-width: 10em; }
+
+/* 지도 */
+.map { display: grid; grid-template-columns: 1fr 1.25fr 1fr; gap: 16px; align-items: stretch; }
+.lane { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.lane.hub { border: 2px solid var(--honey); background: var(--honey-soft); }
+.lane h3 { margin: 0; font-size: 15px; letter-spacing: .06em; color: var(--muted); font-weight: 700; }
+.lane.hub h3 { color: var(--honey); }
+.box { display: flex; flex-direction: column; gap: 0; padding: 8px 12px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); text-decoration: none; color: inherit; }
+.lane.hub .box { background: var(--surface); }
+.box:hover, .box:focus-visible { border-color: var(--honey); outline: none; }
+.box b { font-size: 18px; font-weight: 700; }
+.box span { font-family: var(--f-mono); font-size: 14px; color: var(--muted); }
+.box.main { padding: 12px 14px; border-color: var(--honey); }
+.box.main b { font-size: 22px; }
+.kids { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.arrow { font-size: 15px; color: var(--muted); text-align: center; }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+@media (max-width: 760px) { .map { grid-template-columns: 1fr; } }
+
+/* 흐름 */
+.flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+.step { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; background: var(--surface); display: flex; flex-direction: column; gap: 6px; }
+.step b { font-size: 17px; }
+.step p { font-size: 16px; color: var(--muted); }
+ul.kv { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 16px; }
+ul.kv span { display: inline-block; min-width: 7.5em; font-family: var(--f-mono); font-size: 14px; color: var(--muted); }
+.step code { font-family: var(--f-mono); font-size: 14px; color: var(--fg); background: var(--honey-soft); border-radius: 4px; padding: 0 5px; }
+
+/* 상세 */
+.group-title { font-size: 17px; font-weight: 700; color: var(--honey); margin-top: 8px; }
+details { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); scroll-margin-top: 16px; }
+details[open] { border-color: var(--honey); }
+summary { cursor: pointer; padding: 14px 18px; display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; list-style: none; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "▸"; color: var(--muted); width: 12px; }
+details[open] summary::before { content: "▾"; }
+summary b { font-size: 19px; }
+summary .en { font-family: var(--f-mono); font-size: 15px; color: var(--muted); }
+summary .what { font-size: 16px; color: var(--muted); flex-basis: 100%; padding-left: 24px; }
+.cols { overflow-x: auto; border-top: 1px solid var(--line); }
+table { width: 100%; border-collapse: collapse; font-size: 16px; }
+th { text-align: left; font-weight: 500; font-size: 14px; color: var(--muted); padding: 8px 18px; }
+td { padding: 8px 18px; border-top: 1px solid var(--line); vertical-align: top; }
+td.ko { font-weight: 500; white-space: nowrap; }
+td.c { font-family: var(--f-mono); font-size: 15px; color: var(--muted); white-space: nowrap; }
+td.n { font-size: 15px; color: var(--muted); }
+.tag { display: inline-block; font-size: 13px; font-weight: 700; border-radius: 4px; padding: 0 5px; margin-left: 6px; vertical-align: 1px; }
+.tag.key { background: var(--honey-soft); color: var(--honey); }
+.tag.link { color: var(--fk); border: 1px solid currentColor; }
+.tag.opt { color: var(--muted); border: 1px solid var(--line); font-weight: 400; }
+.tag.nn { color: var(--ink, #222); border: 1px solid currentColor; }
+.foot { padding: 10px 18px 14px; font-size: 15px; color: var(--muted); border-top: 1px solid var(--line); }
+.list { display: flex; flex-direction: column; gap: 8px; }
+.erdcols { padding: 4px 0 8px; gap: 22px !important; }
+.erdcols .group-title { display: none; }
+.erdcols details { border: none; border-radius: 0; background: none; }
+.erdcols details > summary { padding: 0 0 6px; gap: 10px; }
+.erdcols summary b { font-size: 16px; }
+.erdcols summary .en { font-size: 14px; }
+.erdcols summary .what { font-size: 14px; padding-left: 0; }
+.erdcols .cols { border-top: 2px solid var(--fg); }
+.erdcols table { font-size: 14px; }
+.erdcols th { padding: 6px 10px; font-size: 12.5px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.erdcols td { padding: 6px 10px; }
+.erdcols td.c { font-size: 13.5px; }
+.erdcols td.b { color: var(--fg); font-weight: 600; }
+.erdcols td.k { color: var(--honey); font-weight: 700; }
+.erdcols td.nn { color: var(--fg); font-size: 12px; }
+.erdcols td.ko { font-weight: 400; }
+.erdcols td.n { font-size: 13.5px; }
+.erdcols .foot { border-top: 1px solid var(--line); padding: 6px 10px 0; font-size: 13px; }
+details.erdfold { border: 1px solid var(--line); }
+details.erdfold > summary { padding: 12px 16px; }
+details.erdfold[open] { border-color: var(--line); }
+details.erdfold > .erdcols { padding: 4px 16px 16px; }
+details.erdfold { margin: 10px 0 28px; }
+details.flat > summary { cursor: default; }
+details.flat > summary::before { content: none; }
+details.colsfold { border: none; background: none; border-radius: 0; }
+details.colsfold > summary { padding: 0; align-items: center; flex-wrap: nowrap; }
+details.colsfold > summary h2 { display: block !important; white-space: nowrap; }
+
+
+/* 만들 순서 */
+.phases { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; }
+.phase { display: flex; gap: 12px; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; background: var(--surface); min-width: 0; }
+.phase .no { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--honey-soft); color: var(--honey); font-weight: 900; display: grid; place-items: center; font-size: 16px; }
+.phase b { font-size: 18px; }
+.phase ul { margin: 6px 0 0; padding-left: 18px; font-size: 16px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+.phase em { font-style: normal; color: var(--fk); }
+.plainbox { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table.num td:nth-child(n+3) { font-variant-numeric: tabular-nums; white-space: nowrap; }
+table.num tr.total td { border-top: 2px solid var(--honey); font-weight: 700; }
+table.num b { color: var(--honey); }
+
+/* 진행표 */
+table.prog input[type=date] { font: inherit; font-size: 15px; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 3px 6px; }
+table.prog input[type=date]:focus-visible { outline: 2px solid var(--honey); outline-offset: 1px; }
+table.prog input[type=date]:disabled { opacity: .5; }
+table.prog tr.done td { background: var(--honey-soft); }
+table.prog tr.doing td.ko { color: var(--honey); }
+table.prog td.n { white-space: normal !important; min-width: 11em; }
+.cols:has(> #prog) { max-height: none !important; overflow-x: auto !important; }
+table.prog td.st { white-space: nowrap; }
+table.prog td.st span { display: inline-block; font-size: 13px; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: #eee9df; color: #6b655b; }
+table.prog td.st[data-s="진행 중"] span { background: var(--honey); color: #fff; }
+table.prog td.st[data-s="완료"] span { background: #2f7a4a; color: #fff; }
+table.prog .hbar { height: 8px; border-radius: 4px; background: var(--honey-soft); margin-top: 6px; position: relative; min-width: 70px; }
+table.prog .hlab { font-size: 12px; color: var(--muted); margin-top: 2px; }
+table.prog .hbar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: var(--honey); }
+table.prog th, table.prog td { padding: 8px 6px; }
+table.prog input[type=date] { font-size: 13px; padding: 2px 2px; width: 7.6em; }
+.savestate { font-style: normal; color: var(--honey); }
+
+/* 정할 것 */
+ul.plain { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+ul.plain li::marker { color: var(--honey); }
+ul.plain b { font-weight: 700; }
+@media (prefers-reduced-motion: no-preference) { details { transition: border-color .15s; } }
+</style>
+
+<div class="wrap">
+  <div style="display:flex;flex-direction:column;gap:6px;padding-bottom:20px;border-bottom:2px solid var(--fg);">
+    <h1 style="margin:0;">HoneySaltLove 2차 개발 · 지혜나눔 설계</h1>
+    <div style="font-size:15px;color:var(--muted);">기능 개발 설계서 · 2026. 10. 30. 최초작성</div>
+  </div>
+  <header>
+  <!-- <div style="margin:8px 0 0;font-size:15px;"><b>현재까지 구현 확인:</b> honeysaltlove.com/ko/wisdom</div> -->
+  <!-- ↑ 지혜나눔 화면이 아직 없어 우선 감춘다. 열리면 주석을 푼다 -->
+
+  <nav style="margin:8px 0 24px;">
+    <h2 style="margin:0 0 12px;">목차</h2>
+    <ol style="margin:0;padding-left:24px;display:flex;flex-direction:column;gap:4px;"><li><a href="#sov" style="color:inherit;text-decoration:none;">기능 개요 및 범위</a><ul style="margin:2px 0 4px;padding-left:18px;display:flex;flex-wrap:wrap;gap:2px 14px;list-style:none;font-size:14px;color:var(--muted);"><li><a href="#s0" style="color:inherit;text-decoration:none;">기능 범위</a></li></ul></li><li><a href="#sflow" style="color:inherit;text-decoration:none;">화면 및 사용자 흐름</a><ul style="margin:2px 0 4px;padding-left:18px;display:flex;flex-wrap:wrap;gap:2px 14px;list-style:none;font-size:14px;color:var(--muted);"><li><a href="#sub1" style="color:inherit;text-decoration:none;">화면</a></li><li><a href="#sub2" style="color:inherit;text-decoration:none;">사용자 흐름</a></li></ul></li><li><a href="#s1" style="color:inherit;text-decoration:none;">데이터 설계</a><ul style="margin:2px 0 4px;padding-left:18px;display:flex;flex-wrap:wrap;gap:2px 14px;list-style:none;font-size:14px;color:var(--muted);"><li><a href="#sub3" style="color:inherit;text-decoration:none;">ERD</a></li><li><a href="#sub4" style="color:inherit;text-decoration:none;">테이블 정의</a></li><li><a href="#sub5" style="color:inherit;text-decoration:none;">제약조건</a></li><li><a href="#sub6" style="color:inherit;text-decoration:none;">UML 클래스 다이어그램</a></li><li><a href="#sub7" style="color:inherit;text-decoration:none;">참고사항</a></li></ul></li><li><a href="#sapi" style="color:inherit;text-decoration:none;">API 설계</a><ul style="margin:2px 0 4px;padding-left:18px;display:flex;flex-wrap:wrap;gap:2px 14px;list-style:none;font-size:14px;color:var(--muted);"><li><a href="#api1" style="color:inherit;text-decoration:none;">웹·앱 API</a></li><li><a href="#api2" style="color:inherit;text-decoration:none;">요청·응답</a></li><li><a href="#api3" style="color:inherit;text-decoration:none;">인증·권한·오류 처리</a></li></ul></li><li><a href="#srule" style="color:inherit;text-decoration:none;">핵심 처리 규칙</a><ul style="margin:2px 0 4px;padding-left:18px;display:flex;flex-wrap:wrap;gap:2px 14px;list-style:none;font-size:14px;color:var(--muted);"><li><a href="#rule1" style="color:inherit;text-decoration:none;">Google 로그인과 회원 관리</a></li><li><a href="#rule2" style="color:inherit;text-decoration:none;">앱 키 검증 및 앱 연동</a></li><li><a href="#rule3" style="color:inherit;text-decoration:none;">고민·생각꿀팁·활동·꿀방울 스케줄 처리</a></li></ul></li><li><a href="#snf" style="color:inherit;text-decoration:none;">비기능 설계</a><ul style="margin:2px 0 4px;padding-left:18px;display:flex;flex-wrap:wrap;gap:2px 14px;list-style:none;font-size:14px;color:var(--muted);"><li><a href="#nf1" style="color:inherit;text-decoration:none;">보안</a></li><li><a href="#nf2" style="color:inherit;text-decoration:none;">성능·페이징</a></li><li><a href="#nf3" style="color:inherit;text-decoration:none;">대용량 기준</a></li></ul></li><li><a href="#s3" style="color:inherit;text-decoration:none;">WBS 및 진행 현황</a><ul style="margin:2px 0 4px;padding-left:18px;display:flex;flex-wrap:wrap;gap:2px 14px;list-style:none;font-size:14px;color:var(--muted);"><li><a href="#wbs1" style="color:inherit;text-decoration:none;">작성 기준</a></li><li><a href="#wbs2" style="color:inherit;text-decoration:none;">진행표</a></li></ul></li><li><a href="#sdec" style="color:inherit;text-decoration:none;">기술적 결정 및 미정 사항</a><ul style="margin:2px 0 4px;padding-left:18px;display:flex;flex-wrap:wrap;gap:2px 14px;list-style:none;font-size:14px;color:var(--muted);"><li><a href="#dec1" style="color:inherit;text-decoration:none;">주요 결정과 이유</a></li><li><a href="#dec2" style="color:inherit;text-decoration:none;">미정 항목과 후속 조치</a></li></ul></li></ol>
+  </nav>
+
+  </header>
+
+
+  <section>
+    <h2 id="sov"><span style="color:var(--muted);margin-right:10px;">1.</span>기능 개요 및 범위</h2>
+    <dl style="display:grid;grid-template-columns:max-content 1fr;gap:6px 20px;margin:0 0 16px;line-height:1.5;"><dt style="font-weight:700;margin:0;">위치</dt><dd style="margin:0;">1차: 2026.01.30 ~ 2026.08.25 · honeysaltlove.com · Vue · 구현 완료<br><span style="display:block;padding-left:1.5em;color:var(--muted);">포트폴리오: <a href="/portfolio/honeysaltlove/v1/" style="color:inherit;">shinmiseong.com/portfolio/honeysaltlove/v1</a></span>2차: honeysaltlove.com 대메뉴에 지혜나눔 추가 · Vue (Nuxt 3) + Spring Boot</dd><dt style="font-weight:700;margin:0;">주소</dt><dd style="margin:0;">웹: honeysaltlove.com/{언어}/wisdom (예: /ko/wisdom)<br>API: honeysaltlove.com/api/wisdom<br>Google 로그인 콜백: honeysaltlove.com/api/wisdom/login/oauth2/code/google</dd><dt style="font-weight:700;margin:0;">화면</dt><dd style="margin:0;">메인 · 상세(고민 · 생각꿀팁 · 활동 · 꿀방울 스케줄) · 내 계정</dd><dt style="font-weight:700;margin:0;">계정 · 앱</dt><dd style="margin:0;">웹에서 Google 로그인으로 가입<br>앱은 로그인 없이 회원의 앱 키와 비밀값으로 API 호출 · cart 테이블에 쌓인 보낸 것을 가져오고, 활동·도움돼요 기록을 저장</dd><dt style="font-weight:700;margin:0;">기술 환경</dt><dd style="margin:0;">honeysalt-server · Java 21 · Spring Boot 3 · Spring Data JPA · PostgreSQL</dd><dt style="font-weight:700;margin:0;">언어</dt><dd style="margin:0;">2차: 한국어만 지원 · 다국어는 3차에서 별도 설계</dd></dl>
+    <h3 id="s0" style="margin:20px 0 4px;">기능 범위</h3>
+    <div class="cols plainbox"><table>
+      <thead><tr><th>구분</th><th>기능</th><th>로그인</th></tr></thead>
+      <tbody>
+        <tr><td>회원</td><td>구글 로그인 · 가입(닉네임, 비우면 자동 생성) · 내 정보(출생연도, MBTI, 좋아하는 것, 활동량, 시간대) 입력 · 수정 · 탈퇴</td><td>-</td></tr>
+        <tr><td>메인</td><td>검색 · 자주 찾는 상황 · 인기 활동 TOP 10 · 답을 기다리는 고민 · 나에게 맞는 추천</td><td>필요 없음</td></tr>
+        <tr><td>목록</td><td>검색 결과 · 미션별 활동 목록</td><td>필요 없음</td></tr>
+        <tr><td>고민</td><td>등록 · 수정 · 숨김 · 상세(도움이 된 생각 · 도움이 된 활동 · 관련 고민) · 태그</td><td>등록 · 수정</td></tr>
+        <tr><td>생각꿀팁</td><td>고민에 꿀팁 나눔 · 수정 · 숨김 · 상세(태그별 관련 생각 · 관련 고민) · 참고 링크(유튜브)</td><td>등록 · 수정</td></tr>
+        <tr><td>활동</td><td>등록(미션 · 이름 · 시간 · 난이도 · 설명 · 영상 · 글 링크 여러 개) · 수정 · 상세 · 활동완료</td><td>등록 · 수정 · 활동완료</td></tr>
+        <tr><td>꿀방울 스케줄</td><td>활동바구니에 담은 활동으로 등록 · 활동별 요일 · 수정 · 상세</td><td>등록 · 수정</td></tr>
+        <tr><td>활동바구니</td><td>활동 · 생각 · 스케줄 담기 · 빼기 · 내 꿀방울로 보내기</td><td>필요</td></tr>
+        <tr><td>반응</td><td>좋아요(고민 · 생각꿀팁 · 활동 · 스케줄) · 댓글</td><td>필요</td></tr>
+        <tr><td>내 계정</td><td>내가 쓴 꿀팁 · 내가 등록한 활동 · 내가 쓴 꿀방울 스케줄 · 내가 쓴 댓글</td><td>필요</td></tr>
+        <tr><td>의견</td><td>꿀방울 / HONEYSALTLOVE 중 골라 의견 남기기</td><td>필요 없음</td></tr>
+        <tr><td>앱 연동</td><td>앱은 로그인 없이 회원의 앱 키 + 비밀값으로 API 호출 · 보낸 것(cart) 가져가기 · 앱사용기록(활동, 도움돼요) 저장 · 화면 없음</td><td>앱 키</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2 id="sflow"><span style="color:var(--muted);margin-right:10px;">2.</span>화면 및 사용자 흐름</h2>
+    <h3 id="sub1" style="margin:12px 0 6px;">화면</h3>
+    <dl style="display:grid;grid-template-columns:max-content 1fr;gap:6px 20px;margin:0 0 16px;line-height:1.5;"><dt style="font-weight:700;margin:0;">메인</dt><dd style="margin:0;">검색 · 자주 찾는 상황 · 인기 활동 TOP 10 · 답을 기다리는 고민 · 나에게 맞는 추천 · 고민 / 생각 / 활동 / 꿀방울 스케줄 탭 목록 · 활동바구니</dd><dt style="font-weight:700;margin:0;">목록</dt><dd style="margin:0;">검색 결과 · 미션별 활동</dd><dt style="font-weight:700;margin:0;">고민 상세</dt><dd style="margin:0;">고민 · 태그 · 도움이 된 생각 · 도움이 된 활동 · 관련 고민 · 좋아요 · 댓글 · 이 고민에 꿀팁 나눔</dd><dt style="font-weight:700;margin:0;">생각꿀팁 상세</dt><dd style="margin:0;">생각 · 참고 링크(유튜브) · 태그별 관련 생각 · 관련 고민 · 좋아요 · 담기 · 댓글</dd><dt style="font-weight:700;margin:0;">활동 상세</dt><dd style="margin:0;">미션 · 시간 · 난이도 · 설명 · 영상 · 글 · 활동완료 · 관련 활동 · 좋아요 · 담기 · 댓글</dd><dt style="font-weight:700;margin:0;">스케줄 상세</dt><dd style="margin:0;">들어 있는 활동 · 활동별 요일 · 좋아요 · 담기 · 댓글</dd><dt style="font-weight:700;margin:0;">작성 팝업</dt><dd style="margin:0;">고민 · 꿀팁(생각 · 활동) · 활동 · 꿀방울 스케줄 탭 · 등록 · 수정</dd><dt style="font-weight:700;margin:0;">내 계정</dt><dd style="margin:0;">내가 쓴 꿀팁 · 내가 등록한 활동 · 내가 쓴 꿀방울 스케줄 · 내가 쓴 댓글 · 내 정보 수정 · 탈퇴</dd><dt style="font-weight:700;margin:0;">의견</dt><dd style="margin:0;">꿀방울 / HONEYSALTLOVE 선택 · 의견 남기기</dd></dl>
+    <h3 id="sub2" style="margin:12px 0 6px;">사용자 흐름</h3>
+    <dl style="display:grid;grid-template-columns:max-content 1fr;gap:6px 20px;margin:0 0 16px;line-height:1.5;"><dt style="font-weight:700;margin:0;">로그인</dt><dd style="margin:0;">회원가입 / 로그인 → Google → 닉네임(비우면 자동 생성) → 내 정보 입력 → 가입 완료</dd><dt style="font-weight:700;margin:0;">조회</dt><dd style="margin:0;">메인 → 검색 · 탭 · 순위 → 상세 → 관련 고민 · 생각 · 활동 → 상세. 로그인 없이 볼 수 있다.</dd><dt style="font-weight:700;margin:0;">작성</dt><dd style="margin:0;">작성 버튼 → (비로그인이면 로그인) → 작성 팝업 → 등록 → 해당 상세</dd><dt style="font-weight:700;margin:0;">꿀팁 나눔</dt><dd style="margin:0;">고민 상세 → 이 고민에 꿀팁 나눔 → 고민이 채워진 작성 팝업 → 등록 → 고민 상세</dd><dt style="font-weight:700;margin:0;">스케줄</dt><dd style="margin:0;">활동 · 생각 · 스케줄 담기 → 활동바구니 → 스케줄 등록 → 활동별 요일 → 등록 → 스케줄 상세</dd><dt style="font-weight:700;margin:0;">수정 · 숨김</dt><dd style="margin:0;">내 계정 또는 상세 → 수정 → 작성 팝업 → 저장 / 공개 ↔ 숨김</dd><dt style="font-weight:700;margin:0;">반응</dt><dd style="margin:0;">상세 → 좋아요 · 댓글 · 활동완료 (로그인 필요)</dd><dt style="font-weight:700;margin:0;">탈퇴</dt><dd style="margin:0;">내 계정 → 내 정보 수정 → 맨 아래 탈퇴 → 확인</dd></dl>
+  </section>
+
+  <section>
+    <h2 id="s1"><span style="color:var(--muted);margin-right:10px;">3.</span>데이터 설계</h2>
+    <h3 id="sub3" style="margin:12px 0 6px;">ERD</h3>
+    <h4 style="margin:10px 0 4px;">1. 주요기능(고민, 활동, 스케줄)</h4>
+    <ul class="kv legendline">
+      <li>고민에 생각꿀팁, 활동꿀팁이 1:N 관계로 작성할 수 있다.</li>
+      <li>꿀방울 스케줄은 고민과 별도로 작성되고  태그로 연결된다.</li>
+    </ul>
+    <div class="diagram"><pre class="mermaid">
+erDiagram
+  member ||--o{ thought_tip : "생각꿀팁 등록"
+  thought_tip ||--o{ thought_tip_url : "링크를 붙인다"
+  worry |o--o{ thought_tip : "고민에 답한다 (worry_id)"
+  member ||--o{ worry : "고민 등록"
+  worry ||--o{ activity_tip : "활동꿀팁 · 도움이 된 활동"
+  activity ||--o{ activity_tip : "고민에 추천된다"
+  activity ||--o{ activity_url : "활동에 영상·링크를 붙인다"
+  activity }o--o| mission : "미션에 속한다"
+  member |o--o{ activity : "활동 등록"
+  activity ||--o{ schedule_activity : "스케줄에 들어간다"
+  schedule ||--o{ schedule_activity : "활동을 넣는다"
+  member ||--o{ schedule : "스케줄 등록"
+
+  member["member · 회원"] {
+    bigint member_id PK "기본키"
+  }
+  worry["worry · 고민"] {
+    bigint worry_id PK "기본키"
+    bigint member_id FK "NOT NULL"
+    varchar lang "언어 · 한국어(ko) 영어(en) …"
+    varchar text "고민"
+    boolean is_anonymous "익명 여부"
+    varchar status "공개(PUBLIC) · 숨김(HIDDEN)"
+    timestamptz hidden_at "숨긴 때"
+    varchar hidden_reason "숨긴 이유 (예: AI: 광고)"
+    int like_count "좋아요 수"
+    int answer_count "답 수 · 답을 기다리는 고민 = 0"
+    boolean show_tags "등록할 때 선택 · 글에 내 태그 보이기"
+    timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
+  }
+  thought_tip["thought_tip · 생각꿀팁"] {
+    bigint thought_tip_id PK "기본키"
+    bigint member_id FK "쓴 사람"
+    bigint worry_id FK "답한 고민 · 없으면 NULL"
+    text body "도움이 된 생각"
+    varchar lang "언어"
+    varchar status "공개(PUBLIC) · 숨김(HIDDEN)"
+    timestamptz hidden_at "숨긴 때"
+    varchar hidden_reason "숨긴 이유 (예: AI: 광고)"
+    int like_count "좋아요 수"
+    boolean show_tags "등록할 때 선택 · 글에 내 태그 보이기"
+    timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
+  }
+  thought_tip_url["thought_tip_url · 참고 링크"] {
+    bigint link_id PK "기본키"
+    bigint thought_tip_id FK "생각꿀팁"
+    varchar url "주소 · 유튜브면 바로 재생"
+    timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
+  }
+  schedule["schedule · 꿀방울 스케줄"] {
+    bigint schedule_id PK "기본키"
+    bigint member_id FK "쓴 사람"
+    varchar title "스케줄 이름"
+    text description "설명 · 선택"
+    varchar lang "언어"
+    varchar status "공개(PUBLIC) · 숨김(HIDDEN)"
+    timestamptz hidden_at "숨긴 때"
+    varchar hidden_reason "숨긴 이유 (예: AI: 광고)"
+    int like_count "좋아요 수"
+    int send_count "사용자 수"
+    boolean show_tags "등록할 때 선택 · 글에 내 태그 보이기"
+    timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
+  }
+  activity_tip["activity_tip · 활동꿀팁"] {
+    bigint activity_tip_id PK "기본키"
+    bigint worry_id FK "고민"
+    bigint activity_id FK "활동"
+    bigint member_id FK "추천한 사람"
+    timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
+  }
+  schedule_activity["schedule_activity · 스케줄 구성"] {
+    bigint schedule_id PK, FK "기본키"
+    bigint activity_id PK, FK "기본키"
+    varchar days "요일 · 월0 화1 수2 목3 금4 토5 일6 · 예 0,3 = 월·목 · 비우면 매일"
+    timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
+  }
+  mission["mission · 미션"] {
+    varchar code PK "기본키"
+    boolean fixed "고정"
+    timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
+  }
+  activity["activity · 활동"] {
+    bigint activity_id PK "기본키"
+    varchar mission_code FK "미션"
+    varchar name "이름"
+    text description "설명"
+    bigint created_by FK "등록한 사람"
+    varchar status "공개(PUBLIC) · 숨김(HIDDEN)"
+    timestamptz hidden_at "숨긴 때"
+    varchar hidden_reason "숨긴 이유 (예: AI: 광고)"
+    int use_count "사용자 수"
+    int done_count "활동 수"
+    int like_count "좋아요 수"
+    timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
+  }
+  activity_url["activity_url · 활동 영상·글"] {
+    bigint activity_url_id PK "기본키"
+    bigint activity_id FK "활동"
+    varchar url "주소"
+    timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
+  }
+</pre></div>
+
+    <h4 style="margin:10px 0 4px;">2. 태그</h4>
+    <ul class="kv legendline">
+      <li>태그 그룹은 회원 맞춤정보 등록시 노출 기준으로 사용한다.</li>
+    </ul>
+    <div class="diagram"><pre class="mermaid">
+erDiagram
+  tag ||--o{ member_tag : "회원이 고른다"
+  tag ||--o{ worry_tag : "고민 등록"
+  tag ||--o{ thought_tip_tag : "생각꿀팁 등록"
+  tag ||--o{ schedule_tag : "스케줄 등록"
+  tag ||--o{ activity_tag : "활동 등록"
+  member_tag }o--|| member : "회원"
+  worry_tag }o--|| worry : "고민"
+  thought_tip_tag }o--|| thought_tip : "생각꿀팁"
+  schedule_tag }o--|| schedule : "스케줄"
+  activity_tag }o--|| activity : "활동"
+
+  tag["tag · 태그"] {
+    bigint tag_id PK "기본키"
+    varchar tag_group "회원 태그 묶음 · MBTI_EI · GOAL · PAIN … · #상황은 비움"
+    varchar name "이름 · 묶음 안에서 겹치지 않음"
+    int use_count "쓴 횟수 · 많이 찾는 상황"
+    timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
+  }
+  member_tag["member_tag · 회원 태그"] {
+    bigint member_id PK, FK "회원"
+    bigint tag_id PK, FK "태그"
+  }
+  worry_tag["worry_tag · 고민 태그"] {
+    bigint worry_id PK, FK "고민"
+    bigint tag_id PK, FK "태그"
+  }
+  thought_tip_tag["thought_tip_tag · 생각꿀팁 태그"] {
+    bigint thought_tip_id PK, FK "생각꿀팁"
+    bigint tag_id PK, FK "태그"
+  }
+  schedule_tag["schedule_tag · 스케줄 태그"] {
+    bigint schedule_id PK, FK "스케줄"
+    bigint tag_id PK, FK "태그"
+  }
+  activity_tag["activity_tag · 활동 태그"] {
+    bigint activity_id PK, FK "활동"
+    bigint tag_id PK, FK "태그"
+  }
+</pre></div>
+
+    <h4 style="margin:10px 0 4px;">3. 댓글, 좋아요</h4>
+    <ul class="kv legendline">
+      <li>댓글은 활동, 꿀방울 스케줄 상세화면에서 사용한다.</li>
+      <li>좋아요는 고민 · 생각꿀팁 · 스케줄 · 활동 네 곳에 누를 수 있다.</li>
+    </ul>
+    <div class="diagram"><pre class="mermaid">
+erDiagram
+  activity |o--o{ comment : "활동 댓글"
+  schedule |o--o{ comment : "스케줄 댓글"
+  member ||--o{ comment : "댓글을 쓴다"
+  member ||--o{ likes : "좋아요를 누른다"
+
+  comment["comment · 댓글"] {
+    bigint comment_id PK "기본키"
+    bigint activity_id FK "활동 · 둘 중 하나만"
+    bigint schedule_id FK "스케줄 · 둘 중 하나만"
+    bigint member_id FK "쓴 사람"
+    varchar text "내용"
+    timestamptz created_at "등록일"
+  }
+  likes["likes · 좋아요"] {
+    bigint like_id PK "기본키"
+    bigint member_id FK "회원"
+    varchar target_type "고민(WORRY) · 생각꿀팁(THOUGHT_TIP) · 스케줄(SCHEDULE) · 활동(ACTIVITY)"
+    bigint target_id "대상 번호"
+    timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
+  }
+</pre></div>
+
+    <h4 style="margin:10px 0 4px;">4. 회원</h4>
+    <ul class="kv legendline">
+      <li>앱 로그(활동완료 · 도움돼요)는  꿀방울앱에서 활동, 도움되요 클릭시 전송된다.</li>
+    </ul>
+    <div class="diagram"><pre class="mermaid">
+erDiagram
+  member ||--o{ member_nickname_history : "닉네임을 바꾸면 남긴다"
+  member ||--o{ cart : "활동바구니에 담는다"
+  member ||--o{ feedback : "의견을 보낸다"
+  member ||--o{ member_consent : "동의한다"
+  terms ||--o{ member_consent : "이 약관에"
+
+  member["member · 회원"] {
+    bigint member_id PK "기본키"
+    varchar provider "GOOGLE"
+    varchar provider_uid "provider와 묶어 UK"
+    varchar nickname UK "닉네임"
+    varchar app_key UK "앱 키 · 누구인지"
+    varchar app_hash "앱 비밀값의 해시"
+    int birth_year "출생연도 · 선택"
+    varchar lang "언어 · 한국어(ko) 영어(en) …"
+    varchar role "USER ADMIN"
+    timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
+  }
+  member_nickname_history["member_nickname_history · 닉네임 백업"] {
+    bigint nickname_history_id PK "기본키"
+    bigint member_id FK "회원"
+    varchar nickname "바꾸기 전 닉네임"
+    timestamptz changed_at "바꾼 때"
+    timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
+  }
+  app_done_log["app_done_log · 활동완료 로그"] {
+    bigint done_id PK "기본키"
+    bigint member_id "회원 · FK 없음"
+    bigint activity_id "활동 · FK 없음"
+    date done_on "한 날"
+    timestamptz created_at "등록일"
+  }
+  app_helped_log["app_helped_log · 도움돼요 로그"] {
+    bigint helped_id PK "기본키"
+    bigint member_id "회원 · FK 없음"
+    bigint activity_id "활동 · FK 없음"
+    date helped_on "누른 날"
+    timestamptz created_at "등록일"
+  }
+  cart["cart · 활동바구니"] {
+    bigint cart_id PK "기본키"
+    bigint member_id FK "회원"
+    varchar target_type "생각꿀팁(THOUGHT_TIP) · 스케줄(SCHEDULE) · 활동(ACTIVITY)"
+    bigint target_id "대상 번호"
+    varchar days "활동만 · 바구니에서 고른 요일"
+    timestamptz sent_at "내 꿀방울로 보낸 때 · NULL이면 바구니에 있음"
+    timestamptz picked_at "앱이 가져간 때 · NULL이면 대기"
+    timestamptz created_at "담은 때"
+    timestamptz updated_at "수정일"
+  }
+  terms["terms · 약관"] {
+    bigint terms_id PK "기본키"
+    varchar type "SERVICE PRIVACY APP_KEY"
+    varchar version "판 · 예: 2026-11"
+    text body "약관 내용"
+    boolean required "필수 여부"
+    timestamptz effective_at "시행일"
+    timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
+  }
+  member_consent["member_consent · 동의 기록"] {
+    bigint consent_id PK "기본키"
+    bigint member_id FK "회원"
+    bigint terms_id FK "약관"
+    timestamptz agreed_at "동의한 때"
+    timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
+  }
+  feedback["feedback · 의견 보내기"] {
+    bigint feedback_id PK "기본키"
+    bigint member_id FK "NOT NULL"
+    varchar type "종류"
+    text text "내용"
+    timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
+  }
+</pre></div>
+    
+      <h3 id="sub4" style="margin:12px 0 6px;">테이블 정의</h3>
+    <h4 style="margin:10px 0 4px;">1. 주요기능(고민, 활동, 스케줄)</h4><div class="list erdcols" id="cols-e1"></div>
+    <h4 style="margin:10px 0 4px;">2. 태그</h4><div class="list erdcols" id="cols-e2"></div>
+    <h4 style="margin:10px 0 4px;">3. 댓글, 좋아요</h4><div class="list erdcols" id="cols-e3"></div>
+    <h4 style="margin:10px 0 4px;">4. 회원</h4><div class="list erdcols" id="cols-e4"></div>
+    <h3 id="sub5" style="margin:12px 0 6px;">제약조건</h3><div id="constraints" style="display:flex;flex-direction:column;gap:4px;font-size:14px;"></div>
+    <div id="jpafold"><h3 id="sub6" style="margin:12px 0 6px;">UML 클래스 다이어그램</h3><div id="jpaDiagrams"></div></div>
+    <h3 id="sub7" style="margin:12px 0 6px;">참고사항</h3>
+    <ul class="kv legendline" style="margin-left:20px;">
+      <li><span>시간</span> 로그 테이블(app_done_log · app_helped_log)만 BaseCreatedEntity(등록일), 나머지는 모두 BaseTimeEntity(등록일 · 수정일)</li>
+      <li><span>연관</span> 모두 fetch = LAZY</li>
+      <li><span>enum</span> @Enumerated(STRING)</li>
+      <li><span>값 변경</span> setter 없이 메서드로만 · 예: hide("AI: 광고")</li>
+      <li><span>태그 연결</span> 엔티티 없이 @JoinTable</li>
+      <li><span>로그</span> 연관 없이 id 숫자만 저장 · 추가만 한다</li>
+    </ul>
+  </section>
+
+  <div class="list" id="detail" hidden></div>
+
+  <style>
+      .jg { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+      .jg-title { font-weight: 700; font-size: 17px; margin-top: 14px; }
+      .jcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; }
+      .jcard { border: 1px solid var(--line, #e4ddd0); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 3px; font-family: var(--f-mono); font-size: 13.5px; line-height: 1.55; background: #fff; }
+      .jcard .jt { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 6px; padding-bottom: 8px; border-bottom: 1px dashed var(--line, #e4ddd0); }
+      .jcard .jt b { font-size: 15.5px; color: var(--fg); }
+      .jcard .jt i { font-style: normal; color: var(--muted); font-size: 12px; }
+      .jcard .ann { color: #b07a00; }
+      .jcard .ty { color: var(--muted); }
+      .jcard .fn { color: var(--fg); }
+      .jcard .m { color: #3a6ea5; margin-top: 4px; }
+      .jcard.enum { background: var(--honey-soft); }
+      .jcard.log { border-style: dashed; }
+    </style>
+
+    <section>
+    <h2 id="sapi"><span style="color:var(--muted);margin-right:10px;">4.</span>API 설계</h2>
+    <h3 id="api1" style="margin:12px 0 6px;">웹·앱 API</h3>
+    <div style="margin-left:20px;display:flex;flex-direction:column;gap:10px;">
+    <h4 style="margin:10px 0 4px;margin-left:0 !important;">웹 API · 세션 쿠키</h4>
+    <div class="cols plainbox"><table><thead><tr><th>메서드</th><th>주소</th><th>설명</th><th>로그인</th></tr></thead><tbody><tr><td>GET</td><td><code>/api/worries?tag=&amp;sort=new|like&amp;cursor=</code></td><td>고민 목록 · 답을 기다리는 고민은 sort=waiting</td><td></td></tr><tr><td>GET</td><td><code>/api/worries/{id}</code></td><td>고민 상세 · 생각꿀팁 · 활동꿀팁 포함</td><td></td></tr><tr><td>POST</td><td><code>/api/worries</code></td><td>고민 등록</td><td>로그인</td></tr><tr><td>PATCH</td><td><code>/api/worries/{id}</code></td><td>수정 · 숨김</td><td>본인</td></tr><tr><td>POST</td><td><code>/api/worries/{id}/thought-tips</code></td><td>생각꿀팁 등록</td><td>로그인</td></tr><tr><td>POST</td><td><code>/api/worries/{id}/activity-tips</code></td><td>활동꿀팁 등록 · 활동을 고르거나 새로 등록</td><td>로그인</td></tr><tr><td>GET</td><td><code>/api/thought-tips/{id}</code></td><td>생각 상세 · 태그별 관련 생각 · 관련 고민</td><td></td></tr><tr><td>PATCH</td><td><code>/api/thought-tips/{id}</code></td><td>수정 · 숨김</td><td>본인</td></tr><tr><td>GET</td><td><code>/api/activities?mission=&amp;tag=&amp;cursor=</code></td><td>활동 목록 · 나에게 맞는 추천</td><td></td></tr><tr><td>GET</td><td><code>/api/activities/{id}</code></td><td>활동 상세</td><td></td></tr><tr><td>POST · PATCH</td><td><code>/api/activities</code> · <code>/{id}</code></td><td>활동 등록 · 수정</td><td>로그인 · 본인</td></tr><tr><td>GET</td><td><code>/api/schedules?tag=&amp;cursor=</code></td><td>꿀방울 스케줄 목록</td><td></td></tr><tr><td>GET</td><td><code>/api/schedules/{id}</code></td><td>스케줄 상세 · 들어 있는 활동</td><td></td></tr><tr><td>POST · PATCH</td><td><code>/api/schedules</code> · <code>/{id}</code></td><td>스케줄 등록 · 수정</td><td>로그인 · 본인</td></tr><tr><td>POST · DELETE</td><td><code>/api/likes</code></td><td>좋아요 · 취소 · {targetType, targetId}</td><td>로그인</td></tr><tr><td>GET · POST</td><td><code>/api/{activities|schedules}/{id}/comments</code></td><td>댓글 목록 · 등록</td><td>등록만 로그인</td></tr><tr><td>GET</td><td><code>/api/tags?group=</code></td><td>태그 목록 · 많이 찾는 상황</td><td></td></tr><tr><td>GET · POST · DELETE</td><td><code>/api/cart</code> · <code>/{id}</code></td><td>활동바구니 보기 · 담기 · 빼기</td><td>로그인</td></tr><tr><td>POST</td><td><code>/api/cart/send</code></td><td>내 꿀방울로 보내기 · sent_at 채움</td><td>로그인</td></tr><tr><td>GET · PATCH · DELETE</td><td><code>/api/me</code></td><td>내 정보 · 수정 · 탈퇴</td><td>로그인</td></tr><tr><td>GET</td><td><code>/api/me/posts?type=tip|activity|schedule|comment</code></td><td>내가 쓴 글</td><td>로그인</td></tr><tr><td>POST</td><td><code>/api/feedback</code></td><td>의견 남기기</td><td></td></tr></tbody></table></div>
+    <h4 style="margin:10px 0 4px;margin-left:0 !important;">앱 API · Authorization: Bearer &lt;앱 키&gt;</h4>
+    <div class="cols plainbox"><table><thead><tr><th>메서드</th><th>주소</th><th>설명</th></tr></thead><tbody><tr><td>GET</td><td><code>/app/takes</code></td><td>보낸 것 가져가기 · sent_at 있음 · picked_at 없음</td></tr><tr><td>POST</td><td><code>/app/takes/ack</code></td><td>받은 id 목록 · picked_at 채움</td></tr><tr><td>POST</td><td><code>/api/v1/app/activities</code></td><td>활동 완료 · app_done_log</td></tr><tr><td>POST</td><td><code>/api/v1/app/helpful</code></td><td>도움됨 on/off · app_helped_log</td></tr></tbody></table></div>
+    </div>
+    <h3 id="api2" style="margin:12px 0 6px;">요청·응답</h3>
+    <div style="margin-left:20px;display:flex;flex-direction:column;gap:10px;">
+    <ul class="kv legendline">
+      <li><span>형식</span> JSON · 날짜는 ISO 8601 (UTC) · 필드 이름은 camelCase</li>
+      <li><span>목록</span> 커서 방식 · { items, nextCursor } · nextCursor 가 null 이면 끝</li>
+      <li><span>상세 주소</span> id 뒤에 제목 · 예: /worries/120/잠이-안-와요 · /activities/35/목-스트레칭 · 응답에 slug 포함 · 찾을 때는 id 만 쓰고, 제목이 다르면 맞는 주소로 301 이동</li>
+      <li><span>검증</span> 요청 DTO 에 @Valid · 고민 50자 · 태그는 #으로 구분</li>
+    </ul>
+    <div class="diagram"><pre style="min-width:0;font-family:var(--f-mono);font-size:13.5px;line-height:1.55;">POST /api/worries
+{ "text": "잠이 안 와요", "tags": ["잠이 안 올 때"], "isAnonymous": true, "showTags": false }
+
+201 Created
+{ "id": 120, "text": "잠이 안 와요", "tags": ["잠이 안 올 때"], "likeCount": 0, "answerCount": 0, "createdAt": "2026-11-02T09:00:00Z" }
+
+GET /api/worries?sort=waiting&amp;cursor=120
+200 OK
+{ "items": [ { "id": 119, "text": "…", "answerCount": 0 } ], "nextCursor": 101 }</pre></div>
+    <div class="diagram"><pre style="min-width:0;font-family:var(--f-mono);font-size:13.5px;line-height:1.55;">POST api.honeysaltlove.com/api/v1/app/activities     활동 완료
+Authorization: Bearer &lt;앱 키&gt;
+{
+  "activityKey": "breath_478",    활동 키
+  "missionId": 3,                 미션
+  "day": "2026-11-02"             완료한 날
+}
+
+POST api.honeysaltlove.com/api/v1/app/helpful        도움됨 on/off
+Authorization: Bearer &lt;앱 키&gt;
+{
+  "activityKey": "breath_478",    활동 키
+  "helpful": true                 true 켜기 · false 끄기
+}</pre></div>
+    </div>
+    <h3 id="api3" style="margin:12px 0 6px;">인증·권한·오류 처리</h3>
+    <div style="margin-left:20px;display:flex;flex-direction:column;gap:10px;">
+    <ul class="kv legendline">
+      <li><span>웹 인증</span> 구글 OAuth2 로그인 → 세션 쿠키 (HttpOnly · Secure · SameSite=Lax)</li>
+      <li><span>앱 인증</span> 헤더 Authorization: Bearer &lt;앱 키&gt; · 서버는 member.app_hash 와 비교 · 로그인 없음</li>
+      <li><span>권한</span> 보기(GET)는 누구나 · 쓰기는 USER · 수정 · 숨김은 본인(member_id 비교) · 관리자 숨김은 ADMIN</li>
+      <li><span>오류 처리</span> @RestControllerAdvice 한 곳에서 같은 형식으로 응답</li>
+    </ul>
+    <div class="diagram"><pre style="min-width:0;font-family:var(--f-mono);font-size:13.5px;line-height:1.55;">{ "code": "NOT_FOUND", "message": "고민을 찾을 수 없어요" }</pre></div>
+    <div class="cols plainbox"><table><thead><tr><th>상태</th><th>code</th><th>언제</th></tr></thead><tbody><tr><td>400</td><td><code>VALIDATION</code></td><td>입력값이 맞지 않음 · 글자 수 초과</td></tr><tr><td>401</td><td><code>UNAUTHORIZED</code></td><td>로그인 안 함 · 앱 키가 틀림</td></tr><tr><td>403</td><td><code>FORBIDDEN</code></td><td>본인 글이 아님</td></tr><tr><td>404</td><td><code>NOT_FOUND</code></td><td>없는 글 · 숨긴 글</td></tr><tr><td>409</td><td><code>DUPLICATE</code></td><td>같은 것을 다시 담기 · 좋아요 중복</td></tr></tbody></table></div>
+    </div>
+  </section>
+
+    <section>
+    <h2 id="srule"><span style="color:var(--muted);margin-right:10px;">5.</span>핵심 처리 규칙</h2>
+    <h3 id="rule1" style="margin:12px 0 6px;">Google 로그인과 회원 관리</h3>
+    <ul class="kv legendline" style="margin-left:20px;">
+      <li><span>로그인</span> 구글 로그인 → provider + provider_uid 로 회원 찾기 → 있으면 last_login_at 갱신 · 세션 쿠키 발급</li>
+      <li><span>가입</span> 없으면 가입 · 약관 동의(member_consent) · 닉네임 2~12자, 띄어쓰기 없음, 비우면 자동 생성(아침꿀벌23) · app_key 발급</li>
+      <li><span>내 정보</span> 출생연도 · MBTI · 좋아하는 것 · 활동량 · 시간대 · 모두 선택 · 태그는 member_tag 로 저장</li>
+      <li><span>닉네임 변경</span> 바꾸기 전 이름을 member_nickname_history 에 남긴다</li>
+      <li><span>탈퇴</span> 내 정보 수정 맨 아래 · 개인정보는 지우고, 쓴 글은 남긴다</li>
+    </ul>
+    <h4 style="margin:10px 0 4px;margin-left:20px;">OAuth (구글)</h4>
+    <div style="margin-left:20px;display:flex;flex-direction:column;gap:10px;">
+    <p class="sub">OAuth 서버를 만드는 게 아니라 Spring Security OAuth2 Client 에 구글 한 곳을 등록한다. 카카오 · 네이버는 나중에 같은 방식으로 더한다. 받는 것은 소셜 쪽 회원번호 하나. 닉네임은 따로 묻는다.</p>
+    <div class="cols plainbox"><table>
+      <tr><th></th><th>구글</th></tr>
+      <tr><td class="ko">Spring 설정</td><td class="n">기본 내장, 값만 넣음</td></tr>
+      <tr><td class="ko">등록하는 곳</td><td class="n">Google Cloud 콘솔</td></tr>
+      <tr><td class="ko">심사</td><td class="n">기본 정보만이면 없음</td></tr>
+      <tr><td class="ko">화면 언어</td><td class="n">모든 언어</td></tr>
+    </table></div>
+    <div class="flow">
+      <div class="step"><b>1. 누른다</b><p>"구글로 시작하기" → <code>api.…/oauth2/authorization/google</code></p></div>
+      <div class="step"><b>2. 소셜 로그인</b><p>돌아오는 곳 <code>api.…/login/oauth2/code/google</code></p></div>
+      <div class="step"><b>3. 세션 쿠키</b><p>서버가 회원을 찾거나 만들고 쿠키를 심는다</p></div>
+      <div class="step"><b>4. 화면으로</b><p><code>honeysaltlove.com/ko/…</code> 로 돌아온다. 처음이면 닉네임 화면</p></div>
+    </div>
+    </div>
+    <h3 id="rule2" style="margin:12px 0 6px;">앱 키 검증 및 앱 연동</h3>
+    <ul class="kv legendline" style="margin-left:20px;">
+      <li><span>검증</span> Authorization: Bearer &lt;앱 키&gt; · 해시로 비교 · 틀리면 401 · 로그인 없음</li>
+      <li><span>재발급</span> 내 계정에서 다시 만들면 이전 키는 바로 막힌다</li>
+      <li><span>보내기</span> 바구니에 담기(cart) → 내 꿀방울로 보내기(sent_at) → 앱이 가져감(GET /app/takes) → 받았다고 알림(ack · picked_at) → 스케줄 send_count +1</li>
+      <li><span>활동 완료</span> activityKey 로 활동을 찾아 app_done_log 에 저장 · 같은 활동은 하루 한 번</li>
+      <li><span>도움됨</span> helpful true 켜기 · false 끄기 · app_helped_log</li>
+    </ul>
+    <h3 id="rule3" style="margin:12px 0 6px;">고민·생각꿀팁·활동·꿀방울 스케줄 처리</h3>
+    <ul class="kv legendline" style="margin-left:20px;">
+      <li><span>고민</span> 등록 시 바로 공개 · 50자 · 기본 익명 · 태그는 #으로 구분</li>
+      <li><span>생각꿀팁 · 활동꿀팁</span> 고민에 답한다 · 쓰면 고민의 answer_count +1 · 0 이면 답을 기다리는 고민</li>
+      <li><span>활동</span> 미션 선택 · 이름 · 시간 · 난이도 · 설명 · 영상 · 글 링크 여러 개 · 활동꿀팁에서 고르거나 새로 등록</li>
+      <li><span>꿀방울 스케줄</span> 바구니에 담은 활동으로 만든다 · 활동별 요일 설정가능</li>
+      <li><span>수정 · 숨김</span> 본인만 · 지우지 않고 HIDDEN · AI 검사나 관리자도 숨길 수 있다</li>
+      <li><span>좋아요</span> 한 사람이 한 번 · 누르면 likes 에 쌓고 수는 스케줄러가 1분마다 더한다</li>
+    </ul>
+  </section>
+
+    <section>
+    <h2 id="snf"><span style="color:var(--muted);margin-right:10px;">6.</span>비기능 설계</h2>
+    <h3 id="nf1" style="margin:12px 0 6px;">보안</h3>
+    <ul class="plain" style="margin-left:20px;">
+      <li><b>통신</b>: 모두 HTTPS. 세션 쿠키는 HttpOnly · Secure · SameSite=Lax.</li>
+      <li><b>앱 키</b>: 해시만 저장한다. 원래 값은 처음 만들 때 한 번만 보여 준다.</li>
+      <li><b>작성</b>: 고민 · 꿀팁 · 스케줄 · 댓글 · 좋아요 · 의견 모두 로그인 후. 보기는 로그인 없이. 모든 작성 테이블의 member_id 는 NOT NULL.</li>
+      <li><b>삭제</b>: 글쓴이만 지운다(소프트 삭제 deleted_at). 활동 · 스케줄은 댓글이 있으면 서비스에서 막는다 — 409.</li>
+      <li><b>숨김</b>: 등록 시 바로 공개. 저장 뒤 비동기로 AI 검사 → 문제 있으면 HIDDEN + hidden_at + hidden_reason "AI: 광고". 신고 · 관리자 화면에서 HIDDEN + hidden_reason "관리자: …".</li>
+      <li><b>입력 검증</b>: 요청 DTO 에 @Valid · 글자 수 제한 · 오류는 400.</li>
+    </ul>
+    <h3 id="nf2" style="margin:12px 0 6px;">성능·페이징</h3>
+    <ul class="plain" style="margin-left:20px;">
+      <li><b>목록</b>: OFFSET 대신 커서(마지막으로 본 id 이후)로 가져온다.</li>
+      <li><b>색인</b>: worry (status, answer_count, created_at) · thought_tip (status, created_at) · thought_tip (worry_id) · schedule (status, created_at) · likes 는 (target_type, target_id) · 태그 연결 테이블은 PK (대상_id, tag_id) + 역색인 (tag_id, 대상_id).</li>
+      <li><b>N+1</b>: 목록은 fetch join · @EntityGraph · batch_fetch_size.</li>
+    </ul>
+    <h3 id="nf3" style="margin:12px 0 6px;">대용량 기준</h3>
+    <ul class="plain" style="margin-left:20px;">
+      <li><b>테이블 나누기</b>: 고민(worry) · 생각꿀팁(thought_tip) · 스케줄(schedule)을 따로 둔다. 화면에서 쓰는 칸이 달라서다. 생각꿀팁만 worry_id FK 로 고민을 가리킨다.</li>
+      <li><b>숫자</b>: 좋아요 · 사용자 수 · 활동 수 · 태그 쓴 횟수는 누를 때 올리지 않는다. 원본(likes · app_done_log · cart · ○○_tag)에 쌓기만 하고, @Scheduled 스케줄러가 새로 쌓인 것만 세어 *_count 에 한 번에 더한다(좋아요 1분 · 나머지 1시간). 인기 글에 몰려도 줄 잠금이 없다.</li>
+      <li><b>활동완료</b>: app_done_log 은 가장 빨리 커진다. 월별 파티션 · '사용자 N명 · 활동 N회'는 activity 의 use_count · done_count 를 읽는다.</li>
+      <li><b>많이 찾는 상황</b>: worry_tag 를 매번 GROUP BY 하지 않고 몇 분마다 계산해 저장한다.</li>
+      <li><b>보내기</b>: cart 는 앱이 가져갈 때(ack) schedule.send_count 를 1 올리고, 가져간 줄은 다음 날 지운다.</li>
+    </ul>
+  </section>
+
+    <section>
+    <h2 id="s3"><span style="color:var(--muted);margin-right:10px;">7.</span>WBS 및 진행 현황</h2>
+    <h3 id="wbs1" style="margin:12px 0 6px;">작성 기준</h3>
+    <ul class="kv legendline" style="margin-left:20px;">
+      <li><span>순서</span> 2차 설계 · 바탕 · API · 화면 → 로그인 → 앱 연결 · 포트폴리오 (한 세트) → 3차 다국어</li>
+      <li><span>시간</span> 하루 4시간 · AI가 코드 생성 · 직접 검토 · 작업일 = 시간 ÷ 4</li>
+      <li><span>막대</span> 주 5일 작업 · 휴일 2일 · 달력일 = 작업일 + ⌊작업일 ÷ 5⌋ × 2 · 앞 작업이 끝나면 다음 작업 시작 · 시간은 큰 값 기준</li>
+      <li><span>날짜</span> 시작 · 완료 칸에 적으면 저장 · 상태는 날짜로 자동 (예정 → 진행 중 → 완료) <em id="saveState" class="savestate"></em></li>
+      <li><span>담당</span> 본인 1인 · AI 코드 생성 + 직접 검토</li>
+      <li><span>업데이트</span> 설계와 구현 진행에 따라 계속 고친다</li>
+    </ul>
+    <h3 id="wbs2" style="margin:12px 0 6px;">진행표</h3>
+    <div class="cols plainbox"><table class="num prog" id="prog">
+      <tr><th>차수</th><th>작업 항목</th><th>내용</th><th>시간</th><th>담당</th><th>상태</th><th>시작</th><th>완료일</th></tr>
+      <tr data-id="design"><td class="ko" rowspan="15">2차</td><td class="ko">설계</td><td class="n">화면 시안 · 데이터 설계(ERD · UML) · API 설계 · 핵심 처리 규칙 · 비기능 설계</td><td>—</td><td>본인</td><td class="st" id="st-design" data-def="진행 중">진행 중</td><td><input type="date" id="start-design" aria-label="설계 시작"></td><td><input type="date" id="end-design" aria-label="설계 완료"></td></tr>
+      <tr data-id="base"><td class="ko">서버 바탕</td><td class="n">도메인 · HTTPS · nginx · 배포 · DB 연결</td><td>6~10</td><td>본인</td><td class="st" id="st-base">예정</td><td><input type="date" id="start-base" aria-label="서버 바탕 시작"></td><td><input type="date" id="end-base" aria-label="서버 바탕 완료"></td></tr>
+      <tr data-id="entity"><td class="ko">엔티티</td><td class="n">전체 · Flyway · 기본 데이터</td><td>4~6</td><td>본인</td><td class="st" id="st-entity">예정</td><td><input type="date" id="start-entity" aria-label="엔티티 시작"></td><td><input type="date" id="end-entity" aria-label="엔티티 완료"></td></tr>
+      <tr data-id="check1"><td class="ko">통합 테스트</td><td class="n">실서버 · DB 연결 확인</td><td>2~3</td><td>본인</td><td class="st" id="st-check1">예정</td><td><input type="date" id="start-check1" aria-label="2차 통합 테스트 시작"></td><td><input type="date" id="end-check1" aria-label="2차 통합 테스트 완료"></td></tr>
+      <tr data-id="spec"><td class="ko">API 명세</td><td class="n">웹 · 앱 API 주소 · DTO · 오류 형식 · Swagger</td><td>2~3</td><td>본인</td><td class="st" id="st-spec">예정</td><td><input type="date" id="start-spec" aria-label="API 명세 시작"></td><td><input type="date" id="end-spec" aria-label="API 명세 완료"></td></tr>
+      <tr data-id="ui"><td class="ko">화면</td><td class="n">메인 · 목록 · 상세(고민 · 생각 · 활동 · 스케줄) · 활동바구니 · 글쓰기 팝업 · 가짜 데이터로</td><td>10~14</td><td>본인</td><td class="st" id="st-ui">예정</td><td><input type="date" id="start-ui" aria-label="화면 시작"></td><td><input type="date" id="end-ui" aria-label="화면 완료"></td></tr>
+      <tr data-id="api"><td class="ko">API 구현</td><td class="n">고민 · 생각꿀팁 · 활동꿀팁 · 활동 · 스케줄 · 좋아요 · 댓글 · 태그 · 활동바구니 · 의견 → 가짜 데이터 교체</td><td>8~13</td><td>본인</td><td class="st" id="st-api">예정</td><td><input type="date" id="start-api" aria-label="API 구현 시작"></td><td><input type="date" id="end-api" aria-label="API 구현 완료"></td></tr>
+      <tr data-id="unit"><td class="ko">단위 테스트</td><td class="n">서비스 · 리포지토리 (JUnit)</td><td>4~6</td><td>본인</td><td class="st" id="st-unit">예정</td><td><input type="date" id="start-unit" aria-label="단위 테스트 시작"></td><td><input type="date" id="end-unit" aria-label="단위 테스트 완료"></td></tr>
+      <tr data-id="check2"><td class="ko">통합 테스트</td><td class="n">화면 + API 연결 · 버그</td><td>4~7</td><td>본인</td><td class="st" id="st-check2">예정</td><td><input type="date" id="start-check2" aria-label="2차 통합 테스트 시작"></td><td><input type="date" id="end-check2" aria-label="2차 통합 테스트 완료"></td></tr>
+      <tr data-id="login"><td class="ko">로그인</td><td class="n">구글만 · 세션 · 닉네임(비우면 자동 생성) · 내 정보(태그) · 앱 키 발급 · 탈퇴</td><td>6~8</td><td>본인</td><td class="st" id="st-login">예정</td><td><input type="date" id="start-login" aria-label="로그인 시작"></td><td><input type="date" id="end-login" aria-label="로그인 완료"></td></tr>
+      <tr data-id="loginui"><td class="ko">로그인 화면</td><td class="n">로그인 창 · 닉네임 · 내 정보 · 내 계정(내가 쓴 글) 틀</td><td>4~6</td><td>본인</td><td class="st" id="st-loginui">예정</td><td><input type="date" id="start-loginui" aria-label="로그인 화면 시작"></td><td><input type="date" id="end-loginui" aria-label="로그인 화면 완료"></td></tr>
+      <tr data-id="applink"><td class="ko">앱 연결</td><td class="n">앱 키(Bearer) 검증 · 재발급 · 보낸 것 가져가기(cart) · 받음 알림(ack)</td><td>6~10</td><td>본인</td><td class="st" id="st-applink">예정</td><td><input type="date" id="start-applink" aria-label="앱 연결 시작"></td><td><input type="date" id="end-applink" aria-label="앱 연결 완료"></td></tr>
+      <tr data-id="appact"><td class="ko">앱 활동 받기</td><td class="n">활동 완료(/app/activities) · 도움됨 on/off(/app/helpful) · 하루 한 번 중복 막기</td><td>3~5</td><td>본인</td><td class="st" id="st-appact">예정</td><td><input type="date" id="start-appact" aria-label="앱 활동 받기 시작"></td><td><input type="date" id="end-appact" aria-label="앱 활동 받기 완료"></td></tr>
+      <tr data-id="e2e"><td class="ko">전체 테스트</td><td class="n">로그인 → 글쓰기 → 바구니 → 앱 받기 · PC · 모바일</td><td>3~5</td><td>본인</td><td class="st" id="st-e2e">예정</td><td><input type="date" id="start-e2e" aria-label="전체 테스트 시작"></td><td><input type="date" id="end-e2e" aria-label="전체 테스트 완료"></td></tr>
+      <tr data-id="folio"><td class="ko">포트폴리오</td><td class="n">README</td><td>4~6</td><td>본인</td><td class="st" id="st-folio">예정</td><td><input type="date" id="start-folio" aria-label="포트폴리오 시작"></td><td><input type="date" id="end-folio" aria-label="포트폴리오 완료"></td></tr>
+      <tr class="total"><td class="ko">2차 합계</td><td class="ko">한 세트</td><td class="n" id="span-1"></td><td>66~102</td><td colspan="4"><b>17~26일 · 약 4~6주</b></td></tr>
+      <tr class="total"><td class="ko">3차</td><td class="ko">다국어</td><td class="n" colspan="6">화면 글자 · 번역 테이블 · AI 번역 · 약관 고치기 · 2차 끝난 뒤 따로 계획</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2 id="sdec"><span style="color:var(--muted);margin-right:10px;">8.</span>기술적 결정 및 미정 사항</h2>
+    <h3 id="dec1" style="margin:12px 0 6px;">주요 결정과 이유</h3>
+    <div class="cols plainbox" style="margin-left:20px;"><table><thead><tr><th>결정</th><th>이유</th></tr></thead><tbody><tr><td>화면 Nuxt 3 · 서버 Spring Boot + JPA</td><td>상세 주소를 쇼핑몰처럼 정리하고 검색에 걸리게(SSR) · 백엔드 포트폴리오는 JPA 중심</td></tr><tr><td>로그인은 구글만</td><td>외국 사용자도 쓸 수 있음 · 비밀번호를 받지 않아 관리할 것이 적음</td></tr><tr><td>웹은 세션 쿠키</td><td>같은 도메인 · 서버 하나 · 로그아웃과 만료가 간단</td></tr><tr><td>앱은 Bearer 앱 키</td><td>앱에 로그인 화면이 없어도 됨 · 서버는 해시만 저장</td></tr><tr><td>승인 없이 등록 시 바로 공개</td><td>운영자 1명 · 사용자가 기다리지 않음 · 문제 글은 AI 검사와 관리자가 숨김</td></tr><tr><td>태그는 @ManyToMany + @JoinTable</td><td>연결 테이블에 추가 칸이 없어 엔티티가 필요 없음</td></tr><tr><td>목록은 커서 페이징</td><td>글이 많아져도 OFFSET 처럼 느려지지 않음</td></tr><tr><td>숫자는 스케줄러가 모아서 더함</td><td>인기 글에 좋아요가 몰려도 줄 잠금이 없음</td></tr><tr><td>활동바구니는 로그인 후 cart 에 저장</td><td>PC 에서 담고 앱으로 보내기 위해</td></tr></tbody></table></div>
+    <h3 id="dec2" style="margin:12px 0 6px;">미정 항목과 후속 조치</h3>
+    <div class="cols plainbox" style="margin-left:20px;"><table><thead><tr><th>항목</th><th>내용</th><th>후속 조치</th></tr></thead><tbody><tr><td>API 주소 앞부분</td><td>앱 API 는 /api/v1 · 웹 API 와 가져가기 API 는 아직 /api</td><td>API 명세 때 /api/v1 로 통일할지 정한다</td></tr><tr><td>앱 인증 방식</td><td>Bearer 앱 키 하나 · 테이블 설명에는 아직 키 + 비밀값</td><td>앱 연결 전에 하나로 정하고 문서를 맞춘다</td></tr><tr><td>가져간 cart 줄</td><td>앱이 가져간 뒤 다음 날 지울지, 바구니에 남길지</td><td>앱 연결 때 정한다</td></tr><tr><td>탈퇴 때 내가 만든 활동</td><td>남의 꿀팁 · 스케줄이 쓰고 있을 때</td><td>로그인 작업 때 정한다 · 지금은 남긴다</td></tr><tr><td>개인정보처리방침</td><td>출생연도 · MBTI 를 받는다고 적어야 함</td><td>공개 전에 쓴다</td></tr><tr><td>다른 언어 화면</td><td>지혜나눔 메뉴를 숨길지, 한국어로 보낼지</td><td>2차 다국어 때 정한다</td></tr></tbody></table></div>
+  </section>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</div>
+
+<script>
+// [한글 이름, 컬럼, 비고, 표시]  표시: key=기본키, link=다른 테이블을 가리킴, opt=비워도 됨
+const G = [
+ ['사람', [
+  ['member', '회원', '구글 계정으로만 들어온다(2차). 비밀번호 없음', [
+    ['번호','member_id','자동 증가 번호','key'],
+    ['로그인 방식','provider','GOOGLE (나중에 KAKAO · NAVER)'],
+    ['소셜 쪽 번호','provider_uid','로그인 방식과 묶어서 겹치면 안 됨'],
+    ['닉네임','nickname','2~12자, 겹치면 안 됨. 비우면 자동 (아침꿀벌23)'],
+    ['앱 키','app_key','누구인지 · 가입할 때 만든다 · 내 계정에서 복사해 앱에 넣는다'],
+    ['앱 해시','app_hash','비밀값의 해시만 저장 · 비밀값은 처음 만들 때 한 번만 보여 줌 · 다시 만들 수 있음 · 앱은 키 + 비밀값으로 보내고 서버는 해시로 맞춰 본다'],
+    ['화면 언어','lang','한국어(ko) · 영어(en) · 일본어(ja) … · 기본 한국어(ko)'],
+    ['출생연도','birth_year','생년월일에서 연도만 저장 · 나이대 계산','opt'],
+    ['권한','role','USER · ADMIN'],
+    ['가입일','created_at','처음 로그인해 가입한 때'],
+    ['마지막 로그인','last_login_at','가장 최근 로그인 · 휴면 판단용','opt']]],
+  ['member_nickname_history', '닉네임 백업', '닉네임을 바꿀 때마다 바꾸기 전 이름을 남긴다', [
+    ['번호','nickname_history_id','자동 증가 번호','key'],
+    ['회원','member_id','어느 회원인지 · member 를 가리킴','link'],
+    ['예전 닉네임','nickname','바꾸기 전 닉네임'],
+    ['바꾼 때','changed_at','바꾼 날짜와 시각']],
+   '색인 (member_id, changed_at) · 지혜나눔 > 내 계정 > 내 정보 수정'],
+  ['member_tag', '회원 태그', '회원이 고른 맞춤설정 태그 · 한 줄 = 태그 하나', [
+    ['회원','member_id','member FK','key link'],
+    ['태그','tag_id','tag FK','key link']],
+   '추천 = 내 member_tag 와 activity_tag 가 겹치는 수가 많은 순']
+ ]],
+ ['글', [
+  ['worry', '고민', '', [
+    ['번호','worry_id','자동 증가 번호','key'],
+    ['쓴 사람','member_id','고민을 쓴 회원 · NOT NULL','link'],
+    ['쓴 언어','lang','한국어(ko) · 영어(en) · 일본어(ja) … · 2차는 한국어(ko)만'],
+    ['고민','text','고민 한 줄 · 예: 잠이 안 올 때'],
+    ['익명 여부','is_anonymous','true = 익명 · 기본 true'],
+    ['상태','status','공개(PUBLIC) · 숨김(HIDDEN) · 등록 시 바로 공개'],
+    ['숨긴 때','hidden_at','숨긴 날짜와 시각','opt'],
+    ['숨긴 이유','hidden_reason','누가 · 왜 · 예: AI: 광고 / 관리자: 욕설','opt'],
+    ['좋아요 수','like_count','스케줄러가 1분마다 like 를 세어 더함'],
+    ['답 수','answer_count','0 = 답을 기다리는 고민 · 답을 쓸 때 1 올림'],
+    ['쓴 때','created_at','올린 때 · 목록 정렬 기준'],
+    ['내 태그 보이기','show_tags','등록할 때 선택 · 체크하면 글 옆에 MBTI 등 내 태그를 보여 줌']],
+   '색인 (status, answer_count, created_at) · 지혜나눔 > 고민 > 답을 기다리는 고민'],
+  ['thought_tip', '생각꿀팁', '', [
+    ['번호','thought_tip_id','자동 증가 번호','key'],
+    ['쓴 사람','member_id','NOT NULL','link'],
+    ['답한 고민','worry_id','고민 없이 쓰면 NULL','link opt'],
+    ['생각','body','도움이 된 생각'],
+    ['쓴 언어','lang','2차는 한국어(ko)만'],
+    ['상태','status','공개(PUBLIC) · 숨김(HIDDEN) · 등록 시 바로 공개'],
+    ['숨긴 때','hidden_at','숨긴 날짜와 시각','opt'],
+    ['숨긴 이유','hidden_reason','누가 · 왜 · 예: AI: 광고 / 관리자: 욕설','opt'],
+    ['좋아요 수','like_count','스케줄러가 1분마다 like 를 세어 더함'],
+    ['쓴 때','created_at','목록 정렬 기준'],
+    ['내 태그 보이기','show_tags','등록할 때 선택 · 체크하면 글 옆에 MBTI 등 내 태그를 보여 줌']],
+   '색인 (status, created_at) · 지혜나눔 > 생각꿀팁 / 색인 (worry_id) · 지혜나눔 > 고민 > 고민 상세'],
+  ['schedule', '꿀방울 스케줄', '활동 묶음. 고민과 연결하지 않는다', [
+    ['번호','schedule_id','자동 증가 번호','key'],
+    ['쓴 사람','member_id','NOT NULL','link'],
+    ['이름','title','스케줄 이름'],
+    ['설명','description','누구에게, 언제 좋은지','opt'],
+    ['쓴 언어','lang','2차는 한국어(ko)만'],
+    ['상태','status','공개(PUBLIC) · 숨김(HIDDEN)'],
+    ['숨긴 때','hidden_at','숨긴 날짜와 시각','opt'],
+    ['숨긴 이유','hidden_reason','누가 · 왜 · 예: AI: 광고 / 관리자: 욕설','opt'],
+    ['좋아요 수','like_count','스케줄러가 1분마다 like 를 세어 더함'],
+    ['사용자 수','send_count','앱이 가져갈 때(ack) 1 올림'],
+    ['쓴 때','created_at','목록 정렬 기준'],
+    ['내 태그 보이기','show_tags','등록할 때 선택 · 체크하면 글 옆에 MBTI 등 내 태그를 보여 줌']],
+   '색인 (status, created_at) · 지혜나눔 > 꿀방울 스케줄'],
+ ['worry_tag', '고민 태그', '고민에 붙은 태그 · 한 줄 = 태그 하나 · 대용량이라 대상별로 나눈다', [
+    ['고민','worry_id','고민 FK','key link'],
+    ['태그','tag_id','tag FK','key link']],
+   '역색인 (tag_id, worry_id) · 지혜나눔 > 고민 > #태그'],
+ ['thought_tip_tag', '생각꿀팁 태그', '생각꿀팁에 붙은 태그 · 한 줄 = 태그 하나 · 대용량이라 대상별로 나눈다', [
+    ['생각꿀팁','thought_tip_id','생각꿀팁 FK','key link'],
+    ['태그','tag_id','tag FK','key link']],
+   '역색인 (tag_id, thought_tip_id) · 지혜나눔 > 생각꿀팁 > #태그'],
+ ['schedule_tag', '스케줄 태그', '스케줄에 붙은 태그 · 한 줄 = 태그 하나 · 대용량이라 대상별로 나눈다', [
+    ['스케줄','schedule_id','스케줄 FK','key link'],
+    ['태그','tag_id','tag FK','key link']],
+   '역색인 (tag_id, schedule_id) · 지혜나눔 > 꿀방울 스케줄 > #태그'],
+ ['activity_tag', '활동 태그', '활동에 붙은 태그 · 한 줄 = 태그 하나 · 대용량이라 대상별로 나눈다', [
+    ['활동','activity_id','활동 FK','key link'],
+    ['태그','tag_id','tag FK','key link']],
+   '역색인 (tag_id, activity_id) · 지혜나눔 > 활동꿀팁 > #태그'],
+  ['thought_tip_url', '참고 링크', '생각꿀팁에 여러 개. 유튜브는 화면에서 바로 재생', [
+    ['번호','link_id','자동 증가 번호','key'],
+    ['생각꿀팁','thought_tip_id','링크가 붙은 생각꿀팁','link'],
+    ['순서','sort','화면에 보이는 순서 · 0부터'],
+    ['주소','url','참고 링크 주소 · 유튜브면 화면에서 바로 재생']]],
+  ['schedule_activity', '스케줄 구성', '스케줄에 고른 활동 한 줄씩', [
+    ['스케줄','schedule_id','꿀방울 스케줄','key link'],
+    ['활동','activity_id','스케줄에 넣은 활동','key link'],
+    ['요일','days','월(0) 화(1) 수(2) 목(3) 금(4) 토(5) 일(6) · 쉼표로 여러 개 · 예: "0,3" = 월·목 · 비우면 매일','opt']]]
+ ]],
+ ['반응', [
+  ['likes', '좋아요', '고민 · 생각꿀팁 · 스케줄 · 활동의 좋아요를 한 테이블에서. 한 사람이 한 대상에 한 번', [
+    ['번호','like_id','자동 증가 번호','key'],
+    ['회원','member_id','좋아요를 누른 회원','link'],
+    ['대상 종류','target_type','고민(WORRY) · 생각꿀팁(THOUGHT_TIP) · 스케줄(SCHEDULE) · 활동(ACTIVITY)'],
+    ['대상 번호','target_id','FK 없음 · 대상 지울 때 서비스에서 같이 지움'],
+    ['누른 때','created_at','누른 때']],
+   'UQ (member_id, target_type, target_id) · 수는 스케줄러가 1분마다 세어 각 대상의 like_count 에 더한다'],
+  ['cart', '활동바구니', '활동바구니 · 담으면 저장되고, 앱이 앱 토큰으로 가져간다', [
+    ['번호','cart_id','자동 증가 번호','key'],
+    ['회원','member_id','담은 회원','link'],
+    ['대상 종류','target_type','생각꿀팁(THOUGHT_TIP) · 스케줄(SCHEDULE) · 활동(ACTIVITY)'],
+    ['대상 번호','target_id','보낸 대상의 번호 · target_type 과 함께 읽음'],
+    ['요일','days','활동만 · 바구니에서 고른 요일','opt'],
+    ['담은 때','created_at','바구니에 담은 때'],
+    ['보낸 때','sent_at','내 꿀방울로 보내기를 누른 때 · 비어 있으면 바구니에 있음','opt'],
+    ['앱이 가져간 때','picked_at','비어 있으면 대기 중','opt']],
+   'UQ (member_id, target_type, target_id) · 같은 것은 한 번만 담김 · 빼기 = 삭제 · 앱: GET /app/takes (sent_at IS NOT NULL AND picked_at IS NULL) → 받은 뒤 POST /app/takes/ack 로 picked_at 채움 + schedule.send_count +1 · 가져간 줄은 다음 날 삭제'],
+  ['app_done_log', '활동완료 로그', '앱이 회원의 app_key + 비밀값 로 보낸다 · 쌓기만 하고 고치지 않는 로그 · FK 없음', [
+    ['번호','done_id','자동 증가 번호','key'],
+    ['활동','activity_id','한 활동 · FK 없음'],
+    ['회원','member_id','app_key 로 찾은 회원 · FK 없음'],
+    ['한 날','done_on','활동한 날짜 · 하루에 한 번만']],
+   'UQ (activity_id, member_id, done_on) · 월별 파티션'],
+  ['app_helped_log', '도움돼요 로그', '앱에서 누른 도움돼요 · 앱이 회원의 app_key + 비밀값 로 보낸다 · 쌓기만 하는 로그 · FK 없음', [
+    ['번호','helped_id','자동 증가 번호','key'],
+    ['활동','activity_id','한 활동 · FK 없음'],
+    ['회원','member_id','app_key 로 찾은 회원 · FK 없음'],
+    ['누른 날','helped_on','누른 날짜 · 하루에 한 번만']],
+   'UQ (activity_id, member_id, helped_on) · 월별 파티션'],
+  ['comment', '댓글', '활동 · 스케줄 상세에 단다', [
+    ['번호','comment_id','자동 증가 번호','key'],
+    ['활동','activity_id','활동 댓글이면 채움 · 둘 중 하나만','link opt'],
+    ['스케줄','schedule_id','스케줄 댓글이면 채움 · 둘 중 하나만','link opt'],
+    ['쓴 사람','member_id','댓글을 쓴 회원 · NOT NULL','link'],
+    ['내용','text','댓글 내용'],
+    ['원문 언어','lang','한국어(ko) · 영어(en) · 일본어(ja) … · 2차는 한국어(ko)만'],
+    ['쓴 때','created_at','쓴 때'],
+    ['지운 때','deleted_at','지운 때 · 소프트 삭제','opt']]]
+ ]],
+ ['활동과 분류', [
+  ['mission', '미션', '꿀방울 앱의 미션 7개. 이름은 화면 번역 파일에', [
+    ['코드','code','move · clean · rub · auto · tomorrow · detox · know','key'],
+    ['앱 번호','app_no','앱의 미션 id (1=움직이기 …) · 앱이 보낸 값과 맞추는 열쇠'],
+    ['순서','sort','화면에 보이는 순서'],
+    ['고정','fixed','자동행동·내일할일은 모든 스케줄에 자동 포함']]],
+  ['activity_tip', '활동꿀팁', '고민에 도움이 된 활동을 잇는다. 좋아요 · 댓글은 활동 상세에서', [
+    ['번호','activity_tip_id','자동 증가 번호','key'],
+    ['고민','worry_id','추천받은 고민','link'],
+    ['활동','activity_id','추천한 활동','link'],
+    ['추천한 사람','member_id','NOT NULL','link'],
+    ['추천한 때','created_at','추천한 때']],
+   'UQ (worry_id, activity_id, member_id) · 고민 상세 "도움이 된 활동 N명"은 여기서 셈'],
+  ['activity', '활동', '기본 활동 + 회원이 등록한 활동. 고민에 활동을 추천하는 것은 activity_tip', [
+    ['번호','activity_id','자동 증가 번호','key'],
+    ['미션','mission_code','미션 없이 적은 습관이면 비움','link opt'],
+    ['이름','name','가슴 · 브릿지 · 내 방 …'],
+    ['원문 언어','lang','한국어(ko) · 영어(en) · 일본어(ja) … · 사용자가 만든 활동만','opt'],
+    ['앱 활동 키','app_key','chest · shoulder · room … 기본 활동만 · 앱이 보낸 활동과 맞추는 열쇠','opt'],
+    ['묶음','grp','움직이기만: 상체 · 하체 · 유산소 · 스트레칭','opt'],
+    ['설명','description','"누워서 무릎을 세우고…"','opt'],
+    ['기본 활동','is_default','기본이면 이름을 번역 파일에서'],
+    ['등록한 사람','created_by','기본 활동은 비움','link opt'],
+    ['들어온 곳','source','DEFAULT · WEB · APP'],
+    ['앱 쪽 키','app_local_key','앱의 직접 등록 키 (u-1785719 …) · 같은 활동 두 번 안 받기','opt'],
+    ['상태','status','공개(PUBLIC) · 숨김(HIDDEN) · 숨기면 이 활동이 든 활동꿀팁도 안 보임'],
+    ['숨긴 때','hidden_at','숨긴 날짜와 시각','opt'],
+    ['숨긴 이유','hidden_reason','누가 · 왜 · 예: AI: 광고 / 관리자: 욕설','opt'],
+    ['사용자 수','use_count','추천 칸의 "842명" · 스케줄러가 1시간마다 app_done_log 를 세어 더함'],
+    ['활동 수','done_count','활동완료 횟수 · 스케줄러가 1시간마다 app_done_log 를 세어 더함'],
+    ['좋아요 수','like_count','활동 상세에서만 누른다 · 스케줄러가 1분마다 like 를 세어 더함'],
+    ['등록일','created_at','활동을 등록한 때']],
+   '같은 미션 안에서 이름이 겹치면 안 됨 · UQ (created_by, app_local_key)'],
+  ['activity_url', '활동 영상·글', '활동 하나에 여러 개', [
+    ['번호','activity_url_id','자동 증가 번호','key'],
+    ['활동','activity_id','링크가 붙은 활동','link'],
+    ['순서','sort','화면에 보이는 순서 · 0부터'],
+    ['주소','url','활동 영상 · 글 주소 · 유튜브면 화면에서 바로 재생']]],
+  ['tag', '태그', '#상황 태그는 사용자가 #으로 만든다 · 회원 태그는 운영자가 만든다', [
+    ['번호','tag_id','자동 증가 번호','key'],
+    ['회원 태그 묶음','tag_group','회원 태그만 · #상황 태그는 비움(NULL) · MBTI_EI · MBTI_SN · MBTI_TF · MBTI_JP · GOAL(목표) · PAIN(통증) · STYLE(좋아하는 활동) · WITH(함께하는 방식) · LEVEL(활동량) · TIME(시간) · INTEREST(관심사) · RHYTHM(생활 리듬) · PURSUIT(추구하는 모습) · ZODIAC(별자리)'],
+    ['이름','name','예: 잠이안올때 · E · 근력 · 목 · 묶음 안에서 겹치면 안 됨'],
+    ['쓴 횟수','use_count','이 태그가 붙은 공개 글 수 · 몇 분마다 계산 · 많이 찾는 상황 상위 5개']],
+   'UQ (tag_group, name)']
+ ]],
+ ['기타', [
+  ['feedback', '의견 보내기', '로그인 후 남긴다', [
+    ['번호','feedback_id','자동 증가 번호','key'],
+    ['보낸 사람','member_id','의견을 보낸 회원 · 로그인 후','link'],
+    ['종류','type','기능 제안 · 시스템 추천 · 불편한 점 · 기타'],
+    ['내용','text','의견 내용'],
+    ['언어','lang','한국어(ko) · 영어(en) · 일본어(ja) …'],
+    ['반영함','done','운영자가 반영했는지'],
+    ['보낸 때','created_at','보낸 때']]]
+ ]],
+ ['앱 연결 (2차)', [
+  ['terms', '약관', '약관 원문과 판 · 바뀌면 새 줄을 넣는다(고치지 않음)', [
+    ['번호','terms_id','자동 증가 번호','key'],
+    ['종류','type','이용약관(SERVICE) · 개인정보처리방침(PRIVACY) · 앱 키 사용(APP_KEY)'],
+    ['판','version','예: 2026-11'],
+    ['내용','body','약관 전문'],
+    ['필수','required','true 면 동의해야 가입 · 사용'],
+    ['시행일','effective_at','이 판이 적용되는 날']],
+   'UQ (type, version)'],
+  ['member_consent', '동의 기록', '누가 어떤 약관 판에 동의했는지 · 쌓기만 함', [
+    ['번호','consent_id','자동 증가 번호','key'],
+    ['회원','member_id','동의한 회원','link'],
+    ['약관','terms_id','동의한 약관 판','link'],
+    ['동의한 때','agreed_at','동의한 때']],
+   'UQ (member_id, terms_id)'],
+ ]],
+];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const MARK = { key: ['key','기본키'], link: ['link','연결'], opt: ['opt','NULL 가능'], nn: ['nn','NOT NULL'] };
+const marks = m => { const xs = (m || '').split(' ').filter(Boolean); if (!xs.includes('opt') && !xs.includes('key')) xs.push('nn'); return xs.map(x => `<span class="tag ${MARK[x][0]}">${MARK[x][1]}</span>`).join(''); };
+const withTime = (t, cols) => { if (/_tag$/.test(t) && cols.length <= 2) return cols; const noUpd = ['app_done_log','app_helped_log'].includes(t); const out = cols.filter(c => c[1] !== 'created_at' && c[1] !== 'updated_at'); const oc = cols.find(c => c[1] === 'created_at'); out.push(['등록일','created_at', oc ? oc[2] : '']); if (!out.some(c => c[1] === 'created_at')) out.push(['등록일','created_at','BaseTimeEntity']); if (!noUpd && !out.some(c => c[1] === 'updated_at')) out.push(['수정일','updated_at','BaseTimeEntity']); return out; };
+const TYPE_FIX = { 'member.nickname': 'VARCHAR(12)', 'member_nickname_history.nickname': 'VARCHAR(12)', 'activity.name': 'VARCHAR(14)', 'tag.name': 'VARCHAR(10)', 'comment.text': 'VARCHAR(200)', 'worry.text': 'VARCHAR(200)', 'thought_tip.body': 'VARCHAR(200)', 'schedule.description': 'TEXT', 'activity.created_by': 'BIGINT', 'mission.app_no': 'INT', 'translation.model': 'VARCHAR(50)', 'schedule.title': 'VARCHAR(50)', 'mission.name': 'VARCHAR(20)', 'activity.description': 'TEXT', 'feedback.text': 'TEXT', 'terms.body': 'TEXT', 'translation.text': 'TEXT' };
+const typeOf = (t, c) => {
+  if (TYPE_FIX[t + '.' + c]) return TYPE_FIX[t + '.' + c];
+  if (/_id$/.test(c)) return 'BIGINT';
+  if (/_at$/.test(c)) return 'TIMESTAMPTZ';
+  if (/_on$/.test(c)) return 'DATE';
+  if (c === 'hidden_reason') return 'VARCHAR(200)';
+  if (/(_count|^minutes|_order|^sort|^birth_year)$/.test(c)) return 'INT';
+  if (/^(is_|show_)|^(required|fixed|done)$/.test(c)) return 'BOOLEAN';
+  if (/^(body|description)$/.test(c)) return 'TEXT';
+  if (/url$/.test(c)) return 'VARCHAR(500)';
+  if (/(status|type|tag_group|lang|provider|role|source|grp|_code|version|days)$/.test(c)) return 'VARCHAR(20)';
+  if (/(hash|_key|_uid)$/.test(c)) return 'VARCHAR(100)';
+  return 'VARCHAR(100)';
+};
+
+const JPA = [
+ ['주요 기능 (ERD 1)', [
+  ['Worry','worry','',[['Member member','@ManyToOne'],['String text',''],['boolean anonymous',''],['Status status',''],['int likeCount',''],['int answerCount',''],['Set<Tag> tags','@ManyToMany']],['hide()','show()']],
+  ['ThoughtTip','thought_tip','',[['Member member','@ManyToOne'],['Worry worry','@ManyToOne · null 가능'],['String body',''],['String lang',''],['Status status',''],['int likeCount',''],['List<ThoughtTipUrl> urls','@OneToMany(cascade ALL, orphanRemoval)'],['Set<Tag> tags','@ManyToMany']],['hide()','show()']],
+  ['ThoughtTipUrl','thought_tip_url','',[['ThoughtTip thoughtTip','@ManyToOne'],['int sort',''],['String url','']],[]],
+  ['ActivityTip','activity_tip','',[['Member member','@ManyToOne'],['Worry worry','@ManyToOne'],['Activity activity','@ManyToOne'],['Status status',''],['int likeCount','']],['hide()','show()']],
+  ['Activity','activity','',[['Mission mission','@ManyToOne · null 가능'],['String name',''],['String grp',''],['String description',''],['boolean isDefault',''],['Member createdBy','@ManyToOne · null 가능'],['Status status',''],['int useCount',''],['int doneCount',''],['int likeCount',''],['List<ActivityUrl> urls','@OneToMany(cascade ALL, orphanRemoval)'],['Set<Tag> tags','@ManyToMany']],['hide()','show()']],
+  ['ActivityUrl','activity_url','',[['Activity activity','@ManyToOne'],['int sort',''],['String url','']],[]],
+  ['Mission','mission','',[['String code','@Id'],['String name',''],['int sort',''],['boolean fixed','']],[]],
+  ['Schedule','schedule','',[['Member member','@ManyToOne'],['String title',''],['String description',''],['String lang',''],['Status status',''],['int likeCount',''],['List<ScheduleActivity> items','@OneToMany(cascade ALL, orphanRemoval)'],['Set<Tag> tags','@ManyToMany']],['hide()','show()']],
+  ['ScheduleActivity','schedule_activity','',[['ScheduleActivityId id','@EmbeddedId'],['Schedule schedule','@ManyToOne @MapsId'],['Activity activity','@ManyToOne @MapsId'],['String days','']],[]],
+ ]],
+ ['#태그 (ERD 4)', [
+  ['Tag','tag','',[['String tagGroup','회원 태그만 · #상황은 null'],['String name',''],['int useCount','']],[]],
+ ]],
+ ['댓글 · 좋아요 (ERD 5)', [
+  ['Comment','comment','',[['Activity activity','@ManyToOne · 둘 중 하나'],['Schedule schedule','@ManyToOne · 둘 중 하나'],['Member member','@ManyToOne'],['String text',''],['Instant deletedAt','']],['delete()']],
+  ['Like','likes','',[['Member member','@ManyToOne'],['TargetType targetType',''],['Long targetId','FK 없음']],[]],
+ ]],
+ ['회원', [
+  ['Member','member','',[['Provider provider',''],['String providerUid',''],['String nickname',''],['String appKey',''],['String appHash',''],['Integer birthYear',''],['String lang',''],['Role role',''],['Set<Tag> tags','@ManyToMany']],['changeNickname(String)','renewAppSecret()']],
+  ['MemberNicknameHistory','member_nickname_history','',[['Member member','@ManyToOne'],['String nickname','']],[]],
+  ['Cart','cart','',[['Member member','@ManyToOne'],['TargetType targetType',''],['Long targetId','FK 없음'],['String days',''],['Instant sentAt',''],['Instant pickedAt','']],['markSent()','markPicked()']],
+  ['MemberConsent','member_consent','',[['Member member','@ManyToOne'],['Terms terms','@ManyToOne'],['Instant agreedAt','']],[]],
+  ['Terms','terms','',[['TermsType type',''],['String version',''],['String body','@Lob'],['boolean required',''],['Instant effectiveAt','']],[]],
+  ['Feedback','feedback','',[['Member member','@ManyToOne'],['FeedbackType type',''],['String text',''],['boolean done','']],[]],
+ ]],
+ ['앱 로그', [
+  ['AppDoneLog','app_done_log','log',[['Long memberId','FK 없음'],['Long activityId','FK 없음'],['LocalDate doneOn','']],[]],
+  ['AppHelpedLog','app_helped_log','log',[['Long memberId','FK 없음'],['Long activityId','FK 없음'],['LocalDate helpedOn','']],[]],
+ ]],
+ ['enum', [
+  ['Status','','enum',[['PUBLIC · HIDDEN','']],[]],
+  ['TargetType','','enum',[['WORRY · THOUGHT_TIP · SCHEDULE · ACTIVITY','']],[]],
+  ['Provider','','enum',[['GOOGLE','']],[]],
+  ['Role','','enum',[['USER · ADMIN','']],[]],
+  ['TermsType','','enum',[['SERVICE · PRIVACY · APP_KEY','']],[]],
+  ['FeedbackType','','enum',[['IDEA · SYSTEM · INCONVENIENCE · ETC','']],[]],
+ ]],
+];
+const jx = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+(() => {
+  const all = new Set(JPA.flatMap(([, cs]) => cs.filter(c => c[2] !== 'enum').map(c => c[0])));
+  const T = s => String(s).replace(/</g, '~').replace(/>/g, '~');
+  const snake = s => s.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
+  const box = document.getElementById('jpaDiagrams'); if (!box) return;
+  const JT = JPA.flatMap(([, cs]) => cs.filter(c => (c[3] || []).some(([f, an]) => /@ManyToMany/.test(an || ''))).map(c => c[0]));
+  JPA.forEach(([g, cs]) => {
+    const ents = cs.filter(c => c[2] !== 'enum'); if (!ents.length) return;
+    const own = new Set(ents.map(c => c[0])), ext = new Set(), L = ['classDiagram', '  direction TB'], E = [];
+    ents.forEach(([n, t, k, fs, ms]) => {
+      L.push('  class ' + n + ' {', ...((fs || []).some(([f]) => / id$/.test(f)) || n === 'Mission' ? [] : ['    Long id PK']), ...(fs || []).map(([f, an]) => '    ' + T(f) + (/ id$/.test(f) || (n === 'Mission' && / code$/.test(f)) ? ' PK' : /@ManyToOne/.test(an || '') ? ' FK' : '')), ...(ms || []).map(m => '    ' + m.replace(/\(.*\)/, '()')), '  }');
+      (fs || []).forEach(([f, an]) => { const ty = f.split(' ')[0]; const inner = (ty.match(/<(\w+)>/) || [])[1]; const tgt = all.has(ty) ? ty : all.has(inner) ? inner : null;
+        if (!tgt || tgt === n || (tgt === 'Member' && !own.has('Member') && !(own.has('Worry') && n !== 'ActivityTip'))) return;
+        if (/@ManyToOne/.test(an || '')) { E.push(tgt === 'Mission' ? '  ' + n + ' --> ' + tgt : '  ' + tgt + ' <-- ' + n); if (!own.has(tgt)) ext.add(tgt); }
+        }); });
+    if (own.has('Tag')) JT.forEach(n => { const v = n[0].toLowerCase() + n.slice(1); L.push('  class ' + n + 'Tag {', '    ' + n + ' ' + v, '    Tag tag', '  }'); E.push('  Tag <-- ' + n + 'Tag', '  ' + n + 'Tag --> ' + n); ext.add(n); });
+    ext.forEach(x => L.push('  class ' + x));
+    const p0 = document.createElement('p'); p0.style.cssText = 'margin:16px 0 4px;font-weight:700;'; p0.textContent = g; box.appendChild(p0);
+    const d = document.createElement('div'); d.className = 'diagram';
+    const p = document.createElement('pre'); p.className = 'mermaid'; p.textContent = [...L, ...E].join('\n'); d.appendChild(p); box.appendChild(d);
+  });
+})();
+if (document.getElementById('jpa')) document.getElementById('jpa').innerHTML = JPA.map(([g, cs]) => `<div class="jg"><div class="jg-title">${jx(g)}</div>${cs.map(([n, t, k, fs, ms]) => {
+  const noId = k === 'enum' || n === 'Mission' || n === 'ScheduleActivity';
+  const rows = (noId ? [] : [['Long id', '@Id']]).concat(fs);
+  return `<div class="cols"><table>
+    <tr><th colspan="3">${k === 'enum' ? 'enum ' : ''}${jx(n)} <span style="font-weight:400;color:var(--muted);">${jx(t)}</span></th></tr>
+    ${k === 'enum' ? '<tr><th>값</th><th colspan="2"></th></tr>' : '<tr><th>필드</th><th>타입</th><th>어노테이션</th></tr>'}
+    ${rows.map(([f, an]) => { const sp = f.lastIndexOf(' '); const ty = k === 'enum' ? '' : f.slice(0, sp), nm = k === 'enum' ? f : f.slice(sp + 1);
+      return k === 'enum' ? `<tr><td colspan="3">${jx(nm)}</td></tr>` : `<tr><td>${jx(nm)}</td><td>${jx(ty)}</td><td>${jx(an || '')}</td></tr>`; }).join('')}
+    ${ms.length ? `<tr><th>메서드</th><td colspan="2">${ms.map(jx).join(' · ')}</td></tr>` : ''}
+  </table></div>`; }).join('')}</div>`).join('');
+document.getElementById('detail').innerHTML = G.map(([g, ts]) => `
+  <div class="group-title">${esc(g)}</div>
+  ${ts.map(([t, ko, what, cols0, foot]) => { const cols = withTime(t, cols0); return `
+  <details id="t-${t}">
+    <summary><b>${esc(ko)}</b><span class="en">${esc(t)}</span></summary>
+    <div class="cols"><table>
+      <tr><th>컬럼</th><th>타입</th><th>키</th><th>NOT NULL</th><th>항목</th><th>설명</th></tr>
+      ${cols.map(([k, c, n, m]) => { const xs = (m || '').split(' '); const key = [xs.includes('key') ? 'PK' : '', xs.includes('link') ? 'FK' : ''].filter(Boolean).join(' · '); return `<tr><td class="c b">${esc(c)}</td><td class="c">${esc(typeOf(t, c))}</td><td class="c k">${key}</td><td class="c nn">${xs.includes('opt') ? '' : 'NOT NULL'}</td><td class="ko">${esc(k)}</td><td class="n">${esc(n || '')}</td></tr>`; }).join('')}
+    </table></div>
+    ${foot ? `<div class="foot">${esc(foot)}</div>` : ''}
+  </details>`; }).join('')}`).join('');
+// 지도의 상자를 누르면 그 테이블을 펼친다
+(() => {
+  const M = { e2: ['tag','member_tag','worry_tag','thought_tip_tag','schedule_tag','activity_tag'], e3: ['comment','likes'], e4: ['member','member_nickname_history','cart','terms','member_consent','feedback','app_done_log','app_helped_log'] };
+  const where = t => Object.keys(M).find(k => M[k].includes(t)) || 'e1';
+  document.querySelectorAll('#detail details').forEach(d => document.getElementById('cols-' + where(d.id.slice(2))).appendChild(d));
+  document.getElementById('detail').remove();
+  { const cb = document.getElementById('constraints'); if (cb) document.querySelectorAll('.erdcols details').forEach(d => { const f = d.querySelector('.foot'); if (!f) return; const nm = d.querySelector('summary b'), en = d.querySelector('summary .en'); const r = document.createElement('div'); r.style.cssText = 'display:grid;grid-template-columns:220px 1fr;gap:12px;padding:6px 0;border-bottom:1px solid var(--line);'; r.innerHTML = '<b>' + (nm ? nm.textContent : '') + ' <span style="font-weight:400;color:var(--muted);">' + (en ? en.textContent : '') + '</span></b><span>' + f.innerHTML + '</span>'; cb.appendChild(r); f.remove(); }); }
+  document.querySelectorAll('.erdcols details').forEach(d => { d.open = true; d.querySelector('summary').addEventListener('click', e => e.preventDefault()); d.classList.add('flat'); });
+  const folds = [...document.querySelectorAll('details.erdfold')];
+  folds.forEach(f => f.addEventListener('toggle', () => { folds.forEach(o => { if (o.open !== f.open) o.open = f.open; }); }));
+})();
+
+function openFromHash() {
+  const el = location.hash && document.getElementById(location.hash.slice(1));
+  if (el && el.tagName === 'DETAILS') { el.open = true; el.scrollIntoView({ block: 'start' }); }
+}
+document.querySelectorAll('a.box').forEach(a => a.addEventListener('click', e => {
+  const el = document.getElementById(a.getAttribute('href').slice(1));
+  if (el) { e.preventDefault(); el.open = true; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+}));
+openFromHash();
+window.addEventListener('hashchange', openFromHash);
+let __printOpen = [];
+window.addEventListener('beforeprint', () => { __printOpen = [...document.querySelectorAll('details:not([open])')]; __printOpen.forEach(d => d.open = true); });
+window.addEventListener('afterprint', () => { __printOpen.forEach(d => d.open = false); __printOpen = []; });
+</script>
+<script>
+// 진행표 날짜 — db 의 progress/<일> 문서에 { start, end } 로 둔다
+(function () {
+  const rows = [...document.querySelectorAll('#prog tr[data-id]')];
+  const ids = rows.map(r => r.dataset.id);
+  const groups = { 'span-1': ['design','base','entity','login','loginui','check1','spec','ui','api','unit','check2','applink','appact','e2e','folio'] };
+  const state = { design: { start: '2026-10-30' } };
+  const st = document.getElementById('saveState');
+  const fmt = d => d ? d.slice(5).replace('-', '/') : '';
+  // ── 예정일 ───────────────────────────────────────────────
+  // PLAN_START 부터 시간(큰 값 ÷ 4 = 작업일)으로 주말을 빼고 차례로 잡는다.
+  // 직접 정하려면 PLAN 에 적는다 — 적은 줄은 그 날짜를 쓰고, 다음 줄은 그 완료 다음 작업일부터 이어서 센다.
+  //   예: base: ['2026-11-03', '2026-11-06']   시작만 적으면 완료는 시간으로 센다
+  const PLAN_START = '2026-11-03'; // 서버 작업 시작일
+  const PLAN = {
+    // base:   ['2026-11-03', '2026-11-05'],
+    // entity: ['2026-11-06', ''],
+  };
+  (() => {
+    const day = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+    const isWork = d => d.getDay() % 6 !== 0;
+    const toWork = d => { const x = new Date(d); while (!isWork(x)) x.setDate(x.getDate() + 1); return x; };
+    const addWork = (d, n) => { const x = new Date(d); while (n > 0) { x.setDate(x.getDate() + 1); if (isWork(x)) n--; } return x; };
+    const md = d => (d.getMonth() + 1) + '/' + d.getDate();
+    const list = rows.map(r => { const st = r.querySelector('td.st'); const t = st && st.previousElementSibling && st.previousElementSibling.previousElementSibling; const m = t && t.textContent.match(/(\d+)~(\d+)/); return m ? { id: r.dataset.id, t, r, h: +m[2] } : null; }).filter(Boolean);
+    let next = toWork(day(PLAN_START));
+    list.forEach(x => {
+      const [ps, pe] = PLAN[x.id] || [];
+      x.sd = ps ? day(ps) : next;
+      x.ed = pe ? day(pe) : addWork(x.sd, Math.max(1, Math.ceil(x.h / 4)) - 1);
+      next = addWork(x.ed, 1);
+    });
+    const t0 = Math.min(...list.map(x => x.sd)), t1 = Math.max(...list.map(x => x.ed)) + 864e5, span = t1 - t0;
+    const note = s => '<div style="font-size:12px;color:var(--muted);margin-top:3px;">예정 ' + s + '</div>';
+    list.forEach(x => {
+      const a = (x.sd - t0) / span * 100, b = (x.ed - t0 + 864e5) / span * 100;
+      x.t.insertAdjacentHTML('beforeend', '<div class="hbar" title="' + md(x.sd) + ' ~ ' + md(x.ed) + '"><i style="left:' + a + '%;width:' + Math.max(2, b - a) + '%"></i></div><div class="hlab">' + md(x.sd) + '~' + md(x.ed) + '</div>');
+      const s0 = x.r.querySelector('input[id^=start-]'); if (s0) s0.insertAdjacentHTML('afterend', note(md(x.sd)));
+      const e0 = x.r.querySelector('input[id^=end-]'); if (e0) e0.insertAdjacentHTML('afterend', note(md(x.ed)));
+    });
+  })();
+  function paint() {
+    rows.forEach(r => {
+      const v = state[r.dataset.id] || {};
+      const s = document.getElementById('start-' + r.dataset.id), e = document.getElementById('end-' + r.dataset.id);
+      if (document.activeElement !== s) s.value = v.start || '';
+      if (document.activeElement !== e) e.value = v.end || '';
+      r.classList.toggle('done', !!v.end);
+      r.classList.toggle('doing', !!v.start && !v.end);
+      const stc = document.getElementById('st-' + r.dataset.id); if (stc) { const s = v.end ? '완료' : v.start ? '진행 중' : (stc.dataset.def || '예정'); stc.dataset.s = s; stc.innerHTML = '<span>' + s + '</span>'; }
+    });
+    Object.entries(groups).forEach(([cell, list]) => {
+      const starts = list.map(i => (state[i] || {}).start).filter(Boolean).sort();
+      const ends = list.map(i => (state[i] || {}).end).filter(Boolean).sort();
+      const el = document.getElementById(cell);
+      el.textContent = starts.length ? `${fmt(starts[0])} ~ ${ends.length === list.length ? fmt(ends[ends.length - 1]) : '진행 중'} · 완료 ${ends.length}/${list.length}` : '';
+    });
+  }
+  paint();
+  const inputs = document.querySelectorAll('#prog input[type=date]');
+  inputs.forEach(i => { i.disabled = true; });
+  st.textContent = '· 불러오는 중';
+  (async () => {
+    let db = null; try { if (typeof window.claude?.use === 'function') db = await window.claude.use('db'); } catch (e) { db = null; }
+    if (!db) {
+      // claude.ai 밖(shinmiseong.com 등)에서는 이 브라우저에만 남긴다 — 다른 사람 화면에는 안 보인다.
+      //   모두에게 보이게 하려면 날짜를 파일의 state 에 적는다.
+      const KEY = 'hsl-v2-progress';
+      try { Object.assign(state, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
+      paint();
+      inputs.forEach(i => { i.disabled = false; });
+      st.textContent = '· 이 브라우저에만 저장';
+      inputs.forEach(input => input.addEventListener('change', () => {
+        const id = input.id.replace(/^(start|end)-/, '');
+        state[id] = { start: document.getElementById('start-' + id).value, end: document.getElementById('end-' + id).value };
+        paint();
+        try { localStorage.setItem(KEY, JSON.stringify(state)); st.textContent = '· 이 브라우저에 저장됨'; }
+        catch (e) { st.textContent = '· 저장 실패'; }
+      }));
+      return;
+    }
+    db.collection('progress').onSnapshot(snap => {
+      snap.docs.forEach(d => { state[d.id] = d.data() || {}; });
+      if (!(state.design || {}).start) state.design = { ...(state.design || {}), start: '2026-10-30' };
+      paint();
+    }, () => { st.textContent = '· 불러오지 못함'; });
+    inputs.forEach(i => { i.disabled = false; });
+    st.textContent = '';
+    inputs.forEach(input => input.addEventListener('change', async () => {
+      const id = input.id.replace(/^(start|end)-/, '');
+      const next = { start: document.getElementById('start-' + id).value, end: document.getElementById('end-' + id).value };
+      state[id] = next; paint();
+      try { await db.doc('progress/' + id).set(next); st.textContent = '· 저장됨'; }
+      catch (err) { st.textContent = err && err.code === 'invalid_argument' ? '· 저장 권한 없음' : '· 저장 실패'; }
+    }));
+  })();
+})();
+</script>
+
+<!-- 로컬에서 열 때 ERD·클래스 다이어그램을 그린다 -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script>
+mermaid.initialize({ startOnLoad: false, securityLevel: "strict", themeVariables: { fontSize: "18px" } });
+mermaid.run().then(() => {
+  
+  document.querySelectorAll('.diagram svg').forEach(svg => {
+    svg.removeAttribute('height');
+    svg.style.setProperty('max-width', '100%', 'important');
+    svg.style.setProperty('height', 'auto', 'important');
+  });
+  const svgs = [...document.querySelectorAll('#jpaDiagrams .diagram svg')];
+  const vw = s => s.viewBox.baseVal.width;
+  if (svgs.length) {
+    const e1 = document.querySelector('.diagram svg'); const k = e1.getBoundingClientRect().width / vw(e1);
+    svgs.forEach(s => { const w = Math.round(vw(s) * k); s.setAttribute('width', w); s.style.setProperty('width', w + 'px', 'important'); s.style.setProperty('max-width', 'none', 'important'); });
+  }
+});
+</script>
+</body>
+</html>

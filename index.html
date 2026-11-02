@@ -202,6 +202,7 @@
         }
         .tc-link.is-primary { font-weight: 600; }
         .tc-second { display: inline-flex; align-items: center; gap: 10px; }
+        .tc-label { font-size: 14px; font-weight: 600; color: var(--primary-color); }
         .tc-store { font-size: 15px; color: var(--primary-color); line-height: 1; transition: color 0.2s ease; }
         .tc-store:hover { color: #d18f00; }
         .tc-link:hover { color: #d18f00; text-decoration-color: #f0a500; }
@@ -292,7 +293,7 @@
                 projects: {
                     // 첫째 줄 : 왼쪽 = 웹사이트, 오른쪽 = 어플
                     p2: { year: "2026.06 ~", title: "꿀방울", labelDesign: "", design: "꿀방울 소개", designUrl: "https://honeysaltlove.com/ko/app/honey-drops/", storeUrl: "https://play.google.com/store/apps/details?id=com.honeysalt.sleep", labelLive: "", live: "포트폴리오 보기", liveUrl: "/portfolio/honeydrops/", gitUrl: "#" },
-                    p4: { year: "2026.01 ~", title: "단짠♥", labelDesign: "", design: "바로보기", designUrl: "https://honeysaltlove.com/", labelLive: "", live: "포트폴리오 보기", liveUrl: "/portfolio/honeysaltlove/", gitUrl: "#" },
+                    p4: { year: "2026.01 ~", title: "HoneySaltLove", labelDesign: "", design: "바로보기", designUrl: "https://honeysaltlove.com/", labelLive: "", live: "포트폴리오", lives: [{ text: "v1 보기", url: "/portfolio/honeysaltlove/v1/" }, { text: "v2 보기", url: "/portfolio/honeysaltlove/v2/" }], liveUrl: "/portfolio/honeysaltlove/v1/", gitUrl: "#" },
                     // 둘째 줄
                     p1: { year: "2018.06 ~", title: "정적 호스팅 페이지", sites: [
                             { name: "소안도미소펜션", gitUrl: "https://github.com/soanmiso/soanmiso.github.io", url: "https://soanmiso.com/", linkText: "바로보기" },
@@ -315,7 +316,7 @@
                 projects: {
                     // Row 1 : left = website, right = app
                     p2: { year: "2026.06 ~", title: "Honey Drops", labelDesign: "", design: "About Honey Drops", designUrl: "https://honeysaltlove.com/en/app/honey-drops/", storeUrl: "https://play.google.com/store/apps/details?id=com.honeysalt.sleep", labelLive: "", live: "View Portfolio", liveUrl: "/portfolio/honeydrops/", gitUrl: "#" },
-                    p4: { year: "2026.01 ~", title: "HoneySalt♥", labelDesign: "", design: "Visit", designUrl: "https://honeysaltlove.com/", labelLive: "", live: "View Portfolio", liveUrl: "/portfolio/honeysaltlove/", gitUrl: "#" },
+                    p4: { year: "2026.01 ~", title: "HoneySaltLove", labelDesign: "", design: "Visit", designUrl: "https://honeysaltlove.com/", labelLive: "", live: "Portfolio", lives: [{ text: "V1", url: "/portfolio/honeysaltlove/v1/" }, { text: "V2", url: "/portfolio/honeysaltlove/v2/" }], liveUrl: "/portfolio/honeysaltlove/v1/", gitUrl: "#" },
                     // Row 2
                     p1: { year: "2018.06 ~", title: "Static Hosting Site", sites: [
                             { name: "Soanmiso Pension", gitUrl: "https://github.com/soanmiso/soanmiso.github.io", url: "https://soanmiso.com/", linkText: "Visit" },
@@ -381,7 +382,11 @@
                     const storeHtml = project.storeUrl
                         ? `<a class="tc-store" href="${project.storeUrl}" target="_blank" aria-label="Google Play"><i class="fa-brands fa-google-play"></i></a>`
                         : '';
-                    const links = tcLink(project.liveUrl, project.live, true)
+                    // 포트폴리오가 여러 판이면(lives) '포트폴리오 보기' 글자 옆에 판마다 링크를 단다
+                    const liveHtml = project.lives
+                        ? `<span class="tc-second"><span class="tc-label">${project.live}</span>${project.lives.map(v => tcLink(v.url, v.text, true)).join('')}</span>`
+                        : tcLink(project.liveUrl, project.live, true);
+                    const links = liveHtml
                         + `<span class="tc-second">${tcLink(project.designUrl, project.design, false)}${storeHtml}</span>`;
 
                     container.innerHTML = `<div class="tc-head">
