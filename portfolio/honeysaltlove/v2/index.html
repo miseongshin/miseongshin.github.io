@@ -163,7 +163,7 @@ table.prog input[type=date] { font-size: 13px; padding: 2px 2px; width: 7.6em; }
 .savestate { font-style: normal; color: var(--honey); }
 
 /* 정할 것 */
-ul.plain { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+ul.plain { margin: 0; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; } /* 다른 절의 목록(ul.kv)처럼 점 없이 */
 ul.plain li::marker { color: var(--honey); }
 ul.plain b { font-weight: 700; }
 @media (prefers-reduced-motion: no-preference) { details { transition: border-color .15s; } }
