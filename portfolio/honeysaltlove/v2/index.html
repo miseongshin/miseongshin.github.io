@@ -181,6 +181,13 @@ section dl dd, section dl dt { min-width: 0; overflow-wrap: anywhere; word-break
   section h4, section h4 + ul.legendline, section h4 + ul.legendline + .diagram, #s1 ~ .diagram, #s1 ~ .erdcols, #constraints, #jpaDiagrams, section h4 + .erdcols,
   section > h3 + dl, ul.kv.legendline[style], ul.plain[style], .cols.plainbox[style], div[style*="margin-left:20px"] { margin-left: 0 !important; padding-left: 0 !important; }
   .legendline span { min-width: 0; display: block; }
+  /* 표: 한글이 한 글자씩 끊기지 않게. 넓은 표는 상자 안에서 옆으로 민다 */
+  th, td { word-break: keep-all; padding: 8px 10px; }
+  .cols td:first-child, .cols th:first-child { white-space: nowrap; }
+  .cols table:has(code) { min-width: 620px; }
+  .erdcols table { min-width: 980px; } /* 설명 칸이 좁아 줄이 길게 늘어나지 않게 — 옆으로 밀어 본다 */
+  table.prog { min-width: 820px; }
+  .phase, .step { padding: 12px; }
 }
 </style>
 
@@ -1184,6 +1191,16 @@ mermaid.run().then(() => {
   });
   const svgs = [...document.querySelectorAll('#jpaDiagrams .diagram svg')];
   const vw = s => s.viewBox.baseVal.width;
+  // 휴대폰: 화면 폭에 맞춰 줄이면 글자를 못 읽는다 — 원래 크기로 두고 상자 안에서 옆으로 민다
+  if (window.innerWidth < 640) {
+    document.querySelectorAll('.diagram svg').forEach(s => {
+      const w = Math.round(vw(s) * 0.75);
+      s.setAttribute('width', w);
+      s.style.setProperty('width', w + 'px', 'important');
+      s.style.setProperty('max-width', 'none', 'important');
+    });
+    return;
+  }
   if (svgs.length) {
     const e1 = document.querySelector('.diagram svg'); const k = e1.getBoundingClientRect().width / vw(e1);
     svgs.forEach(s => { const w = Math.round(vw(s) * k); s.setAttribute('width', w); s.style.setProperty('width', w + 'px', 'important'); s.style.setProperty('max-width', 'none', 'important'); });
