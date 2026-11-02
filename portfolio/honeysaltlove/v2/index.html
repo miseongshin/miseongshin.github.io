@@ -147,7 +147,8 @@ table.num b { color: var(--honey); }
 table.prog input[type=date] { font: inherit; font-size: 15px; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 3px 6px; }
 table.prog input[type=date]:focus-visible { outline: 2px solid var(--honey); outline-offset: 1px; }
 table.prog input[type=date]:disabled { opacity: .5; }
-table.prog tr.done td { background: var(--honey-soft); }
+/* 노란 배경은 지금 하고 있는 한 줄에만 (paint 가 .now 를 한 줄에만 단다). 끝난 줄은 '완료' 표시만 */
+table.prog tr.now td { background: var(--honey-soft); }
 table.prog tr.doing td.ko { color: var(--honey); }
 table.prog td.n { white-space: normal !important; min-width: 11em; }
 .cols:has(> #prog) { max-height: none !important; overflow-x: auto !important; }
@@ -197,8 +198,10 @@ section dl dd, section dl dt { min-width: 0; overflow-wrap: anywhere; word-break
     <div style="font-size:15px;color:var(--muted);">기능 개발 설계서 · 2026. 10. 30. 최초작성</div>
   </div>
   <header>
-  <!-- <div style="margin:8px 0 0;font-size:15px;"><b>현재까지 구현 확인:</b> honeysaltlove.com/ko/wisdom</div> -->
-  <!-- ↑ 지혜나눔 화면이 아직 없어 우선 감춘다. 열리면 주석을 푼다 -->
+  <div style="margin:8px 0 0;font-size:15px;line-height:1.8;">
+    <b>현재까지 구현 확인:</b> <a href="https://honeysaltlove.com/ko/wisdom" target="_blank" rel="noopener" style="color:inherit;">honeysaltlove.com/ko/wisdom</a><br>
+    <b>서버 저장소:</b> <a href="https://github.com/miseongshin/honeysalt-server" target="_blank" rel="noopener" style="color:inherit;">github.com/miseongshin/honeysalt-server</a>
+  </div>
 
   <nav style="margin:8px 0 24px;">
     <h2 style="margin:0 0 12px;">목차</h2>
@@ -210,7 +213,7 @@ section dl dd, section dl dt { min-width: 0; overflow-wrap: anywhere; word-break
 
   <section>
     <h2 id="sov"><span style="color:var(--muted);margin-right:10px;">1.</span>기능 개요 및 범위</h2>
-    <dl style="display:grid;grid-template-columns:max-content 1fr;gap:6px 20px;margin:0 0 16px;line-height:1.5;"><dt style="font-weight:700;margin:0;">위치</dt><dd style="margin:0;">1차: 2026.01.30 ~ 2026.08.25 · honeysaltlove.com · Vue · 구현 완료<br><span style="display:block;padding-left:1.5em;color:var(--muted);">포트폴리오: <a href="/portfolio/honeysaltlove/v1/" style="color:inherit;">shinmiseong.com/portfolio/honeysaltlove/v1</a></span>2차: honeysaltlove.com 대메뉴에 지혜나눔 추가 · Vue (Nuxt 3) + Spring Boot</dd><dt style="font-weight:700;margin:0;">주소</dt><dd style="margin:0;">웹: honeysaltlove.com/{언어}/wisdom (예: /ko/wisdom)<br>API: honeysaltlove.com/api/wisdom<br>Google 로그인 콜백: honeysaltlove.com/api/wisdom/login/oauth2/code/google</dd><dt style="font-weight:700;margin:0;">화면</dt><dd style="margin:0;">메인 · 상세(고민 · 생각꿀팁 · 활동 · 꿀방울 스케줄) · 내 계정</dd><dt style="font-weight:700;margin:0;">계정 · 앱</dt><dd style="margin:0;">웹에서 Google 로그인으로 가입<br>앱은 로그인 없이 회원의 앱 키와 비밀값으로 API 호출 · cart 테이블에 쌓인 보낸 것을 가져오고, 활동·도움돼요 기록을 저장</dd><dt style="font-weight:700;margin:0;">기술 환경</dt><dd style="margin:0;">honeysalt-server · Java 21 · Spring Boot 3 · Spring Data JPA · PostgreSQL</dd><dt style="font-weight:700;margin:0;">언어</dt><dd style="margin:0;">2차: 한국어만 지원 · 다국어는 3차에서 별도 설계</dd></dl>
+    <dl style="display:grid;grid-template-columns:max-content 1fr;gap:6px 20px;margin:0 0 16px;line-height:1.5;"><dt style="font-weight:700;margin:0;">위치</dt><dd style="margin:0;">1차: 2026.01.30 ~ 2026.08.25 · honeysaltlove.com · Vue · 구현 완료<br><span style="display:block;padding-left:1.5em;color:var(--muted);">포트폴리오: <a href="/portfolio/honeysaltlove/v1/" style="color:inherit;">shinmiseong.com/portfolio/honeysaltlove/v1</a></span>2차: honeysaltlove.com 대메뉴에 지혜나눔 추가 · Vue (Nuxt 3) + Spring Boot</dd><dt style="font-weight:700;margin:0;">주소</dt><dd style="margin:0;">웹: honeysaltlove.com/{언어}/wisdom (예: /ko/wisdom)<br>API: honeysaltlove.com/api/wisdom<br>Google 로그인 콜백: honeysaltlove.com/api/wisdom/login/oauth2/code/google</dd><dt style="font-weight:700;margin:0;">화면</dt><dd style="margin:0;">메인 · 상세(고민 · 생각꿀팁 · 활동 · 꿀방울 스케줄) · 내 계정</dd><dt style="font-weight:700;margin:0;">계정 · 앱</dt><dd style="margin:0;">웹에서 Google 로그인으로 가입<br>앱은 로그인 없이 회원의 앱 키와 비밀값으로 API 호출 · cart 테이블에 쌓인 보낸 것을 가져오고, 활동·도움돼요 기록을 저장</dd><dt style="font-weight:700;margin:0;">서버</dt><dd style="margin:0;">API 서버: api.honeysaltlove.com<br>저장소: <a href="https://github.com/miseongshin/honeysalt-server" target="_blank" rel="noopener" style="color:inherit;">github.com/miseongshin/honeysalt-server</a></dd><dt style="font-weight:700;margin:0;">기술 환경</dt><dd style="margin:0;">honeysalt-server · Java 21 · Spring Boot 3 · Spring Data JPA · PostgreSQL</dd><dt style="font-weight:700;margin:0;">언어</dt><dd style="margin:0;">2차: 한국어만 지원 · 다국어는 3차에서 별도 설계</dd></dl>
     <h3 id="s0" style="margin:20px 0 4px;">기능 범위</h3>
     <div class="cols plainbox"><table>
       <thead><tr><th>구분</th><th>기능</th><th>로그인</th></tr></thead>
@@ -1130,6 +1133,10 @@ window.addEventListener('afterprint', () => { __printOpen.forEach(d => d.open = 
       r.classList.toggle('doing', !!v.start && !v.end);
       const stc = document.getElementById('st-' + r.dataset.id); if (stc) { const s = v.end ? '완료' : v.start ? '진행 중' : (stc.dataset.def || '예정'); stc.dataset.s = s; stc.innerHTML = '<span>' + s + '</span>'; }
     });
+    // 지금 하는 줄 하나 — 진행 중인 줄 가운데 가장 최근에 시작한 것
+    const doing = rows.filter(r => r.classList.contains('doing'));
+    const now = doing.sort((a, b) => ((state[b.dataset.id] || {}).start || '').localeCompare((state[a.dataset.id] || {}).start || ''))[0];
+    rows.forEach(r => r.classList.toggle('now', r === now));
     Object.entries(groups).forEach(([cell, list]) => {
       const starts = list.map(i => (state[i] || {}).start).filter(Boolean).sort();
       const ends = list.map(i => (state[i] || {}).end).filter(Boolean).sort();
