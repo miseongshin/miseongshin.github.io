@@ -148,7 +148,7 @@ table.prog input[type=date] { font: inherit; font-size: 15px; color: var(--fg); 
 table.prog input[type=date]:focus-visible { outline: 2px solid var(--honey); outline-offset: 1px; }
 table.prog input[type=date]:disabled { opacity: .5; }
 /* 노란 배경은 지금 하고 있는 한 줄에만 (paint 가 .now 를 한 줄에만 단다). 끝난 줄은 '완료' 표시만 */
-table.prog tr.now td { background: var(--honey-soft); }
+table.prog tr.now td:not([rowspan]) { background: var(--honey-soft); } /* '2차' 처럼 여러 줄을 합친 칸은 칠하지 않는다 */
 table.prog tr.doing td.ko { color: var(--honey); }
 table.prog td.n { white-space: normal !important; min-width: 11em; }
 .cols:has(> #prog) { max-height: none !important; overflow-x: auto !important; }
