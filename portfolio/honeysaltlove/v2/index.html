@@ -358,6 +358,7 @@ erDiagram
     varchar hidden_reason "숨김 사유"
     int use_count "사용자 수"
     int done_count "활동 수"
+    int helped_count "도움돼요 수"
     int like_count "좋아요 수"
     timestamptz created_at "등록일"
     timestamptz updated_at "수정일"
@@ -547,7 +548,7 @@ erDiagram
     bigint helped_id PK "기본키"
     bigint app_key_id "앱 키 · FK 없음"
     bigint activity_id "활동 · FK 없음"
-    date helped_on "누른 날"
+    boolean helpful "켬 true · 끔 false"
     timestamptz created_at "등록일"
   }
   cart["cart · 활동바구니"] {
@@ -557,7 +558,6 @@ erDiagram
     bigint target_id "대상 번호"
     varchar days "활동만 · 바구니에서 고른 요일"
     timestamptz sent_at "내 꿀방울로 보낸 때 · NULL이면 바구니에 있음"
-    timestamptz picked_at "앱이 가져간 때 · NULL이면 대기"
     timestamptz created_at "담은 때"
     timestamptz updated_at "수정일"
   }
@@ -581,7 +581,8 @@ erDiagram
     bigint feedback_id PK "기본키"
     bigint member_id FK "NOT NULL"
     varchar type "종류"
-    text text "내용"
+    text feedback_text "내용"
+    timestamptz handled_at "처리 시각 · 선택"
     timestamptz created_at "등록일"
     timestamptz updated_at "수정일"
   }
@@ -629,8 +630,8 @@ erDiagram
     <div style="margin-left:20px;display:flex;flex-direction:column;gap:10px;">
     <h4 style="margin:10px 0 4px;margin-left:0 !important;">웹 API · 세션 쿠키</h4>
     <div class="cols plainbox"><table><thead><tr><th>메서드</th><th>주소</th><th>설명</th><th>로그인</th></tr></thead><tbody><tr><td>GET</td><td><code>/api/worries?tag=&amp;sort=new|like&amp;cursor=</code></td><td>고민 목록 · 답을 기다리는 고민은 sort=waiting</td><td></td></tr><tr><td>GET</td><td><code>/api/worries/{id}</code></td><td>고민 상세 · 생각꿀팁 · 활동꿀팁 포함</td><td></td></tr><tr><td>POST</td><td><code>/api/worries</code></td><td>고민 등록</td><td>로그인</td></tr><tr><td>PATCH</td><td><code>/api/worries/{id}</code></td><td>수정 · 숨김</td><td>본인</td></tr><tr><td>POST</td><td><code>/api/worries/{id}/thought-tips</code></td><td>생각꿀팁 등록</td><td>로그인</td></tr><tr><td>POST</td><td><code>/api/worries/{id}/activity-tips</code></td><td>활동꿀팁 등록 · 활동을 고르거나 새로 등록</td><td>로그인</td></tr><tr><td>GET</td><td><code>/api/thought-tips/{id}</code></td><td>생각 상세 · 태그별 관련 생각 · 관련 고민</td><td></td></tr><tr><td>PATCH</td><td><code>/api/thought-tips/{id}</code></td><td>수정 · 숨김</td><td>본인</td></tr><tr><td>GET</td><td><code>/api/activities?mission=&amp;tag=&amp;cursor=</code></td><td>활동 목록 · 나에게 맞는 추천</td><td></td></tr><tr><td>GET</td><td><code>/api/activities/{id}</code></td><td>활동 상세</td><td></td></tr><tr><td>POST · PATCH</td><td><code>/api/activities</code> · <code>/{id}</code></td><td>활동 등록 · 수정</td><td>로그인 · 본인</td></tr><tr><td>GET</td><td><code>/api/schedules?tag=&amp;cursor=</code></td><td>꿀방울 스케줄 목록</td><td></td></tr><tr><td>GET</td><td><code>/api/schedules/{id}</code></td><td>스케줄 상세 · 들어 있는 활동</td><td></td></tr><tr><td>POST · PATCH</td><td><code>/api/schedules</code> · <code>/{id}</code></td><td>스케줄 등록 · 수정</td><td>로그인 · 본인</td></tr><tr><td>POST · DELETE</td><td><code>/api/likes</code></td><td>좋아요 · 취소 · {targetType, targetId}</td><td>로그인</td></tr><tr><td>GET · POST</td><td><code>/api/{activities|schedules}/{id}/comments</code></td><td>댓글 목록 · 등록</td><td>등록만 로그인</td></tr><tr><td>GET</td><td><code>/api/tags?group=</code></td><td>태그 목록 · 많이 찾는 상황</td><td></td></tr><tr><td>GET · POST · DELETE</td><td><code>/api/cart</code> · <code>/{id}</code></td><td>활동바구니 보기 · 담기 · 빼기</td><td>로그인</td></tr><tr><td>POST</td><td><code>/api/cart/send</code></td><td>내 꿀방울로 보내기 · sent_at 채움</td><td>로그인</td></tr><tr><td>GET · PATCH · DELETE</td><td><code>/api/me</code></td><td>내 정보 · 수정 · 탈퇴</td><td>로그인</td></tr><tr><td>GET</td><td><code>/api/me/posts?type=tip|activity|schedule|comment</code></td><td>내가 쓴 글</td><td>로그인</td></tr><tr><td>POST</td><td><code>/api/feedback</code></td><td>의견 남기기</td><td></td></tr></tbody></table></div>
-    <h4 style="margin:10px 0 4px;margin-left:0 !important;">앱 API · Authorization: Bearer &lt;앱 키&gt;</h4>
-    <div class="cols plainbox"><table><thead><tr><th>메서드</th><th>주소</th><th>설명</th></tr></thead><tbody><tr><td>GET</td><td><code>/app/takes</code></td><td>보낸 것 가져가기 · sent_at 있음 · picked_at 없음</td></tr><tr><td>POST</td><td><code>/app/takes/ack</code></td><td>받은 id 목록 · picked_at 채움</td></tr><tr><td>POST</td><td><code>/api/v1/app/activities</code></td><td>활동 완료 · app_done_log</td></tr><tr><td>POST</td><td><code>/api/v1/app/helpful</code></td><td>도움됨 on/off · app_helped_log</td></tr></tbody></table></div>
+    <h4 style="margin:10px 0 4px;margin-left:0 !important;">앱 API · X-App-Key: &lt;앱 키&gt; (cart 는 + Authorization: Bearer &lt;비밀값&gt;)</h4>
+    <div class="cols plainbox"><table><thead><tr><th>메서드</th><th>주소</th><th>설명</th></tr></thead><tbody><tr><td>GET</td><td><code>/app/takes</code></td><td>보낸 것 받기 · sent_at 있음 · 지우지 않음</td></tr><tr><td>POST</td><td><code>/app/takes/ack</code></td><td>저장을 마친 cart_id 목록 · 그 행을 지우고 send_count +1</td></tr><tr><td>POST</td><td><code>/api/v1/app/activities</code></td><td>활동 완료 · app_done_log</td></tr><tr><td>POST</td><td><code>/api/v1/app/helpful</code></td><td>도움됨 켜기 · 끄기 · app_helped_log 에 쌓음</td></tr></tbody></table></div>
     </div>
     <h3 id="api2" style="margin:12px 0 6px;">요청·응답</h3>
     <div style="margin-left:20px;display:flex;flex-direction:column;gap:10px;">
@@ -650,7 +651,7 @@ GET /api/worries?sort=waiting&amp;cursor=120
 200 OK
 { "items": [ { "id": 119, "text": "…", "answerCount": 0 } ], "nextCursor": 101 }</pre></div>
     <div class="diagram"><pre style="min-width:0;font-family:var(--f-mono);font-size:13.5px;line-height:1.55;">POST api.honeysaltlove.com/api/v1/app/activities     활동 완료
-Authorization: Bearer &lt;앱 키&gt;
+X-App-Key: &lt;앱 키&gt;
 {
   "activityKey": "breath_478",    활동 키
   "missionId": 3,                 미션
@@ -658,17 +659,18 @@ Authorization: Bearer &lt;앱 키&gt;
 }
 
 POST api.honeysaltlove.com/api/v1/app/helpful        도움됨 on/off
-Authorization: Bearer &lt;앱 키&gt;
+X-App-Key: &lt;앱 키&gt;
 {
   "activityKey": "breath_478",    활동 키
-  "helpful": true                 true 켜기 · false 끄기
+  "helpful": true                 true 켜기(+1) · false 끄기(-1) · 같은 상태면 넣지 않음
 }</pre></div>
     </div>
     <h3 id="api3" style="margin:12px 0 6px;">인증·권한·오류 처리</h3>
     <div style="margin-left:20px;display:flex;flex-direction:column;gap:10px;">
     <ul class="kv legendline">
       <li><span>웹 인증</span> 구글 OAuth2 로그인 → 세션 쿠키 (HttpOnly · Secure · SameSite=Lax)</li>
-      <li><span>앱 인증</span> 헤더 Authorization: Bearer &lt;앱 키&gt; · 서버는 member_app_key 와 맞춰 본다 · 로그인 없음</li>
+      <li><span>앱 인증</span> 활동완료 · 도움돼요는 X-App-Key: &lt;앱 키&gt; 만 · cart 주고받기 · 웹 바로 들어가기는 X-App-Key + Authorization: Bearer &lt;비밀값&gt; · 서버는 비밀값의 해시(member_app_key.app_hash)와 맞춰 본다 · 로그인 없음</li>
+      <li><span>웹 바로 들어가기</span> 앱이 앱 키 + 비밀값으로 한 번 쓰는 토큰(1분)을 받아 주소에 붙여 웹을 연다 → 웹 서버가 확인하면 바로 지우고 세션 쿠키로 바꾼다 · 주소에서 토큰을 지운다 · 토큰 · 연결 코드는 서버 메모리</li>
       <li><span>권한</span> 보기(GET)는 누구나 · 쓰기는 USER · 수정 · 숨김은 본인(member_id 비교) · 관리자 숨김은 ADMIN</li>
       <li><span>오류 처리</span> @RestControllerAdvice 한 곳에서 같은 형식으로 응답</li>
     </ul>
@@ -708,10 +710,10 @@ Authorization: Bearer &lt;앱 키&gt;
     <ul class="kv legendline" style="margin-left:20px;">
       <li><span>앱 키</span> 앱이 처음 실행할 때 받는다 · 웹 계정 없이 앱만 써도 활동 기록이 쌓인다</li>
       <li><span>연결</span> 앱이 보여 준 연결 코드를 웹 내 계정에 넣으면 그 회원과 이어진다 · 기록은 옮기지 않고 member_app_key.member_id 만 채운다</li>
-      <li><span>검증</span> Authorization: Bearer &lt;앱 키&gt; · 틀리면 401 · 로그인 없음</li>
-      <li><span>보내기</span> 바구니에 담기(cart) → 내 꿀방울로 보내기(sent_at) → 앱이 가져감(GET /app/takes) → 받았다고 알림(ack · picked_at) → 스케줄 send_count +1</li>
+      <li><span>검증</span> X-App-Key (cart · 웹 바로 들어가기는 + 비밀값) · 틀리면 401 · 로그인 없음</li>
+      <li><span>보내기</span> 바구니에 담기(cart) → 내 꿀방울로 보내기(sent_at) → 앱이 받음(GET /app/takes) → 저장을 마치면 알림(ack · cart_id) → 그 행을 지우고 스케줄 send_count +1</li>
       <li><span>활동 완료</span> activityKey 로 활동을 찾아 app_done_log 에 저장 · 같은 활동은 하루 한 번</li>
-      <li><span>도움됨</span> helpful true 켜기 · false 끄기 · app_helped_log</li>
+      <li><span>도움됨</span> helpful true 켜기 · false 끄기 · 지우지 않고 app_helped_log 에 쌓는다 · 같은 상태가 두 번 오면 넣지 않는다</li>
     </ul>
     <h3 id="rule3" style="margin:12px 0 6px;">고민·생각꿀팁·활동·꿀방울 스케줄 처리</h3>
     <ul class="kv legendline" style="margin-left:20px;">
@@ -739,16 +741,16 @@ Authorization: Bearer &lt;앱 키&gt;
     <h3 id="nf2" style="margin:12px 0 6px;">성능·페이징</h3>
     <ul class="plain" style="margin-left:20px;">
       <li><b>목록</b>: OFFSET 대신 커서(마지막으로 본 id 이후)로 가져온다.</li>
-      <li><b>색인</b>: honey_worry (status, answer_count, created_at) · honey_thought_tip (status, created_at) · honey_thought_tip (worry_id) · honey_schedule (status, created_at) · 외래키 칸(honey_worry · honey_thought_tip · honey_schedule 의 member_id, honey_activity_tip · honey_schedule_activity 의 activity_id) — PostgreSQL 은 FK 에 색인을 자동으로 만들지 않는다 · honey_like 는 (target_type, target_id) · honey_comment 는 (activity_id, created_at) · (schedule_id, created_at) · (member_id) · honey_complaint 는 (target_type, target_id) · 미처리만 (created_at) · 태그 연결 테이블은 PK (대상_id, tag_id) + 역색인 (tag_id, 대상_id).</li>
+      <li><b>색인</b>: honey_worry (status, answer_count, created_at) · honey_thought_tip (status, created_at) · honey_thought_tip (worry_id) · honey_schedule (status, created_at) · 외래키 칸(honey_worry · honey_thought_tip · honey_schedule 의 member_id, honey_activity_tip · honey_schedule_activity 의 activity_id) — PostgreSQL 은 FK 에 색인을 자동으로 만들지 않는다 · honey_like 는 (target_type, target_id) · honey_comment 는 (activity_id, created_at) · (schedule_id, created_at) · (member_id) · honey_complaint 는 (target_type, target_id) · 미처리만 (created_at) · app_helped_log 는 (app_key_id, activity_id, created_at) · 태그 연결 테이블은 PK (대상_id, tag_id) + 역색인 (tag_id, 대상_id).</li>
       <li><b>N+1</b>: 목록은 fetch join · @EntityGraph · batch_fetch_size.</li>
     </ul>
     <h3 id="nf3" style="margin:12px 0 6px;">대용량 기준</h3>
     <ul class="plain" style="margin-left:20px;">
       <li><b>테이블 나누기</b>: 고민(honey_worry) · 생각꿀팁(honey_thought_tip) · 스케줄(honey_schedule)을 따로 둔다. 화면에서 쓰는 칸이 달라서다. 생각꿀팁만 worry_id FK 로 고민을 가리킨다.</li>
-      <li><b>숫자</b>: 좋아요 · 사용자 수 · 활동 수 · 태그 사용 횟수는 호출마다 수정하지 않는다. 원본 테이블(app_done_log · cart)에 기록하고, @Scheduled 스케줄러가 새로 기록된 것만 세어 *_count 에 한 번에 더한다(1시간). 인기 글에 좋아요가 몰려도 로우 락(row lock)으로 기다리지 않게 하려는 것이다. 좋아요는 취소하면 honey_like 행을 지워서 더하기로는 줄어든 것을 알 수 없다 — 스케줄러가 1분마다 honey_like 행을 대상별로 다시 세어 like_count 를 맞춘다(1분 동안은 실제 좋아요 수와 다를 수 있다). 글의 like_count 는 UPDATE 쿼리로 갱신한다 — 엔티티로 고치면 글의 수정일까지 바뀐다. 태그 사용 횟수는 스케줄러가 1시간마다 ○○_tag 를 공개 글만 세어 값을 갱신한다 — 글을 숨기면 줄어야 해서 더하지 않고 새로 센다.</li>
-      <li><b>활동완료</b>: app_done_log 은 가장 빨리 커진다. 월별 파티션 · '사용자 N명 · 활동 N회'는 honey_activity 의 use_count · done_count 를 읽는다.</li>
+      <li><b>숫자</b>: 좋아요 · 사용자 수 · 활동 수 · 도움돼요 수 · 태그 사용 횟수는 호출마다 수정하지 않는다 — 인기 글에 몰려도 로우 락(row lock)으로 기다리지 않게. 원본 테이블(honey_like · app_done_log · app_helped_log · ○○_tag)에 기록하고, @Scheduled 스케줄러가 원본을 다시 세어 *_count 를 맞춘다 — 집계 기준 시점을 따로 저장하지 않아 누락되거나 중복 집계될 가능성이 없다. 좋아요는 1분마다(1분 동안은 실제 좋아요 수와 다를 수 있다) · 사용자 수 · 활동 수 · 도움돼요 수는 1시간마다 활동별로(사용자 수는 앱 키를 겹치지 않게) · 태그 사용 횟수는 1시간마다 공개 글만(글을 숨기면 줄어야 해서). *_count 는 UPDATE 쿼리로 갱신한다 — 엔티티로 고치면 글의 수정일까지 바뀐다. 스케줄 사용자 수(send_count)는 앱이 받았다고 알릴 때(ack) 1 올린다.</li>
+      <li><b>활동완료</b>: app_done_log 은 가장 빨리 커진다. 지금은 일반 테이블(커지면 월별 파티션) · '사용자 N명 · 활동 N회'는 honey_activity 의 use_count · done_count 를 읽는다.</li>
       <li><b>많이 찾는 상황</b>: honey_worry_tag 를 매번 GROUP BY 하지 않고 tag.use_count 를 읽는다(스케줄러가 1시간마다 세어 바꿈).</li>
-      <li><b>보내기</b>: cart 는 앱이 가져갈 때(ack) honey_schedule.send_count 를 1 올리고, 가져간 행은 다음 날 지운다.</li>
+      <li><b>보내기</b>: cart 는 앱이 받았다고 알릴 때(ack) honey_schedule.send_count 를 1 올리고 그 행을 바로 지운다.</li>
     </ul>
   </section>
 
@@ -778,7 +780,7 @@ Authorization: Bearer &lt;앱 키&gt;
       <tr data-id="login"><td class="ko">로그인</td><td class="n">구글만 · 세션 · 닉네임(비우면 자동 생성) · 내 정보(태그) · 앱 키 발급 · 탈퇴</td><td>6~8</td><td>본인</td><td class="st" id="st-login">예정</td><td><input type="date" id="start-login" aria-label="로그인 시작"></td><td><input type="date" id="end-login" aria-label="로그인 완료"></td></tr>
       <tr data-id="loginui"><td class="ko">로그인 화면</td><td class="n">로그인 창 · 닉네임 · 내 정보 · 내 계정(내가 쓴 글) 틀</td><td>4~6</td><td>본인</td><td class="st" id="st-loginui">예정</td><td><input type="date" id="start-loginui" aria-label="로그인 화면 시작"></td><td><input type="date" id="end-loginui" aria-label="로그인 화면 완료"></td></tr>
       <tr data-id="applink"><td class="ko">앱 연결</td><td class="n">앱 키(Bearer) 검증 · 재발급 · 보낸 것 가져가기(cart) · 받음 알림(ack)</td><td>6~10</td><td>본인</td><td class="st" id="st-applink">예정</td><td><input type="date" id="start-applink" aria-label="앱 연결 시작"></td><td><input type="date" id="end-applink" aria-label="앱 연결 완료"></td></tr>
-      <tr data-id="appact"><td class="ko">앱 활동 받기</td><td class="n">활동 완료(/app/activities) · 도움됨 on/off(/app/helpful) · 하루 한 번 중복 막기</td><td>3~5</td><td>본인</td><td class="st" id="st-appact">예정</td><td><input type="date" id="start-appact" aria-label="앱 활동 받기 시작"></td><td><input type="date" id="end-appact" aria-label="앱 활동 받기 완료"></td></tr>
+      <tr data-id="appact"><td class="ko">앱 활동 받기</td><td class="n">활동 완료(/app/activities) · 도움됨 켜기 · 끄기(/app/helpful) · 활동완료 하루 한 번 중복 막기</td><td>3~5</td><td>본인</td><td class="st" id="st-appact">예정</td><td><input type="date" id="start-appact" aria-label="앱 활동 받기 시작"></td><td><input type="date" id="end-appact" aria-label="앱 활동 받기 완료"></td></tr>
       <tr data-id="e2e"><td class="ko">전체 테스트</td><td class="n">로그인 → 글쓰기 → 바구니 → 앱 받기 · PC · 모바일</td><td>3~5</td><td>본인</td><td class="st" id="st-e2e">예정</td><td><input type="date" id="start-e2e" aria-label="전체 테스트 시작"></td><td><input type="date" id="end-e2e" aria-label="전체 테스트 완료"></td></tr>
       <tr data-id="folio"><td class="ko">포트폴리오</td><td class="n">README</td><td>4~6</td><td>본인</td><td class="st" id="st-folio">예정</td><td><input type="date" id="start-folio" aria-label="포트폴리오 시작"></td><td><input type="date" id="end-folio" aria-label="포트폴리오 완료"></td></tr>
       <tr class="total"><td class="ko">2차 합계</td><td class="ko">한 세트</td><td class="n" id="span-1"></td><td>66~102</td><td colspan="4" id="total-1"><b>17~26일 · 약 4~6주</b></td></tr>
@@ -789,9 +791,9 @@ Authorization: Bearer &lt;앱 키&gt;
   <section>
     <h2 id="sdec"><span style="color:var(--muted);margin-right:10px;">8.</span>기술적 결정 및 미정 사항</h2>
     <h3 id="dec1" style="margin:12px 0 6px;">주요 결정과 이유</h3>
-    <div class="cols plainbox" style="margin-left:20px;"><table><thead><tr><th>결정</th><th>이유</th></tr></thead><tbody><tr><td>화면 Nuxt 3 · 서버 Spring Boot + JPA</td><td>상세 주소를 쇼핑몰처럼 정리하고 검색에 걸리게(SSR) · 백엔드 포트폴리오는 JPA 중심</td></tr><tr><td>로그인은 구글만</td><td>외국 사용자도 쓸 수 있음 · 비밀번호를 받지 않아 관리할 것이 적음</td></tr><tr><td>웹은 세션 쿠키</td><td>같은 도메인 · 서버 하나 · 로그아웃과 만료가 간단</td></tr><tr><td>앱은 Bearer 앱 키</td><td>앱에 로그인 화면이 없어도 됨 · 서버는 해시만 저장</td></tr><tr><td>승인 없이 등록 시 바로 공개</td><td>운영자 1명 · 사용자가 기다리지 않음 · 문제 글은 AI 검사와 관리자가 숨김</td></tr><tr><td>태그는 @ManyToMany + @JoinTable</td><td>연결 테이블에 추가 칸이 없어 엔티티가 필요 없음</td></tr><tr><td>목록은 커서 페이징</td><td>글이 많아져도 OFFSET 처럼 느려지지 않음</td></tr><tr><td>집계 숫자는 호출마다 갱신하지 않고 스케줄러가 맞춘다</td><td>인기 글에 좋아요가 몰려도 로우 락(row lock)으로 기다리지 않음</td></tr><tr><td>활동바구니는 로그인 후 cart 에 저장</td><td>PC 에서 담고 앱으로 보내기 위해</td></tr></tbody></table></div>
+    <div class="cols plainbox" style="margin-left:20px;"><table><thead><tr><th>결정</th><th>이유</th></tr></thead><tbody><tr><td>화면 Nuxt 3 · 서버 Spring Boot + JPA</td><td>상세 주소를 쇼핑몰처럼 정리하고 검색에 걸리게(SSR) · 백엔드 포트폴리오는 JPA 중심</td></tr><tr><td>로그인은 구글만</td><td>외국 사용자도 쓸 수 있음 · 비밀번호를 받지 않아 관리할 것이 적음</td></tr><tr><td>웹은 세션 쿠키</td><td>같은 도메인 · 서버 하나 · 로그아웃과 만료가 간단</td></tr><tr><td>앱은 앱 키 + 비밀값</td><td>앱에 로그인 화면이 없어도 됨 · 기록은 앱 키만, 주고받기 · 웹 바로 들어가기는 비밀값까지 · 서버는 해시만 저장</td></tr><tr><td>승인 없이 등록 시 바로 공개</td><td>운영자 1명 · 사용자가 기다리지 않음 · 문제 글은 AI 검사와 관리자가 숨김</td></tr><tr><td>태그는 @ManyToMany + @JoinTable</td><td>연결 테이블에 추가 칸이 없어 엔티티가 필요 없음</td></tr><tr><td>목록은 커서 페이징</td><td>글이 많아져도 OFFSET 처럼 느려지지 않음</td></tr><tr><td>집계 숫자는 호출마다 갱신하지 않고 스케줄러가 맞춘다</td><td>인기 글에 좋아요가 몰려도 로우 락(row lock)으로 기다리지 않음</td></tr><tr><td>활동바구니는 로그인 후 cart 에 저장</td><td>PC 에서 담고 앱으로 보내기 위해</td></tr></tbody></table></div>
     <h3 id="dec2" style="margin:12px 0 6px;">미정 항목과 후속 조치</h3>
-    <div class="cols plainbox" style="margin-left:20px;"><table><thead><tr><th>항목</th><th>내용</th><th>후속 조치</th></tr></thead><tbody><tr><td>API 주소 앞부분</td><td>앱 API 는 /api/v1 · 웹 API 와 가져가기 API 는 아직 /api</td><td>API 명세 때 /api/v1 로 통일할지 정한다</td></tr><tr><td>앱 인증 방식</td><td>Bearer 앱 키 하나 · 테이블 설명에는 아직 키 + 비밀값</td><td>앱 연결 전에 하나로 정하고 문서를 맞춘다</td></tr><tr><td>가져간 cart 행</td><td>앱이 가져간 뒤 다음 날 지울지, 바구니에 남길지</td><td>앱 연결 때 정한다</td></tr><tr><td>탈퇴 때 내가 만든 활동</td><td>남의 꿀팁 · 스케줄이 쓰고 있을 때</td><td>로그인 작업 때 정한다 · 지금은 남긴다</td></tr><tr><td>개인정보처리방침</td><td>출생연도 · 맞춤설정 태그를 받는다고 적어야 함</td><td>공개 전에 쓴다</td></tr><tr><td>다른 언어 화면</td><td>지혜나눔 메뉴를 숨길지, 한국어로 보낼지</td><td>2차 다국어 때 정한다</td></tr></tbody></table></div>
+    <div class="cols plainbox" style="margin-left:20px;"><table><thead><tr><th>항목</th><th>내용</th><th>후속 조치</th></tr></thead><tbody><tr><td>API 주소 앞부분</td><td>앱 API 는 /api/v1 · 웹 API 와 가져가기 API 는 아직 /api</td><td>API 명세 때 /api/v1 로 통일할지 정한다</td></tr><tr><td>탈퇴 때 내가 만든 활동</td><td>남의 꿀팁 · 스케줄이 쓰고 있을 때</td><td>로그인 작업 때 정한다 · 지금은 남긴다</td></tr><tr><td>개인정보처리방침</td><td>출생연도 · 맞춤설정 태그를 받는다고 적어야 함</td><td>공개 전에 쓴다</td></tr><tr><td>다른 언어 화면</td><td>지혜나눔 메뉴를 숨길지, 한국어로 보낼지</td><td>2차 다국어 때 정한다</td></tr></tbody></table></div>
   </section>
 
   <section>
@@ -934,21 +936,20 @@ const G = [
     ['대상 번호','target_id','보낸 대상의 번호 · target_type 과 함께 읽음'],
     ['요일','days','활동만 · 바구니에서 고른 요일','opt'],
     ['담은 때','created_at','바구니에 담은 때'],
-    ['보낸 때','sent_at','내 꿀방울로 보내기를 누른 때 · 비어 있으면 바구니에 있음','opt'],
-    ['앱이 가져간 때','picked_at','비어 있으면 대기 중','opt']],
-   'UQ (member_id, target_type, target_id) · 같은 것은 한 번만 담김 · 빼기 = 삭제 · 앱: GET /app/takes (sent_at IS NOT NULL AND picked_at IS NULL) → 받은 뒤 POST /app/takes/ack 로 picked_at 채움 + honey_schedule.send_count +1 · 가져간 행은 다음 날 삭제'],
+    ['보낸 때','sent_at','내 꿀방울로 보내기를 누른 때 · 비어 있으면 바구니에 있음','opt']],
+   'UQ (member_id, target_type, target_id) · 같은 것은 한 번만 담김 · 빼기 = 삭제 · 앱: GET /app/takes (sent_at IS NOT NULL) → 저장을 마치면 POST /app/takes/ack (cart_id 목록) → 그 행을 지우고 honey_schedule.send_count +1 · 지울 때 이 앱에 연결된 회원의 행인지 확인'],
   ['app_done_log', '활동완료 로그', '앱이 앱 키로 보낸다 · 웹 계정 없이도 쌓인다 · 쌓기만 하고 고치지 않는 로그 · FK 없음', [
     ['번호','done_id','자동 증가 번호','key'],
     ['활동','activity_id','한 활동 · FK 없음'],
     ['앱 키','app_key_id','보낸 앱 · 연결한 회원은 member_app_key.member_id 로 · FK 없음'],
     ['한 날','done_on','활동한 날짜 · 하루에 한 번만']],
-   'UQ (activity_id, app_key_id, done_on) · 월별 파티션'],
-  ['app_helped_log', '도움돼요 로그', '앱에서 누른 도움돼요 · 앱이 앱 키로 보낸다 · 웹 계정 없이도 쌓인다 · 쌓기만 하는 로그 · FK 없음', [
+   'UQ (activity_id, app_key_id, done_on) · 지금은 일반 테이블'],
+  ['app_helped_log', '도움돼요 로그', '앱에서 누른 도움돼요 · 앱이 앱 키로 보낸다 · 웹 계정 없이도 쌓인다 · 쌓기만 하는 로그(켜기 · 끄기를 둘 다 쌓는다) · FK 없음', [
     ['번호','helped_id','자동 증가 번호','key'],
     ['활동','activity_id','한 활동 · FK 없음'],
     ['앱 키','app_key_id','보낸 앱 · 연결한 회원은 member_app_key.member_id 로 · FK 없음'],
-    ['누른 날','helped_on','누른 날짜 · 하루에 한 번만']],
-   'UQ (activity_id, app_key_id, helped_on) · 월별 파티션'],
+    ['켬 · 끔','helpful','true 켬(+1) · false 끔(-1) · 같은 상태가 두 번 오면 넣지 않는다 · 행이 없으면 끈 상태로 보고 끔은 넣지 않는다']],
+   '색인 (app_key_id, activity_id, created_at) · 같은 상태 막기(그 앱 · 그 활동의 마지막 행) · 활동별로 켬 +1 · 끔 -1 을 더해 honey_activity.helped_count 를 맞춘다 · 지금은 일반 테이블'],
   ['honey_comment', '댓글', '활동 · 스케줄 상세에 단다 · 수정할 수 있다(좋아요가 하나라도 있으면 수정할 수 없다) · 지우지 않고 숨긴다(글과 같은 방식) · 활동 · 스케줄을 숨기면 댓글도 보이지 않는다(댓글 상태는 그대로 두고 조회할 때 활동 · 스케줄 상태까지 본다)', [
     ['번호','comment_id','자동 증가 번호','key'],
     ['활동','activity_id','활동 댓글이면 채움 · 둘 중 하나만','link opt'],
@@ -985,8 +986,9 @@ const G = [
     ['상태','status','공개(PUBLIC) · 숨김(HIDDEN) · 숨기면 이 활동이 든 활동꿀팁도 안 보임'],
     ['숨긴 시각','hidden_at','숨긴 날짜와 시각','opt'],
     ['숨김 사유','hidden_reason','누가 · 왜 · 예: AI: 광고 / 관리자: 욕설','opt'],
-    ['사용자 수','use_count','해 본 사람 수 · 스케줄러가 1시간마다 app_done_log 를 세어 더함'],
-    ['활동 수','done_count','활동완료 횟수 · 스케줄러가 1시간마다 app_done_log 를 세어 더함'],
+    ['사용자 수','use_count','해 본 사람 수 · 스케줄러가 1시간마다 app_done_log 를 다시 세어 맞춤 (앱 키를 겹치지 않게)'],
+    ['활동 수','done_count','활동완료 횟수 · 스케줄러가 1시간마다 app_done_log 를 다시 세어 맞춤'],
+    ['도움돼요 수','helped_count','스케줄러가 1시간마다 app_helped_log 를 활동별로 더해(+1 / -1) 맞춤'],
     ['좋아요 수','like_count','활동 상세 화면에서만 좋아요를 누를 수 있다 · 스케줄러가 1분마다 honey_like 를 다시 세어 맞춤'],
     ['등록일','created_at','활동을 등록한 때']],
    '같은 미션 안에서 이름이 겹치면 안 됨 · UQ (created_by, app_local_key) · 세부 분류(상체 · 하체 …)는 #태그 · 좋아요가 하나라도 있으면 수정할 수 없다'],
@@ -1013,10 +1015,10 @@ const G = [
     ['번호','feedback_id','자동 증가 번호','key'],
     ['보낸 사람','member_id','의견을 보낸 회원 · 로그인 후','link'],
     ['종류','type','기능 제안 · 시스템 추천 · 불편한 점 · 기타'],
-    ['내용','text','의견 내용'],
+    ['내용','feedback_text','의견 내용 · 1,000자까지 (칸은 text)'],
     ['언어','lang','한국어(ko) · 영어(en) · 일본어(ja) …'],
-    ['반영함','done','운영자가 반영했는지'],
-    ['보낸 때','created_at','보낸 때']]]
+    ['처리 시각','handled_at','운영자가 확인한 시각 · 비어 있으면 미처리','opt'],
+    ['보낸 때','created_at','']]]
  ]],
  ['앱 연결 (2차)', [
   ['terms', '약관', '약관 원문과 버전 · 시행 전 초안은 고치고, 시행 뒤에는 새 버전을 넣는다', [
@@ -1047,7 +1049,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
 const MARK = { key: ['key','기본키'], link: ['link','연결'], opt: ['opt','NULL 가능'], nn: ['nn','NOT NULL'] };
 const marks = m => { const xs = (m || '').split(' ').filter(Boolean); if (!xs.includes('opt') && !xs.includes('key')) xs.push('nn'); return xs.map(x => `<span class="tag ${MARK[x][0]}">${MARK[x][1]}</span>`).join(''); };
 const withTime = (t, cols) => { if (/_tag$/.test(t) && cols.length <= 2) return cols; const noUpd = ['app_done_log','app_helped_log','member_nickname_history','member_terms_history','honey_thought_tip_url','honey_activity_url','honey_activity_tip','honey_complaint','honey_like','tag_blocklist'].includes(t); const out = cols.filter(c => c[1] !== 'created_at' && c[1] !== 'updated_at'); const oc = cols.find(c => c[1] === 'created_at'); out.push(['등록일','created_at', oc ? oc[2] : '']); if (!out.some(c => c[1] === 'created_at')) out.push(['등록일','created_at','BaseTimeEntity']); if (!noUpd && !out.some(c => c[1] === 'updated_at')) out.push(['수정일','updated_at','BaseTimeEntity']); return out; };
-const TYPE_FIX = { 'member.nickname': 'VARCHAR(12)', 'member_nickname_history.nickname': 'VARCHAR(12)', 'honey_activity.name': 'VARCHAR(14)', 'tag.name': 'VARCHAR(50)', 'tag_blocklist.name': 'VARCHAR(50)', 'honey_comment.comment_text': 'VARCHAR(500)', 'honey_complaint.complaint_text': 'TEXT', 'honey_worry.worry_text': 'VARCHAR(500)', 'honey_thought_tip.thought_tip_text': 'VARCHAR(500)', 'honey_schedule.schedule_text': 'VARCHAR(500)', 'honey_activity.created_by': 'BIGINT', 'honey_activity.mission_no': 'INT', 'honey_activity.activity_key': 'VARCHAR(100)', 'translation.model': 'VARCHAR(50)', 'honey_schedule.schedule_title': 'VARCHAR(50)', 'honey_activity.description': 'TEXT', 'feedback.text': 'TEXT', 'terms.body': 'TEXT', 'translation.text': 'TEXT' };
+const TYPE_FIX = { 'member.nickname': 'VARCHAR(12)', 'member_nickname_history.nickname': 'VARCHAR(12)', 'honey_activity.name': 'VARCHAR(14)', 'tag.name': 'VARCHAR(50)', 'tag_blocklist.name': 'VARCHAR(50)', 'honey_comment.comment_text': 'VARCHAR(500)', 'honey_complaint.complaint_text': 'TEXT', 'honey_worry.worry_text': 'VARCHAR(500)', 'honey_thought_tip.thought_tip_text': 'VARCHAR(500)', 'honey_schedule.schedule_text': 'VARCHAR(500)', 'honey_activity.created_by': 'BIGINT', 'honey_activity.mission_no': 'INT', 'honey_activity.activity_key': 'VARCHAR(100)', 'translation.model': 'VARCHAR(50)', 'honey_schedule.schedule_title': 'VARCHAR(50)', 'honey_activity.description': 'TEXT', 'feedback.feedback_text': 'TEXT', 'terms.body': 'TEXT', 'translation.text': 'TEXT' };
 const typeOf = (t, c) => {
   if (TYPE_FIX[t + '.' + c]) return TYPE_FIX[t + '.' + c];
   if (/_id$/.test(c)) return 'BIGINT';
@@ -1069,7 +1071,7 @@ const JPA = [
   ['HoneyThoughtTip','honey_thought_tip','',[['Member member','@ManyToOne'],['HoneyWorry worry','@ManyToOne'],['String thoughtTipText',''],['Lang lang',''],['boolean showTags',''],['Visibility visibility','@Embedded'],['int likeCount',''],['List<HoneyThoughtTipUrl> urls','@OneToMany(cascade ALL, orphanRemoval)'],['Set<Tag> tags','@ManyToMany']],['hide()','show()']],
   ['HoneyThoughtTipUrl','honey_thought_tip_url','',[['HoneyThoughtTip thoughtTip','@ManyToOne'],['int sort',''],['String url','']],[]],
   ['HoneyActivityTip','honey_activity_tip','',[['Member member','@ManyToOne'],['HoneyWorry worry','@ManyToOne'],['HoneyActivity activity','@ManyToOne']],[]],
-  ['HoneyActivity','honey_activity','',[['Mission mission','번호로 저장 · null 가능'],['String activityKey',''],['boolean isDefault',''],['String name',''],['Lang lang',''],['String description',''],['Member createdBy','@ManyToOne · null 가능'],['ActivitySource source',''],['String appLocalKey',''],['Visibility visibility','@Embedded'],['int useCount',''],['int doneCount',''],['int likeCount',''],['List<HoneyActivityUrl> urls','@OneToMany(cascade ALL, orphanRemoval)'],['Set<Tag> tags','@ManyToMany']],['hide()','show()']],
+  ['HoneyActivity','honey_activity','',[['Mission mission','번호로 저장 · null 가능'],['String activityKey',''],['boolean isDefault',''],['String name',''],['Lang lang',''],['String description',''],['Member createdBy','@ManyToOne · null 가능'],['ActivitySource source',''],['String appLocalKey',''],['Visibility visibility','@Embedded'],['int useCount',''],['int doneCount',''],['int helpedCount',''],['int likeCount',''],['List<HoneyActivityUrl> urls','@OneToMany(cascade ALL, orphanRemoval)'],['Set<Tag> tags','@ManyToMany']],['hide()','show()']],
   ['HoneyActivityUrl','honey_activity_url','',[['HoneyActivity activity','@ManyToOne'],['int sort',''],['String url','']],[]],
   ['HoneySchedule','honey_schedule','',[['Member member','@ManyToOne'],['String scheduleTitle',''],['String scheduleText',''],['Lang lang',''],['boolean showTags',''],['Visibility visibility','@Embedded'],['int likeCount',''],['int sendCount',''],['List<HoneyScheduleActivity> items','@OneToMany(cascade ALL, orphanRemoval)'],['Set<Tag> tags','@ManyToMany']],['hide()','show()']],
   ['HoneyScheduleActivity','honey_schedule_activity','',[['HoneyScheduleActivityId id','@EmbeddedId'],['HoneySchedule schedule','@ManyToOne @MapsId'],['HoneyActivity activity','@ManyToOne @MapsId'],['String days','']],[]],
@@ -1086,15 +1088,15 @@ const JPA = [
  ['회원', [
   ['Member','member','',[['Provider provider',''],['String providerUid',''],['String nickname',''],['Integer birthYear',''],['Lang lang',''],['Role role',''],['Instant lastLoginAt',''],['Set<Tag> tags','@ManyToMany']],['changeNickname(String)','recordLogin(Instant)']],
   ['MemberNicknameHistory','member_nickname_history','',[['Member member','@ManyToOne'],['String nickname','']],[]],
-  ['Cart','cart','',[['Member member','@ManyToOne'],['TargetType targetType',''],['Long targetId','FK 없음'],['String days',''],['Instant sentAt',''],['Instant pickedAt','']],['markSent()','markPicked()']],
-  ['Feedback','feedback','',[['Member member','@ManyToOne'],['FeedbackType type',''],['String text',''],['boolean done','']],[]],
+  ['Cart','cart','',[['Member member','@ManyToOne'],['CartTargetType targetType',''],['Long targetId','FK 없음'],['String days',''],['Instant sentAt','']],['markSent()']],
+  ['Feedback','feedback','',[['Member member','@ManyToOne'],['FeedbackType type',''],['String feedbackText',''],['Lang lang',''],['Instant handledAt','']],['handle(Instant)']],
   ['MemberAppKey','member_app_key','',[['String appKey',''],['String appHash',''],['Member member','@ManyToOne · NULL 가능'],['Instant linkedAt',''],['Instant lastUsedAt','']],['link(Member)','renewSecret(String)']],
   ['MemberTermsHistory','member_terms_history','',[['Member member','@ManyToOne'],['Terms terms','@ManyToOne']],[]],
   ['Terms','terms','',[['TermsType type',''],['String version',''],['String body','text'],['boolean required',''],['Instant effectiveAt','']],[]],
  ]],
  ['앱 로그', [
   ['AppDoneLog','app_done_log','log',[['Long appKeyId','FK 없음'],['Long activityId','FK 없음'],['LocalDate doneOn','']],[]],
-  ['AppHelpedLog','app_helped_log','log',[['Long appKeyId','FK 없음'],['Long activityId','FK 없음'],['LocalDate helpedOn','']],[]],
+  ['AppHelpedLog','app_helped_log','log',[['Long appKeyId','FK 없음'],['Long activityId','FK 없음'],['boolean helpful','']],[]],
  ]],
  ['enum', [
   ['Status','','enum',[['PUBLIC · HIDDEN','']],[]],
