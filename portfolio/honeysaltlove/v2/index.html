@@ -307,8 +307,8 @@ erDiagram
     boolean is_anonymous "익명 여부"
     boolean show_tags "글에 내 태그 보이기"
     varchar status "공개(PUBLIC) · 숨김(HIDDEN)"
-    timestamptz hidden_at "숨긴 때"
-    varchar hidden_reason "숨긴 이유 (예: AI: 광고)"
+    timestamptz hidden_at "숨긴 시각"
+    varchar hidden_reason "숨김 사유 (예: AI: 광고)"
     int like_count "좋아요 수"
     int answer_count "답 수 · 답을 기다리는 고민 = 0"
     timestamptz created_at "등록일"
@@ -322,8 +322,8 @@ erDiagram
     varchar lang "언어"
     boolean show_tags "글에 내 태그 보이기"
     varchar status "공개(PUBLIC) · 숨김(HIDDEN)"
-    timestamptz hidden_at "숨긴 때"
-    varchar hidden_reason "숨긴 이유"
+    timestamptz hidden_at "숨긴 시각"
+    varchar hidden_reason "숨김 사유"
     int like_count "좋아요 수"
     timestamptz created_at "등록일"
     timestamptz updated_at "수정일"
@@ -354,8 +354,8 @@ erDiagram
     varchar source "DEFAULT · WEB · APP"
     varchar app_local_key "앱에서 만든 활동 번호"
     varchar status "공개(PUBLIC) · 숨김(HIDDEN)"
-    timestamptz hidden_at "숨긴 때"
-    varchar hidden_reason "숨긴 이유"
+    timestamptz hidden_at "숨긴 시각"
+    varchar hidden_reason "숨김 사유"
     int use_count "사용자 수"
     int done_count "활동 수"
     int like_count "좋아요 수"
@@ -377,8 +377,8 @@ erDiagram
     varchar lang "언어"
     boolean show_tags "글에 내 태그 보이기"
     varchar status "공개(PUBLIC) · 숨김(HIDDEN)"
-    timestamptz hidden_at "숨긴 때"
-    varchar hidden_reason "숨긴 이유"
+    timestamptz hidden_at "숨긴 시각"
+    varchar hidden_reason "숨김 사유"
     int like_count "좋아요 수"
     int send_count "사용자 수"
     timestamptz created_at "등록일"
@@ -448,8 +448,8 @@ erDiagram
 
     <h4 style="margin:10px 0 4px;">3. 댓글, 좋아요</h4>
     <ul class="kv legendline">
-      <li>댓글은 활동, 꿀방울 스케줄 상세화면에서 사용한다.</li>
-      <li>좋아요는 고민 · 생각꿀팁 · 스케줄 · 활동 네 곳에 누를 수 있다.</li>
+      <li>댓글은 활동 · 꿀방울 스케줄 상세 화면에서 작성한다. 활동 · 스케줄을 숨기면 그 댓글도 보이지 않는다.</li>
+      <li>좋아요는 고민 · 생각꿀팁 · 스케줄 · 활동 · 댓글에 누를 수 있다.</li>
       <li>신고는 고민 · 생각꿀팁 · 스케줄 · 활동 · 댓글에 할 수 있다. 같은 글에 3명 이상 신고하면 관리자에게 메일을 보낸다.</li>
     </ul>
     <div class="diagram"><pre class="mermaid">
@@ -466,15 +466,20 @@ erDiagram
     bigint schedule_id FK "스케줄 · 둘 중 하나만"
     bigint member_id FK "쓴 사람"
     varchar comment_text "내용"
+    varchar lang "작성 언어"
+    varchar status "공개 · 숨김 상태"
+    timestamptz hidden_at "숨긴 시각 · 선택"
+    varchar hidden_reason "숨김 사유 · 선택"
+    int like_count "좋아요 수"
     timestamptz created_at "등록일"
+    timestamptz updated_at "수정일"
   }
   honey_like["honey_like · 좋아요"] {
     bigint like_id PK "기본키"
     bigint member_id FK "회원"
-    varchar target_type "고민(WORRY) · 생각꿀팁(THOUGHT_TIP) · 스케줄(SCHEDULE) · 활동(ACTIVITY)"
+    varchar target_type "고민(WORRY) · 생각꿀팁(THOUGHT_TIP) · 스케줄(SCHEDULE) · 활동(ACTIVITY) · 댓글(COMMENT)"
     bigint target_id "대상 번호"
     timestamptz created_at "등록일"
-    timestamptz updated_at "수정일"
   }
   honey_complaint["honey_complaint · 신고"] {
     bigint complaint_id PK "기본키"
@@ -483,7 +488,7 @@ erDiagram
     bigint target_id "대상 번호"
     varchar reason "광고 · 욕설 · 부적절 · 기타"
     varchar complaint_text "신고 사유가 ‘기타’일 때 입력하는 짧은 설명 · 선택"
-    timestamptz handled_at "관리자가 처리한 때 · NULL 이면 대기"
+    timestamptz handled_at "관리자가 처리한 시각 · NULL 이면 미처리"
     timestamptz created_at "신고한 때"
   }
 </pre></div>
@@ -715,7 +720,7 @@ Authorization: Bearer &lt;앱 키&gt;
       <li><span>활동</span> 미션 선택 · 이름 · 시간 · 난이도 · 설명 · 영상 · 글 링크 여러 개 · 활동꿀팁에서 고르거나 새로 등록</li>
       <li><span>꿀방울 스케줄</span> 바구니에 담은 활동으로 만든다 · 활동별 요일 설정가능</li>
       <li><span>수정 · 숨김</span> 본인만 · 지우지 않고 HIDDEN · AI 검사나 관리자도 숨길 수 있다</li>
-      <li><span>좋아요</span> 한 사용자는 대상마다 한 번만 누를 수 있다 · 누르면 honey_like 에 저장하고, 스케줄러가 1분마다 새 기록 수를 세어 좋아요 수에 반영한다</li>
+      <li><span>좋아요</span> 한 사용자는 대상마다 한 번만 누를 수 있다 · 누르면 honey_like 에 저장하고, 취소하면 그 행을 지운다 · 좋아요 수는 스케줄러가 1분마다 honey_like 행을 대상별로 다시 세어 맞춘다 (1분 동안은 실제 좋아요 수와 다를 수 있다)</li>
     </ul>
   </section>
 
@@ -726,7 +731,7 @@ Authorization: Bearer &lt;앱 키&gt;
       <li><b>통신</b>: 모두 HTTPS. 세션 쿠키는 HttpOnly · Secure · SameSite=Lax.</li>
       <li><b>앱 키</b>: 해시만 저장한다. 원래 값은 처음 만들 때 한 번만 보여 준다.</li>
       <li><b>작성</b>: 고민 · 꿀팁 · 스케줄 · 댓글 · 좋아요 · 의견 모두 로그인 후. 보기는 로그인 없이. 모든 작성 테이블의 member_id 는 NOT NULL.</li>
-      <li><b>삭제</b>: 글쓴이만 지운다(소프트 삭제 deleted_at). 활동 · 스케줄은 댓글이 있으면 서비스에서 막는다 — 409.</li>
+      <li><b>삭제</b>: 지우지 않고 숨긴다(status HIDDEN · hidden_reason 에 '본인 삭제' 처럼 누가 · 왜). 작성자 · 운영자만. 활동 · 스케줄은 댓글이 있어도 지울 수 있다 — 그 댓글은 같이 안 보인다.</li>
       <li><b>숨김</b>: 등록 시 바로 공개. 저장 뒤 비동기로 AI 검사 → 문제 있으면 HIDDEN + hidden_at + hidden_reason "AI: 광고". 신고 · 관리자 화면에서 HIDDEN + hidden_reason "관리자: …".</li>
       <li><b>입력 검증</b>: 요청 DTO 에 @Valid · 글자 수 제한 · 오류는 400.</li>
       <li><b>헬스 체크</b>: Actuator 의 /actuator/health 만 연다(배포 확인 · 서버 감시). 설정값이 보이는 다른 Actuator 주소는 닫는다.</li>
@@ -734,13 +739,13 @@ Authorization: Bearer &lt;앱 키&gt;
     <h3 id="nf2" style="margin:12px 0 6px;">성능·페이징</h3>
     <ul class="plain" style="margin-left:20px;">
       <li><b>목록</b>: OFFSET 대신 커서(마지막으로 본 id 이후)로 가져온다.</li>
-      <li><b>색인</b>: honey_worry (status, answer_count, created_at) · honey_thought_tip (status, created_at) · honey_thought_tip (worry_id) · honey_schedule (status, created_at) · 외래키 칸(honey_worry · honey_thought_tip · honey_schedule 의 member_id, honey_activity_tip · honey_schedule_activity 의 activity_id) — PostgreSQL 은 FK 에 색인을 자동으로 만들지 않는다 · honey_like 는 (target_type, target_id) · 태그 연결 테이블은 PK (대상_id, tag_id) + 역색인 (tag_id, 대상_id).</li>
+      <li><b>색인</b>: honey_worry (status, answer_count, created_at) · honey_thought_tip (status, created_at) · honey_thought_tip (worry_id) · honey_schedule (status, created_at) · 외래키 칸(honey_worry · honey_thought_tip · honey_schedule 의 member_id, honey_activity_tip · honey_schedule_activity 의 activity_id) — PostgreSQL 은 FK 에 색인을 자동으로 만들지 않는다 · honey_like 는 (target_type, target_id) · honey_comment 는 (activity_id, created_at) · (schedule_id, created_at) · (member_id) · honey_complaint 는 (target_type, target_id) · 미처리만 (created_at) · 태그 연결 테이블은 PK (대상_id, tag_id) + 역색인 (tag_id, 대상_id).</li>
       <li><b>N+1</b>: 목록은 fetch join · @EntityGraph · batch_fetch_size.</li>
     </ul>
     <h3 id="nf3" style="margin:12px 0 6px;">대용량 기준</h3>
     <ul class="plain" style="margin-left:20px;">
       <li><b>테이블 나누기</b>: 고민(honey_worry) · 생각꿀팁(honey_thought_tip) · 스케줄(honey_schedule)을 따로 둔다. 화면에서 쓰는 칸이 달라서다. 생각꿀팁만 worry_id FK 로 고민을 가리킨다.</li>
-      <li><b>숫자</b>: 좋아요 · 사용자 수 · 활동 수 · 태그 사용 횟수는 사용자 동작 때는 수를 갱신하지 않는다. 원본 테이블(honey_like · app_done_log · cart)에 기록하고, @Scheduled 스케줄러가 새로 기록된 것만 세어 *_count 에 한 번에 더한다(좋아요 1분 · 나머지 1시간). 인기 글에 좋아요가 몰려도 대상 테이블의 행을 잠그지 않는다. 태그 사용 횟수만 스케줄러가 1시간마다 ○○_tag 를 공개 글만 세어 값을 갱신한다 — 글을 숨기면 줄어야 해서 더하지 않고 새로 센다.</li>
+      <li><b>숫자</b>: 좋아요 · 사용자 수 · 활동 수 · 태그 사용 횟수는 호출마다 수정하지 않는다. 원본 테이블(app_done_log · cart)에 기록하고, @Scheduled 스케줄러가 새로 기록된 것만 세어 *_count 에 한 번에 더한다(1시간). 인기 글에 좋아요가 몰려도 로우 락(row lock)으로 기다리지 않게 하려는 것이다. 좋아요는 취소하면 honey_like 행을 지워서 더하기로는 줄어든 것을 알 수 없다 — 스케줄러가 1분마다 honey_like 행을 대상별로 다시 세어 like_count 를 맞춘다(1분 동안은 실제 좋아요 수와 다를 수 있다). 글의 like_count 는 UPDATE 쿼리로 갱신한다 — 엔티티로 고치면 글의 수정일까지 바뀐다. 태그 사용 횟수는 스케줄러가 1시간마다 ○○_tag 를 공개 글만 세어 값을 갱신한다 — 글을 숨기면 줄어야 해서 더하지 않고 새로 센다.</li>
       <li><b>활동완료</b>: app_done_log 은 가장 빨리 커진다. 월별 파티션 · '사용자 N명 · 활동 N회'는 honey_activity 의 use_count · done_count 를 읽는다.</li>
       <li><b>많이 찾는 상황</b>: honey_worry_tag 를 매번 GROUP BY 하지 않고 tag.use_count 를 읽는다(스케줄러가 1시간마다 세어 바꿈).</li>
       <li><b>보내기</b>: cart 는 앱이 가져갈 때(ack) honey_schedule.send_count 를 1 올리고, 가져간 행은 다음 날 지운다.</li>
@@ -784,7 +789,7 @@ Authorization: Bearer &lt;앱 키&gt;
   <section>
     <h2 id="sdec"><span style="color:var(--muted);margin-right:10px;">8.</span>기술적 결정 및 미정 사항</h2>
     <h3 id="dec1" style="margin:12px 0 6px;">주요 결정과 이유</h3>
-    <div class="cols plainbox" style="margin-left:20px;"><table><thead><tr><th>결정</th><th>이유</th></tr></thead><tbody><tr><td>화면 Nuxt 3 · 서버 Spring Boot + JPA</td><td>상세 주소를 쇼핑몰처럼 정리하고 검색에 걸리게(SSR) · 백엔드 포트폴리오는 JPA 중심</td></tr><tr><td>로그인은 구글만</td><td>외국 사용자도 쓸 수 있음 · 비밀번호를 받지 않아 관리할 것이 적음</td></tr><tr><td>웹은 세션 쿠키</td><td>같은 도메인 · 서버 하나 · 로그아웃과 만료가 간단</td></tr><tr><td>앱은 Bearer 앱 키</td><td>앱에 로그인 화면이 없어도 됨 · 서버는 해시만 저장</td></tr><tr><td>승인 없이 등록 시 바로 공개</td><td>운영자 1명 · 사용자가 기다리지 않음 · 문제 글은 AI 검사와 관리자가 숨김</td></tr><tr><td>태그는 @ManyToMany + @JoinTable</td><td>연결 테이블에 추가 칸이 없어 엔티티가 필요 없음</td></tr><tr><td>목록은 커서 페이징</td><td>글이 많아져도 OFFSET 처럼 느려지지 않음</td></tr><tr><td>숫자는 스케줄러가 모아서 더함</td><td>인기 글에 좋아요가 몰려도 대상 테이블의 행을 잠그지 않음</td></tr><tr><td>활동바구니는 로그인 후 cart 에 저장</td><td>PC 에서 담고 앱으로 보내기 위해</td></tr></tbody></table></div>
+    <div class="cols plainbox" style="margin-left:20px;"><table><thead><tr><th>결정</th><th>이유</th></tr></thead><tbody><tr><td>화면 Nuxt 3 · 서버 Spring Boot + JPA</td><td>상세 주소를 쇼핑몰처럼 정리하고 검색에 걸리게(SSR) · 백엔드 포트폴리오는 JPA 중심</td></tr><tr><td>로그인은 구글만</td><td>외국 사용자도 쓸 수 있음 · 비밀번호를 받지 않아 관리할 것이 적음</td></tr><tr><td>웹은 세션 쿠키</td><td>같은 도메인 · 서버 하나 · 로그아웃과 만료가 간단</td></tr><tr><td>앱은 Bearer 앱 키</td><td>앱에 로그인 화면이 없어도 됨 · 서버는 해시만 저장</td></tr><tr><td>승인 없이 등록 시 바로 공개</td><td>운영자 1명 · 사용자가 기다리지 않음 · 문제 글은 AI 검사와 관리자가 숨김</td></tr><tr><td>태그는 @ManyToMany + @JoinTable</td><td>연결 테이블에 추가 칸이 없어 엔티티가 필요 없음</td></tr><tr><td>목록은 커서 페이징</td><td>글이 많아져도 OFFSET 처럼 느려지지 않음</td></tr><tr><td>집계 숫자는 호출마다 갱신하지 않고 스케줄러가 맞춘다</td><td>인기 글에 좋아요가 몰려도 로우 락(row lock)으로 기다리지 않음</td></tr><tr><td>활동바구니는 로그인 후 cart 에 저장</td><td>PC 에서 담고 앱으로 보내기 위해</td></tr></tbody></table></div>
     <h3 id="dec2" style="margin:12px 0 6px;">미정 항목과 후속 조치</h3>
     <div class="cols plainbox" style="margin-left:20px;"><table><thead><tr><th>항목</th><th>내용</th><th>후속 조치</th></tr></thead><tbody><tr><td>API 주소 앞부분</td><td>앱 API 는 /api/v1 · 웹 API 와 가져가기 API 는 아직 /api</td><td>API 명세 때 /api/v1 로 통일할지 정한다</td></tr><tr><td>앱 인증 방식</td><td>Bearer 앱 키 하나 · 테이블 설명에는 아직 키 + 비밀값</td><td>앱 연결 전에 하나로 정하고 문서를 맞춘다</td></tr><tr><td>가져간 cart 행</td><td>앱이 가져간 뒤 다음 날 지울지, 바구니에 남길지</td><td>앱 연결 때 정한다</td></tr><tr><td>탈퇴 때 내가 만든 활동</td><td>남의 꿀팁 · 스케줄이 쓰고 있을 때</td><td>로그인 작업 때 정한다 · 지금은 남긴다</td></tr><tr><td>개인정보처리방침</td><td>출생연도 · 맞춤설정 태그를 받는다고 적어야 함</td><td>공개 전에 쓴다</td></tr><tr><td>다른 언어 화면</td><td>지혜나눔 메뉴를 숨길지, 한국어로 보낼지</td><td>2차 다국어 때 정한다</td></tr></tbody></table></div>
   </section>
@@ -840,15 +845,15 @@ const G = [
   ['honey_worry', '고민', '', [
     ['번호','worry_id','자동 증가 번호','key'],
     ['쓴 사람','member_id','고민을 쓴 회원 · NOT NULL','link'],
-    ['쓴 언어','lang','한국어(ko) · 영어(en) · 일본어(ja) … · 2차는 한국어(ko)만'],
+    ['작성 언어','lang','한국어(ko) · 영어(en) · 일본어(ja) … · 2차는 한국어(ko)만'],
     ['고민','worry_text','고민 내용 · 쓸 때 한 · 중 · 일 200자 · 그 외 400자 (칸은 500)'],
     ['익명 여부','is_anonymous','true = 익명 · 기본 true'],
     ['상태','status','공개(PUBLIC) · 숨김(HIDDEN) · 등록 시 바로 공개'],
-    ['숨긴 때','hidden_at','숨긴 날짜와 시각','opt'],
-    ['숨긴 이유','hidden_reason','누가 · 왜 · 예: AI: 광고 / 관리자: 욕설','opt'],
-    ['좋아요 수','like_count','스케줄러가 1분마다 honey_like 의 새 기록 수를 세어 반영'],
+    ['숨긴 시각','hidden_at','숨긴 날짜와 시각','opt'],
+    ['숨김 사유','hidden_reason','누가 · 왜 · 예: AI: 광고 / 관리자: 욕설','opt'],
+    ['좋아요 수','like_count','스케줄러가 1분마다 honey_like 를 다시 세어 맞춤'],
     ['답 수','answer_count','0 = 답을 기다리는 고민 · 답을 쓸 때 1 올림'],
-    ['쓴 때','created_at','올린 때 · 목록 정렬 기준'],
+    ['작성 시각','created_at','목록 정렬 기준'],
     ['내 태그 보이기','show_tags','등록할 때 선택 · 체크하면 글 옆에 내 태그를 보여 줌']],
    '색인 (status, answer_count, created_at) · 지혜나눔 > 고민 > 답을 기다리는 고민'],
   ['honey_thought_tip', '생각꿀팁', '', [
@@ -856,26 +861,26 @@ const G = [
     ['쓴 사람','member_id','NOT NULL','link'],
     ['답한 고민','worry_id','생각꿀팁은 고민에 딸린 글 · NOT NULL','link'],
     ['생각','thought_tip_text','도움이 된 생각 · 쓸 때 한 · 중 · 일 200자 · 그 외 400자 (칸은 500)'],
-    ['쓴 언어','lang','2차는 한국어(ko)만'],
+    ['작성 언어','lang','2차는 한국어(ko)만'],
     ['상태','status','공개(PUBLIC) · 숨김(HIDDEN) · 등록 시 바로 공개'],
-    ['숨긴 때','hidden_at','숨긴 날짜와 시각','opt'],
-    ['숨긴 이유','hidden_reason','누가 · 왜 · 예: AI: 광고 / 관리자: 욕설','opt'],
-    ['좋아요 수','like_count','스케줄러가 1분마다 honey_like 의 새 기록 수를 세어 반영'],
-    ['쓴 때','created_at','목록 정렬 기준'],
+    ['숨긴 시각','hidden_at','숨긴 날짜와 시각','opt'],
+    ['숨김 사유','hidden_reason','누가 · 왜 · 예: AI: 광고 / 관리자: 욕설','opt'],
+    ['좋아요 수','like_count','스케줄러가 1분마다 honey_like 를 다시 세어 맞춤'],
+    ['작성 시각','created_at','목록 정렬 기준'],
     ['내 태그 보이기','show_tags','등록할 때 선택 · 체크하면 글 옆에 내 태그를 보여 줌']],
-   '색인 (status, created_at) · 지혜나눔 > 생각꿀팁 / 색인 (worry_id) · 지혜나눔 > 고민 > 고민 상세 · 좋아요를 받으면 고치지 않는다 · 고민이 숨겨지면 함께 안 보인다(조회할 때 고민 상태도 본다)'],
+   '색인 (status, created_at) · 지혜나눔 > 생각꿀팁 / 색인 (worry_id) · 지혜나눔 > 고민 > 고민 상세 · 좋아요가 하나라도 있으면 수정할 수 없다 · 고민이 숨겨지면 함께 안 보인다(조회할 때 고민 상태도 본다)'],
   ['honey_schedule', '꿀방울 스케줄', '활동 묶음. 고민과 연결하지 않는다', [
     ['번호','schedule_id','자동 증가 번호','key'],
     ['쓴 사람','member_id','NOT NULL','link'],
     ['이름','schedule_title','스케줄 이름'],
     ['설명','schedule_text','누구에게, 언제 좋은지 · 쓸 때 한 · 중 · 일 200자 · 그 외 400자 (칸은 500)','opt'],
-    ['쓴 언어','lang','2차는 한국어(ko)만'],
+    ['작성 언어','lang','2차는 한국어(ko)만'],
     ['상태','status','공개(PUBLIC) · 숨김(HIDDEN)'],
-    ['숨긴 때','hidden_at','숨긴 날짜와 시각','opt'],
-    ['숨긴 이유','hidden_reason','누가 · 왜 · 예: AI: 광고 / 관리자: 욕설','opt'],
-    ['좋아요 수','like_count','스케줄러가 1분마다 honey_like 의 새 기록 수를 세어 반영'],
+    ['숨긴 시각','hidden_at','숨긴 날짜와 시각','opt'],
+    ['숨김 사유','hidden_reason','누가 · 왜 · 예: AI: 광고 / 관리자: 욕설','opt'],
+    ['좋아요 수','like_count','스케줄러가 1분마다 honey_like 를 다시 세어 맞춤'],
     ['사용자 수','send_count','앱이 가져갈 때(ack) 1 올림'],
-    ['쓴 때','created_at','목록 정렬 기준'],
+    ['작성 시각','created_at','목록 정렬 기준'],
     ['내 태그 보이기','show_tags','등록할 때 선택 · 체크하면 글 옆에 내 태그를 보여 줌']],
    '색인 (status, created_at) · 지혜나눔 > 꿀방울 스케줄'],
  ['honey_worry_tag', '고민 태그', '고민에 붙은 태그 · 행 하나 = 태그 하나 · 대용량이라 대상별로 나눈다', [
@@ -905,13 +910,13 @@ const G = [
     ['요일','days','월(0) 화(1) 수(2) 목(3) 금(4) 토(5) 일(6) · 쉼표로 여러 개 · 예: "0,3" = 월·목 · 비우면 매일','opt']]]
  ]],
  ['반응', [
-  ['honey_like', '좋아요', '고민 · 생각꿀팁 · 스케줄 · 활동의 좋아요를 한 테이블에서. 한 사용자는 대상마다 한 번만 등록할 수 있다', [
+  ['honey_like', '좋아요', '고민 · 생각꿀팁 · 스케줄 · 활동 · 댓글의 좋아요를 한 테이블에서. 한 사용자는 대상마다 한 번만 등록할 수 있다', [
     ['번호','like_id','자동 증가 번호','key'],
     ['회원','member_id','좋아요를 누른 회원','link'],
-    ['대상 종류','target_type','고민(WORRY) · 생각꿀팁(THOUGHT_TIP) · 스케줄(SCHEDULE) · 활동(ACTIVITY)'],
+    ['대상 종류','target_type','고민(WORRY) · 생각꿀팁(THOUGHT_TIP) · 스케줄(SCHEDULE) · 활동(ACTIVITY) · 댓글(COMMENT)'],
     ['대상 번호','target_id','FK 없음 · 대상 지울 때 서비스에서 같이 지움'],
     ['누른 때','created_at','누른 때']],
-   'UQ (member_id, target_type, target_id) · 스케줄러가 1분마다 새 기록 수를 세어 각 대상의 like_count 에 반영한다'],
+   'UQ (member_id, target_type, target_id) · 색인 (target_type, target_id) · 취소하면 행을 지운다 · 스케줄러가 1분마다 대상별 좋아요 수를 다시 계산해 like_count 를 갱신한다'],
   ['honey_complaint', '신고', '고민 · 생각꿀팁 · 스케줄 · 활동 · 댓글을 한 테이블에서. 한 사용자는 대상마다 한 번만 등록할 수 있다 · 수정할 수 없음', [
     ['번호','complaint_id','자동 증가 번호','key'],
     ['회원','member_id','신고한 회원','link'],
@@ -919,9 +924,9 @@ const G = [
     ['대상 번호','target_id','FK 없음'],
     ['이유','reason','광고(AD) · 욕설(ABUSE) · 부적절(INAPPROPRIATE) · 기타(ETC)'],
     ['설명','complaint_text','신고 사유가 ‘기타’일 때 입력하는 짧은 설명','opt'],
-    ['처리한 때','handled_at','관리자가 확인한 때 · 비어 있으면 대기','opt'],
-    ['신고한 때','created_at','신고한 때']],
-   'UQ (member_id, target_type, target_id) · 같은 대상에 3명째 신고가 들어오는 순간 관리자에게 메일 한 번 (자동 숨김 없음 · 관리자가 보고 숨긴다)'],
+    ['처리 시각','handled_at','관리자가 확인한 시각 · 비어 있으면 미처리','opt'],
+    ['신고한 때','created_at','']],
+   '색인 (target_type, target_id) · 같은 대상 신고 수 / 미처리만 색인 (created_at) · 미처리 신고 목록(운영자) · UQ (member_id, target_type, target_id) · 같은 대상에 세 번째 신고가 접수되면 관리자에게 이메일을 한 번 발송한다 (자동 숨김 없음 · 관리자가 보고 숨긴다)'],
   ['cart', '활동바구니', '활동바구니 · 담으면 저장되고, 앱이 앱 토큰으로 가져간다', [
     ['번호','cart_id','자동 증가 번호','key'],
     ['회원','member_id','담은 회원','link'],
@@ -944,15 +949,19 @@ const G = [
     ['앱 키','app_key_id','보낸 앱 · 연결한 회원은 member_app_key.member_id 로 · FK 없음'],
     ['누른 날','helped_on','누른 날짜 · 하루에 한 번만']],
    'UQ (activity_id, app_key_id, helped_on) · 월별 파티션'],
-  ['honey_comment', '댓글', '활동 · 스케줄 상세에 단다', [
+  ['honey_comment', '댓글', '활동 · 스케줄 상세에 단다 · 수정할 수 있다(좋아요가 하나라도 있으면 수정할 수 없다) · 지우지 않고 숨긴다(글과 같은 방식) · 활동 · 스케줄을 숨기면 댓글도 보이지 않는다(댓글 상태는 그대로 두고 조회할 때 활동 · 스케줄 상태까지 본다)', [
     ['번호','comment_id','자동 증가 번호','key'],
     ['활동','activity_id','활동 댓글이면 채움 · 둘 중 하나만','link opt'],
     ['스케줄','schedule_id','스케줄 댓글이면 채움 · 둘 중 하나만','link opt'],
     ['쓴 사람','member_id','댓글을 쓴 회원 · NOT NULL','link'],
-    ['내용','comment_text','댓글 내용'],
+    ['내용','comment_text','댓글 내용 · 쓸 때 한 · 중 · 일 200자 · 그 외 400자 (칸은 500)'],
     ['원문 언어','lang','한국어(ko) · 영어(en) · 일본어(ja) … · 2차는 한국어(ko)만'],
-    ['쓴 때','created_at','쓴 때'],
-    ['지운 때','deleted_at','지운 때 · 소프트 삭제','opt']]]
+    ['상태','status','공개(PUBLIC) · 숨김(HIDDEN) · 작성자가 지우거나 운영자가 숨기면 HIDDEN'],
+    ['숨긴 시각','hidden_at','숨긴 날짜와 시각','opt'],
+    ['숨김 사유','hidden_reason','누가 · 왜 · 예: 본인 삭제 / 관리자: 욕설','opt'],
+    ['좋아요 수','like_count','스케줄러가 1분마다 honey_like 를 다시 세어 맞춤'],
+    ['작성 시각','created_at','']],
+   '색인 (activity_id, created_at) · 지혜나눔 > 활동 상세 / 색인 (schedule_id, created_at) · 지혜나눔 > 꿀방울 스케줄 상세 / 색인 (member_id) · 내 댓글 · 탈퇴 처리 · 활동 · 스케줄 둘 중 하나만 (check)']
  ]],
  ['활동과 분류', [
   ['honey_activity_tip', '활동꿀팁', '고민에 도움이 된 활동을 잇는다 · 고치지 않고 넣고 지운다. 좋아요 · 댓글은 활동 상세에서', [
@@ -974,13 +983,13 @@ const G = [
     ['들어온 곳','source','DEFAULT · WEB · APP'],
     ['앱 쪽 키','app_local_key','앱에서 사용자가 만든 활동 번호 (u-1785719 …) · 같은 활동 두 번 안 받기','opt'],
     ['상태','status','공개(PUBLIC) · 숨김(HIDDEN) · 숨기면 이 활동이 든 활동꿀팁도 안 보임'],
-    ['숨긴 때','hidden_at','숨긴 날짜와 시각','opt'],
-    ['숨긴 이유','hidden_reason','누가 · 왜 · 예: AI: 광고 / 관리자: 욕설','opt'],
+    ['숨긴 시각','hidden_at','숨긴 날짜와 시각','opt'],
+    ['숨김 사유','hidden_reason','누가 · 왜 · 예: AI: 광고 / 관리자: 욕설','opt'],
     ['사용자 수','use_count','해 본 사람 수 · 스케줄러가 1시간마다 app_done_log 를 세어 더함'],
     ['활동 수','done_count','활동완료 횟수 · 스케줄러가 1시간마다 app_done_log 를 세어 더함'],
-    ['좋아요 수','like_count','활동 상세 화면에서만 좋아요를 누를 수 있다 · 스케줄러가 1분마다 honey_like 의 새 기록 수를 세어 반영'],
+    ['좋아요 수','like_count','활동 상세 화면에서만 좋아요를 누를 수 있다 · 스케줄러가 1분마다 honey_like 를 다시 세어 맞춤'],
     ['등록일','created_at','활동을 등록한 때']],
-   '같은 미션 안에서 이름이 겹치면 안 됨 · UQ (created_by, app_local_key) · 세부 분류(상체 · 하체 …)는 #태그 · 좋아요를 받으면 고치지 않는다'],
+   '같은 미션 안에서 이름이 겹치면 안 됨 · UQ (created_by, app_local_key) · 세부 분류(상체 · 하체 …)는 #태그 · 좋아요가 하나라도 있으면 수정할 수 없다'],
   ['honey_activity_url', '활동 영상·글', '활동 하나에 여러 개 · 고치지 않고 지우고 다시 넣는다', [
     ['번호','activity_url_id','자동 증가 번호','key'],
     ['활동','activity_id','링크가 붙은 활동','link'],
@@ -1037,8 +1046,8 @@ const G = [
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const MARK = { key: ['key','기본키'], link: ['link','연결'], opt: ['opt','NULL 가능'], nn: ['nn','NOT NULL'] };
 const marks = m => { const xs = (m || '').split(' ').filter(Boolean); if (!xs.includes('opt') && !xs.includes('key')) xs.push('nn'); return xs.map(x => `<span class="tag ${MARK[x][0]}">${MARK[x][1]}</span>`).join(''); };
-const withTime = (t, cols) => { if (/_tag$/.test(t) && cols.length <= 2) return cols; const noUpd = ['app_done_log','app_helped_log','member_nickname_history','member_terms_history','honey_thought_tip_url','honey_activity_url','honey_activity_tip','honey_complaint','tag_blocklist'].includes(t); const out = cols.filter(c => c[1] !== 'created_at' && c[1] !== 'updated_at'); const oc = cols.find(c => c[1] === 'created_at'); out.push(['등록일','created_at', oc ? oc[2] : '']); if (!out.some(c => c[1] === 'created_at')) out.push(['등록일','created_at','BaseTimeEntity']); if (!noUpd && !out.some(c => c[1] === 'updated_at')) out.push(['수정일','updated_at','BaseTimeEntity']); return out; };
-const TYPE_FIX = { 'member.nickname': 'VARCHAR(12)', 'member_nickname_history.nickname': 'VARCHAR(12)', 'honey_activity.name': 'VARCHAR(14)', 'tag.name': 'VARCHAR(50)', 'tag_blocklist.name': 'VARCHAR(50)', 'honey_comment.comment_text': 'VARCHAR(200)', 'honey_worry.worry_text': 'VARCHAR(500)', 'honey_thought_tip.thought_tip_text': 'VARCHAR(500)', 'honey_schedule.schedule_text': 'VARCHAR(500)', 'honey_activity.created_by': 'BIGINT', 'honey_activity.mission_no': 'INT', 'honey_activity.activity_key': 'VARCHAR(100)', 'translation.model': 'VARCHAR(50)', 'honey_schedule.schedule_title': 'VARCHAR(50)', 'honey_activity.description': 'TEXT', 'feedback.text': 'TEXT', 'terms.body': 'TEXT', 'translation.text': 'TEXT' };
+const withTime = (t, cols) => { if (/_tag$/.test(t) && cols.length <= 2) return cols; const noUpd = ['app_done_log','app_helped_log','member_nickname_history','member_terms_history','honey_thought_tip_url','honey_activity_url','honey_activity_tip','honey_complaint','honey_like','tag_blocklist'].includes(t); const out = cols.filter(c => c[1] !== 'created_at' && c[1] !== 'updated_at'); const oc = cols.find(c => c[1] === 'created_at'); out.push(['등록일','created_at', oc ? oc[2] : '']); if (!out.some(c => c[1] === 'created_at')) out.push(['등록일','created_at','BaseTimeEntity']); if (!noUpd && !out.some(c => c[1] === 'updated_at')) out.push(['수정일','updated_at','BaseTimeEntity']); return out; };
+const TYPE_FIX = { 'member.nickname': 'VARCHAR(12)', 'member_nickname_history.nickname': 'VARCHAR(12)', 'honey_activity.name': 'VARCHAR(14)', 'tag.name': 'VARCHAR(50)', 'tag_blocklist.name': 'VARCHAR(50)', 'honey_comment.comment_text': 'VARCHAR(500)', 'honey_complaint.complaint_text': 'TEXT', 'honey_worry.worry_text': 'VARCHAR(500)', 'honey_thought_tip.thought_tip_text': 'VARCHAR(500)', 'honey_schedule.schedule_text': 'VARCHAR(500)', 'honey_activity.created_by': 'BIGINT', 'honey_activity.mission_no': 'INT', 'honey_activity.activity_key': 'VARCHAR(100)', 'translation.model': 'VARCHAR(50)', 'honey_schedule.schedule_title': 'VARCHAR(50)', 'honey_activity.description': 'TEXT', 'feedback.text': 'TEXT', 'terms.body': 'TEXT', 'translation.text': 'TEXT' };
 const typeOf = (t, c) => {
   if (TYPE_FIX[t + '.' + c]) return TYPE_FIX[t + '.' + c];
   if (/_id$/.test(c)) return 'BIGINT';
@@ -1070,7 +1079,7 @@ const JPA = [
   ['TagBlocklist','tag_blocklist','',[['String name','@Id · 차단한 태그 이름'],['String reason','']],['block(String, String)']],
  ]],
  ['댓글 · 좋아요 (ERD 5)', [
-  ['HoneyComment','honey_comment','',[['HoneyActivity activity','@ManyToOne · 둘 중 하나'],['HoneySchedule schedule','@ManyToOne · 둘 중 하나'],['Member member','@ManyToOne'],['String commentText',''],['Instant deletedAt','']],['delete()']],
+  ['HoneyComment','honey_comment','',[['HoneyActivity activity','@ManyToOne · 둘 중 하나'],['HoneySchedule schedule','@ManyToOne · 둘 중 하나'],['Member member','@ManyToOne'],['String commentText',''],['Lang lang',''],['Visibility visibility','@Embedded'],['int likeCount','']],['edit(String)','hide()','show()']],
   ['HoneyLike','honey_like','',[['Member member','@ManyToOne'],['TargetType targetType',''],['Long targetId','FK 없음']],[]],
   ['HoneyComplaint','honey_complaint','',[['Member member','@ManyToOne'],['TargetType targetType',''],['Long targetId','FK 없음'],['ComplaintReason reason',''],['String complaintText',''],['Instant handledAt','']],['handle()']],
  ]],
@@ -1091,7 +1100,7 @@ const JPA = [
   ['Status','','enum',[['PUBLIC · HIDDEN','']],[]],
   ['Mission','','enum',[['MOVE(1) · CLEAN(2) · RUB(3) · AUTO(4) · TOMORROW(5) · KNOW(6) · DETOX(7)','']],[]],
   ['ActivitySource','','enum',[['DEFAULT · WEB · APP','']],[]],
-  ['TargetType','','enum',[['WORRY · THOUGHT_TIP · SCHEDULE · ACTIVITY · COMMENT (COMMENT 은 신고만)','']],[]],
+  ['TargetType','','enum',[['WORRY · THOUGHT_TIP · SCHEDULE · ACTIVITY · COMMENT','']],[]],
   ['TagGroup','','enum',[['GOAL · LIFE_EVENT · OCCUPATION · PERSONALITY_TYPE · SOCIAL_STYLE · PLANNING_STYLE · ACTIVITY_STYLE · WITH · LEVEL · TIME · PAIN · INTEREST · RHYTHM','']],[]],
   ['ComplaintReason','','enum',[['AD · ABUSE · INAPPROPRIATE · ETC','']],[]],
   ['Provider','','enum',[['GOOGLE','']],[]],
