@@ -762,29 +762,28 @@ X-App-Key: &lt;앱 키&gt;
       <li><span>시간</span> 하루 4시간 · AI가 코드 생성 · 직접 검토 · 작업일 = 시간 ÷ 4</li>
       <li><span>막대</span> 주 5일 작업 · 휴일 2일 · 달력일 = 작업일 + ⌊작업일 ÷ 5⌋ × 2 · 앞 작업이 끝나면 다음 작업 시작 · 시간은 큰 값 기준</li>
       <li><span>날짜</span> 시작 · 완료 칸에 적으면 저장 · 상태는 날짜로 자동 (예정 → 진행 중 → 완료) <em id="saveState" class="savestate"></em></li>
-      <li><span>담당</span> 본인 1인 · AI 코드 생성 + 직접 검토</li>
       <li><span>업데이트</span> 설계와 구현 진행에 따라 계속 고친다</li>
     </ul>
     <h3 id="wbs2" style="margin:12px 0 6px;">진행표</h3>
     <div class="cols plainbox"><table class="num prog" id="prog">
-      <tr><th>차수</th><th>작업 항목</th><th>내용</th><th>시간</th><th>담당</th><th>상태</th><th>시작</th><th>완료일</th></tr>
-      <tr data-id="design"><td class="ko" rowspan="15">2차</td><td class="ko">설계</td><td class="n">화면 시안 · 데이터 설계(ERD · UML) · API 설계 · 핵심 처리 규칙 · 비기능 설계</td><td>—</td><td>본인</td><td class="st" id="st-design" data-def="진행 중">진행 중</td><td><input type="date" id="start-design" aria-label="설계 시작"></td><td><input type="date" id="end-design" aria-label="설계 완료"></td></tr>
-      <tr data-id="base"><td class="ko">서버 바탕</td><td class="n">도메인 · HTTPS · nginx · 배포 · DB 연결 · 헬스 체크</td><td>6~10</td><td>본인</td><td class="st" id="st-base">예정</td><td><input type="date" id="start-base" aria-label="서버 바탕 시작"></td><td><input type="date" id="end-base" aria-label="서버 바탕 완료"></td></tr>
-      <tr data-id="entity"><td class="ko">엔티티</td><td class="n">전체 · Flyway · 기본 데이터</td><td>4~6</td><td>본인</td><td class="st" id="st-entity">예정</td><td><input type="date" id="start-entity" aria-label="엔티티 시작"></td><td><input type="date" id="end-entity" aria-label="엔티티 완료"></td></tr>
-      <tr data-id="check1"><td class="ko">통합 테스트</td><td class="n">실서버 · DB 연결 확인</td><td>2~3</td><td>본인</td><td class="st" id="st-check1">예정</td><td><input type="date" id="start-check1" aria-label="2차 통합 테스트 시작"></td><td><input type="date" id="end-check1" aria-label="2차 통합 테스트 완료"></td></tr>
-      <tr data-id="spec"><td class="ko">API 명세</td><td class="n">웹 · 앱 API 주소 · DTO · 오류 형식 · Swagger</td><td>2~3</td><td>본인</td><td class="st" id="st-spec">예정</td><td><input type="date" id="start-spec" aria-label="API 명세 시작"></td><td><input type="date" id="end-spec" aria-label="API 명세 완료"></td></tr>
-      <tr data-id="ui"><td class="ko">화면</td><td class="n">메인 · 목록 · 상세(고민 · 생각 · 활동 · 스케줄) · 활동바구니 · 글쓰기 팝업 · 가짜 데이터로</td><td>10~14</td><td>본인</td><td class="st" id="st-ui">예정</td><td><input type="date" id="start-ui" aria-label="화면 시작"></td><td><input type="date" id="end-ui" aria-label="화면 완료"></td></tr>
-      <tr data-id="api"><td class="ko">API 구현</td><td class="n">고민 · 생각꿀팁 · 활동꿀팁 · 활동 · 스케줄 · 좋아요 · 댓글 · 태그 · 활동바구니 · 의견 → 가짜 데이터 교체</td><td>8~13</td><td>본인</td><td class="st" id="st-api">예정</td><td><input type="date" id="start-api" aria-label="API 구현 시작"></td><td><input type="date" id="end-api" aria-label="API 구현 완료"></td></tr>
-      <tr data-id="unit"><td class="ko">단위 테스트</td><td class="n">서비스 · 리포지토리 (JUnit)</td><td>4~6</td><td>본인</td><td class="st" id="st-unit">예정</td><td><input type="date" id="start-unit" aria-label="단위 테스트 시작"></td><td><input type="date" id="end-unit" aria-label="단위 테스트 완료"></td></tr>
-      <tr data-id="check2"><td class="ko">통합 테스트</td><td class="n">화면 + API 연결 · 버그</td><td>4~7</td><td>본인</td><td class="st" id="st-check2">예정</td><td><input type="date" id="start-check2" aria-label="2차 통합 테스트 시작"></td><td><input type="date" id="end-check2" aria-label="2차 통합 테스트 완료"></td></tr>
-      <tr data-id="login"><td class="ko">로그인</td><td class="n">구글만 · 세션 · 닉네임(비우면 자동 생성) · 내 정보(태그) · 앱 키 발급 · 탈퇴</td><td>6~8</td><td>본인</td><td class="st" id="st-login">예정</td><td><input type="date" id="start-login" aria-label="로그인 시작"></td><td><input type="date" id="end-login" aria-label="로그인 완료"></td></tr>
-      <tr data-id="loginui"><td class="ko">로그인 화면</td><td class="n">로그인 창 · 닉네임 · 내 정보 · 내 계정(내가 쓴 글) 틀</td><td>4~6</td><td>본인</td><td class="st" id="st-loginui">예정</td><td><input type="date" id="start-loginui" aria-label="로그인 화면 시작"></td><td><input type="date" id="end-loginui" aria-label="로그인 화면 완료"></td></tr>
-      <tr data-id="applink"><td class="ko">앱 연결</td><td class="n">앱 키(Bearer) 검증 · 재발급 · 보낸 것 가져가기(cart) · 받음 알림(ack)</td><td>6~10</td><td>본인</td><td class="st" id="st-applink">예정</td><td><input type="date" id="start-applink" aria-label="앱 연결 시작"></td><td><input type="date" id="end-applink" aria-label="앱 연결 완료"></td></tr>
-      <tr data-id="appact"><td class="ko">앱 활동 받기</td><td class="n">활동 완료(/app/activities) · 도움됨 켜기 · 끄기(/app/helpful) · 활동완료 하루 한 번 중복 막기</td><td>3~5</td><td>본인</td><td class="st" id="st-appact">예정</td><td><input type="date" id="start-appact" aria-label="앱 활동 받기 시작"></td><td><input type="date" id="end-appact" aria-label="앱 활동 받기 완료"></td></tr>
-      <tr data-id="e2e"><td class="ko">전체 테스트</td><td class="n">로그인 → 글쓰기 → 바구니 → 앱 받기 · PC · 모바일</td><td>3~5</td><td>본인</td><td class="st" id="st-e2e">예정</td><td><input type="date" id="start-e2e" aria-label="전체 테스트 시작"></td><td><input type="date" id="end-e2e" aria-label="전체 테스트 완료"></td></tr>
-      <tr data-id="folio"><td class="ko">포트폴리오</td><td class="n">README</td><td>4~6</td><td>본인</td><td class="st" id="st-folio">예정</td><td><input type="date" id="start-folio" aria-label="포트폴리오 시작"></td><td><input type="date" id="end-folio" aria-label="포트폴리오 완료"></td></tr>
-      <tr class="total"><td class="ko">2차 합계</td><td class="ko">한 세트</td><td class="n" id="span-1"></td><td>66~102</td><td colspan="4" id="total-1"><b>17~26일 · 약 4~6주</b></td></tr>
-      <tr class="total"><td class="ko">3차</td><td class="ko">다국어</td><td class="n" colspan="6">화면 글자 · 번역 테이블 · AI 번역 · 약관 고치기 · 2차 끝난 뒤 따로 계획</td></tr>
+      <tr><th>차수</th><th>작업 항목</th><th>내용</th><th>시간</th><th>상태</th><th>시작</th><th>완료일</th></tr>
+      <tr data-id="design"><td class="ko" rowspan="15">2차</td><td class="ko">설계</td><td class="n">화면 시안 · 데이터 설계(ERD · UML) · API 설계 · 핵심 처리 규칙 · 비기능 설계</td><td>—</td><td class="st" id="st-design" data-def="진행 중">진행 중</td><td><input type="date" id="start-design" aria-label="설계 시작"></td><td><input type="date" id="end-design" aria-label="설계 완료"></td></tr>
+      <tr data-id="base"><td class="ko">서버 바탕</td><td class="n">도메인 · HTTPS · nginx · 배포 · DB 연결 · 헬스 체크</td><td>6~10</td><td class="st" id="st-base">예정</td><td><input type="date" id="start-base" aria-label="서버 바탕 시작"></td><td><input type="date" id="end-base" aria-label="서버 바탕 완료"></td></tr>
+      <tr data-id="entity"><td class="ko">엔티티</td><td class="n">전체 · Flyway · 로컬 · 서버 적용</td><td>4~6</td><td class="st" id="st-entity">예정</td><td><input type="date" id="start-entity" aria-label="엔티티 시작"></td><td><input type="date" id="end-entity" aria-label="엔티티 완료"></td></tr>
+      <tr data-id="check1"><td class="ko">서버 배포</td><td class="n">CI/CD (Jenkins — Testcontainers 테스트 · 서버 배포)</td><td>6~10</td><td class="st" id="st-check1">예정</td><td><input type="date" id="start-check1" aria-label="서버 배포 시작"></td><td><input type="date" id="end-check1" aria-label="서버 배포 완료"></td></tr>
+      <tr data-id="spec"><td class="ko">API 명세</td><td class="n">웹 · 앱 API 주소 · DTO · 오류 형식 · Swagger</td><td>2~3</td><td class="st" id="st-spec">예정</td><td><input type="date" id="start-spec" aria-label="API 명세 시작"></td><td><input type="date" id="end-spec" aria-label="API 명세 완료"></td></tr>
+      <tr data-id="ui"><td class="ko">화면</td><td class="n">메인 · 목록 · 상세(고민 · 생각 · 활동 · 스케줄) · 활동바구니 · 글쓰기 팝업 · 가짜 데이터로</td><td>10~14</td><td class="st" id="st-ui">예정</td><td><input type="date" id="start-ui" aria-label="화면 시작"></td><td><input type="date" id="end-ui" aria-label="화면 완료"></td></tr>
+      <tr data-id="api"><td class="ko">API 구현</td><td class="n">고민 · 생각꿀팁 · 활동꿀팁 · 활동 · 스케줄 · 좋아요 · 댓글 · 태그 · 활동바구니 · 의견 · 기본 데이터(태그 · 약관) → 가짜 데이터 교체</td><td>8~13</td><td class="st" id="st-api">예정</td><td><input type="date" id="start-api" aria-label="API 구현 시작"></td><td><input type="date" id="end-api" aria-label="API 구현 완료"></td></tr>
+      <tr data-id="unit"><td class="ko">단위 테스트</td><td class="n">서비스 · 리포지토리 (JUnit)</td><td>4~6</td><td class="st" id="st-unit">예정</td><td><input type="date" id="start-unit" aria-label="단위 테스트 시작"></td><td><input type="date" id="end-unit" aria-label="단위 테스트 완료"></td></tr>
+      <tr data-id="check2"><td class="ko">통합 테스트</td><td class="n">화면 + API 연결 · 버그</td><td>4~7</td><td class="st" id="st-check2">예정</td><td><input type="date" id="start-check2" aria-label="2차 통합 테스트 시작"></td><td><input type="date" id="end-check2" aria-label="2차 통합 테스트 완료"></td></tr>
+      <tr data-id="login"><td class="ko">로그인</td><td class="n">구글만 · 세션 · 닉네임(비우면 자동 생성) · 내 정보(태그) · 앱 키 발급 · 탈퇴</td><td>6~8</td><td class="st" id="st-login">예정</td><td><input type="date" id="start-login" aria-label="로그인 시작"></td><td><input type="date" id="end-login" aria-label="로그인 완료"></td></tr>
+      <tr data-id="loginui"><td class="ko">로그인 화면</td><td class="n">로그인 창 · 닉네임 · 내 정보 · 내 계정(내가 쓴 글) 틀</td><td>4~6</td><td class="st" id="st-loginui">예정</td><td><input type="date" id="start-loginui" aria-label="로그인 화면 시작"></td><td><input type="date" id="end-loginui" aria-label="로그인 화면 완료"></td></tr>
+      <tr data-id="applink"><td class="ko">앱 연결</td><td class="n">앱 키(Bearer) 검증 · 재발급 · 보낸 것 가져가기(cart) · 받음 알림(ack)</td><td>6~10</td><td class="st" id="st-applink">예정</td><td><input type="date" id="start-applink" aria-label="앱 연결 시작"></td><td><input type="date" id="end-applink" aria-label="앱 연결 완료"></td></tr>
+      <tr data-id="appact"><td class="ko">앱 활동 받기</td><td class="n">활동 완료(/app/activities) · 도움됨 켜기 · 끄기(/app/helpful) · 활동완료 하루 한 번 중복 막기</td><td>3~5</td><td class="st" id="st-appact">예정</td><td><input type="date" id="start-appact" aria-label="앱 활동 받기 시작"></td><td><input type="date" id="end-appact" aria-label="앱 활동 받기 완료"></td></tr>
+      <tr data-id="e2e"><td class="ko">전체 테스트</td><td class="n">로그인 → 글쓰기 → 바구니 → 앱 받기 · PC · 모바일</td><td>3~5</td><td class="st" id="st-e2e">예정</td><td><input type="date" id="start-e2e" aria-label="전체 테스트 시작"></td><td><input type="date" id="end-e2e" aria-label="전체 테스트 완료"></td></tr>
+      <tr data-id="folio"><td class="ko">포트폴리오</td><td class="n">README</td><td>4~6</td><td class="st" id="st-folio">예정</td><td><input type="date" id="start-folio" aria-label="포트폴리오 시작"></td><td><input type="date" id="end-folio" aria-label="포트폴리오 완료"></td></tr>
+      <tr class="total"><td class="ko">2차 합계</td><td class="ko">한 세트</td><td class="n" id="span-1"></td><td>66~102</td><td colspan="3" id="total-1"><b>17~26일 · 약 4~6주</b></td></tr>
+      <tr class="total"><td class="ko">3차</td><td class="ko">다국어</td><td class="n" colspan="5">화면 글자 · 번역 테이블 · AI 번역 · 약관 고치기 · 2차 끝난 뒤 따로 계획</td></tr>
     </table></div>
   </section>
 
@@ -1187,7 +1186,7 @@ window.addEventListener('afterprint', () => { __printOpen.forEach(d => d.open = 
   const rows = [...document.querySelectorAll('#prog tr[data-id]')];
   const ids = rows.map(r => r.dataset.id);
   const groups = { 'span-1': ['design','base','entity','login','loginui','check1','spec','ui','api','unit','check2','applink','appact','e2e','folio'] };
-  const state = { design: { start: '2026-10-30' }, base: { start: '2026-11-04', end: '2026-11-04' }, entity: { start: '2026-11-04' } }; // 모두에게 보이는 날짜 — 끝난 줄은 여기 적는다
+  const state = { design: { start: '2026-10-30' }, base: { start: '2026-11-04', end: '2026-11-04' }, entity: { start: '2026-11-04', end: '2026-11-06' }, check1: { start: '2026-11-06' } }; // 모두에게 보이는 날짜 — 끝난 줄은 여기 적는다
   const st = document.getElementById('saveState');
   // 저장된 값(브라우저 · 공유 DB)이 비어 있으면 파일에 적은 날짜를 지킨다 — 빈 저장값이 완료일을 지우지 않게
   const keep = (id, v) => { const f = state[id] || {}; state[id] = { start: (v && v.start) || f.start || '', end: (v && v.end) || f.end || '' }; };
@@ -1209,7 +1208,7 @@ window.addEventListener('afterprint', () => { __printOpen.forEach(d => d.open = 
     const toWork = d => { const x = new Date(d); while (!isWork(x)) x.setDate(x.getDate() + 1); return x; };
     const addWork = (d, n) => { const x = new Date(d); while (n > 0) { x.setDate(x.getDate() + 1); if (isWork(x)) n--; } return x; };
     const md = d => (d.getMonth() + 1) + '/' + d.getDate();
-    const list = rows.map(r => { const st = r.querySelector('td.st'); const t = st && st.previousElementSibling && st.previousElementSibling.previousElementSibling; const m = t && t.textContent.match(/(\d+)~(\d+)/); return m ? { id: r.dataset.id, t, r, h: +m[2] } : null; }).filter(Boolean);
+    const list = rows.map(r => { const st = r.querySelector('td.st'); const t = st && st.previousElementSibling; const m = t && t.textContent.match(/(\d+)~(\d+)/); return m ? { id: r.dataset.id, t, r, h: +m[2] } : null; }).filter(Boolean);
     let next = toWork(day(PLAN_START));
     list.forEach(x => {
       const [ps, pe] = PLAN[x.id] || [];
