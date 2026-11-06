@@ -142,6 +142,7 @@ details.colsfold > summary h2 { display: block !important; white-space: nowrap; 
 .plainbox { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
 table.num td:nth-child(n+3) { font-variant-numeric: tabular-nums; white-space: nowrap; }
 table.num tr.total td { border-top: 2px solid var(--honey); font-weight: 700; }
+
 table.num b { color: var(--honey); }
 
 /* 진행표 */
@@ -152,6 +153,37 @@ table.prog input[type=date]:disabled { opacity: .5; }
 table.prog tr.now td:not([rowspan]) { background: var(--honey-soft); } /* '2차' 처럼 여러 줄을 합친 칸은 칠하지 않는다 */
 table.prog tr.doing td.ko { color: var(--honey); }
 table.prog td.n { white-space: normal !important; min-width: 8em; max-width: 16em; }
+/* ── 진행표 디자인 — 차수 행은 옅은 베이지 바 · 색은 아래 변수에서만 바꾼다 ── */
+table.prog {
+  --pg-bar: #FAF7F1; --pg-bar-next: #FAF7F1; --pg-bar-fg: #1F1B16; --pg-bar-sub: #6B645A; --pg-accent: #9A6B0E; --pg-badge-doing: #F2C14E; --pg-badge-doing-fg: #2A2520;
+  --pg-done: #2E7D4F; --pg-gap: #EEEBE5; --pg-border: #E4DFD6; --pg-head-line: #1F1B16; --pg-row-line: #EEE9E0;
+  --pg-doing-bg: #FBF1D6; --pg-doing-fg: #9A6B0E; --pg-plan-bg: #EEE9E0; --pg-sub: #6B645A; --pg-plan-date: #9A9287;
+  border: 1px solid var(--pg-border); border-radius: 10px; border-collapse: separate; border-spacing: 0; overflow: hidden;
+}
+table.prog th { border-bottom: 1px solid var(--pg-head-line); }
+table.prog td { border-top: 1px solid var(--pg-row-line); background: #FFFFFF; }
+table.prog tr:nth-child(2) td { border-top: 0; }
+/* 하위 작업 행 */
+table.prog tr[data-id] td.n, table.prog tr[data-id] .hlab, table.prog td.wd .offs span { color: var(--pg-sub); }
+table.prog input[type=date] + div { color: var(--pg-plan-date) !important; }
+table.prog tr.now td:not([rowspan]), table.prog tr.doing td { background: var(--pg-doing-bg); }
+table.prog tr.doing td.ko { color: var(--pg-doing-fg); font-weight: 700; }
+/* 뱃지 공통 */
+table.prog td.st span { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 99px; }
+table.prog td.st[data-s="예정"] span { background: var(--pg-plan-bg); color: var(--pg-sub); }
+/* 차수 행 (1차 · 2차 · 3차) — 옅은 베이지 바 · 진한 글자, 2차(하는 중)만 꿀색 */
+table.prog tr.grp td { background: var(--pg-bar); color: var(--pg-bar-fg); font-weight: 700; border-top: 0; padding-top: 12px; padding-bottom: 12px; }
+table.prog tr.p3 td { background: var(--pg-bar-next); } /* 3차는 아직 시작 전 — 조금 옅게 */
+table.prog tr.grp td.n, table.prog tr.grp #total-1, table.prog tr.grp #real-1 { color: var(--pg-bar-sub); }
+table.prog tr.grp #total-1 b, table.prog tr.grp #real-1 b { color: var(--pg-bar-fg); }
+table.prog tr.p2 td:first-child, table.prog tr.p2 #total-1 b, table.prog tr.p2 #real-1 b { color: var(--pg-accent); } /* 예정 · 실적 머리글은 같은 꿀색 */
+table.prog tr.grp td.st[data-s="완료"] span { background: var(--pg-done); color: #FFFFFF; }
+table.prog tr.grp td.st[data-s="진행 중"] span { background: var(--pg-badge-doing); color: var(--pg-badge-doing-fg); }
+table.prog tr.grp .off { border-color: #D8D2C8; color: var(--pg-bar-sub); background: transparent; }
+/* 1차와 2차 사이 · 2차 작업과 3차 사이: 페이지 배경색 6px 간격 */
+table.prog tr.p1 td { border-bottom: 6px solid var(--pg-gap); }
+table.prog tr.p3 td { border-top: 6px solid var(--pg-gap); }
+
 .cols:has(> #prog) { max-height: none !important; overflow-x: auto !important; }
 table.prog td.st { white-space: nowrap; }
 table.prog .pace { font-size: 12px; font-weight: 700; margin-top: 3px; }
@@ -776,23 +808,24 @@ X-App-Key: &lt;앱 키&gt;
     <h3 id="wbs2" style="margin:12px 0 6px;">진행표</h3>
     <div class="cols plainbox"><table class="num prog" id="prog">
       <tr><th>차수</th><th>작업 항목</th><th>내용</th><th>시간</th><th>상태</th><th>시작</th><th>완료일</th><th>작업일</th></tr>
-      <tr data-id="design"><td class="ko" rowspan="15">2차</td><td class="ko">설계</td><td class="n">화면 시안 · 데이터 설계(ERD · UML) · API 설계 · 핵심 처리 규칙 · 비기능 설계</td><td class="hrs">—</td><td class="st" id="st-design" data-def="진행 중">진행 중</td><td><input type="date" id="start-design" aria-label="설계 시작"></td><td><input type="date" id="end-design" aria-label="설계 완료"></td><td class="wd" id="wd-design"></td></tr>
-      <tr data-id="base"><td class="ko">서버 바탕</td><td class="n">도메인 · HTTPS · nginx · 배포 · DB 연결 · 헬스 체크</td><td class="hrs">6~10</td><td class="st" id="st-base">예정</td><td><input type="date" id="start-base" aria-label="서버 바탕 시작"></td><td><input type="date" id="end-base" aria-label="서버 바탕 완료"></td><td class="wd" id="wd-base"></td></tr>
-      <tr data-id="entity"><td class="ko">엔티티</td><td class="n">전체 · Flyway · 로컬 · 서버 적용</td><td class="hrs">4~6</td><td class="st" id="st-entity">예정</td><td><input type="date" id="start-entity" aria-label="엔티티 시작"></td><td><input type="date" id="end-entity" aria-label="엔티티 완료"></td><td class="wd" id="wd-entity"></td></tr>
-      <tr data-id="check1"><td class="ko">서버 배포</td><td class="n">CI/CD (Jenkins — Testcontainers 테스트 · 서버 배포)</td><td class="hrs">6~10</td><td class="st" id="st-check1">예정</td><td><input type="date" id="start-check1" aria-label="서버 배포 시작"></td><td><input type="date" id="end-check1" aria-label="서버 배포 완료"></td><td class="wd" id="wd-check1"></td></tr>
-      <tr data-id="spec"><td class="ko">API 명세</td><td class="n">웹 · 앱 API 주소 · DTO · 오류 형식 · Swagger</td><td class="hrs">2~3</td><td class="st" id="st-spec">예정</td><td><input type="date" id="start-spec" aria-label="API 명세 시작"></td><td><input type="date" id="end-spec" aria-label="API 명세 완료"></td><td class="wd" id="wd-spec"></td></tr>
-      <tr data-id="ui"><td class="ko">화면</td><td class="n">메인 · 목록 · 상세(고민 · 생각 · 활동 · 스케줄) · 활동바구니 · 글쓰기 팝업 · 가짜 데이터로</td><td class="hrs">10~14</td><td class="st" id="st-ui">예정</td><td><input type="date" id="start-ui" aria-label="화면 시작"></td><td><input type="date" id="end-ui" aria-label="화면 완료"></td><td class="wd" id="wd-ui"></td></tr>
-      <tr data-id="api"><td class="ko">API 구현</td><td class="n">고민 · 생각꿀팁 · 활동꿀팁 · 활동 · 스케줄 · 좋아요 · 댓글 · 태그 · 활동바구니 · 의견 · 기본 데이터(태그 · 약관) → 가짜 데이터 교체</td><td class="hrs">8~13</td><td class="st" id="st-api">예정</td><td><input type="date" id="start-api" aria-label="API 구현 시작"></td><td><input type="date" id="end-api" aria-label="API 구현 완료"></td><td class="wd" id="wd-api"></td></tr>
-      <tr data-id="unit"><td class="ko">단위 테스트</td><td class="n">서비스 · 리포지토리 (JUnit)</td><td class="hrs">4~6</td><td class="st" id="st-unit">예정</td><td><input type="date" id="start-unit" aria-label="단위 테스트 시작"></td><td><input type="date" id="end-unit" aria-label="단위 테스트 완료"></td><td class="wd" id="wd-unit"></td></tr>
-      <tr data-id="check2"><td class="ko">통합 테스트</td><td class="n">화면 + API 연결 · 버그</td><td class="hrs">4~7</td><td class="st" id="st-check2">예정</td><td><input type="date" id="start-check2" aria-label="2차 통합 테스트 시작"></td><td><input type="date" id="end-check2" aria-label="2차 통합 테스트 완료"></td><td class="wd" id="wd-check2"></td></tr>
-      <tr data-id="login"><td class="ko">로그인</td><td class="n">구글만 · 세션 · 닉네임(비우면 자동 생성) · 내 정보(태그) · 앱 키 발급 · 탈퇴</td><td class="hrs">6~8</td><td class="st" id="st-login">예정</td><td><input type="date" id="start-login" aria-label="로그인 시작"></td><td><input type="date" id="end-login" aria-label="로그인 완료"></td><td class="wd" id="wd-login"></td></tr>
-      <tr data-id="loginui"><td class="ko">로그인 화면</td><td class="n">로그인 창 · 닉네임 · 내 정보 · 내 계정(내가 쓴 글) 틀</td><td class="hrs">4~6</td><td class="st" id="st-loginui">예정</td><td><input type="date" id="start-loginui" aria-label="로그인 화면 시작"></td><td><input type="date" id="end-loginui" aria-label="로그인 화면 완료"></td><td class="wd" id="wd-loginui"></td></tr>
-      <tr data-id="applink"><td class="ko">앱 연결</td><td class="n">앱 키(Bearer) 검증 · 재발급 · 보낸 것 가져가기(cart) · 받음 알림(ack)</td><td class="hrs">6~10</td><td class="st" id="st-applink">예정</td><td><input type="date" id="start-applink" aria-label="앱 연결 시작"></td><td><input type="date" id="end-applink" aria-label="앱 연결 완료"></td><td class="wd" id="wd-applink"></td></tr>
-      <tr data-id="appact"><td class="ko">앱 활동 받기</td><td class="n">활동 완료(/app/activities) · 도움됨 켜기 · 끄기(/app/helpful) · 활동완료 하루 한 번 중복 막기</td><td class="hrs">3~5</td><td class="st" id="st-appact">예정</td><td><input type="date" id="start-appact" aria-label="앱 활동 받기 시작"></td><td><input type="date" id="end-appact" aria-label="앱 활동 받기 완료"></td><td class="wd" id="wd-appact"></td></tr>
-      <tr data-id="e2e"><td class="ko">전체 테스트</td><td class="n">로그인 → 글쓰기 → 바구니 → 앱 받기 · PC · 모바일</td><td class="hrs">3~5</td><td class="st" id="st-e2e">예정</td><td><input type="date" id="start-e2e" aria-label="전체 테스트 시작"></td><td><input type="date" id="end-e2e" aria-label="전체 테스트 완료"></td><td class="wd" id="wd-e2e"></td></tr>
-      <tr data-id="folio"><td class="ko">포트폴리오</td><td class="n">README</td><td class="hrs">4~6</td><td class="st" id="st-folio">예정</td><td><input type="date" id="start-folio" aria-label="포트폴리오 시작"></td><td><input type="date" id="end-folio" aria-label="포트폴리오 완료"></td><td class="wd" id="wd-folio"></td></tr>
-      <tr class="total"><td class="ko">2차 합계</td><td class="ko">한 세트</td><td colspan="3" id="total-1"><b>17~26일 · 약 4~6주</b></td><td colspan="3" id="real-1"></td></tr>
-      <tr class="total"><td class="ko">3차</td><td class="ko">다국어</td><td class="n" colspan="6">화면 글자 · 번역 테이블 · AI 번역 · AI 승인(글 검사) · RAG · 약관 고치기 · 2차 끝난 뒤 따로 계획</td></tr>
+      <tr class="grp p1"><td class="ko">1차</td><td class="ko">HoneySaltLove.com 웹 · 꿀방울 앱</td><td class="n">앱 Google Play 출시 · 만다라트 · 통제의 원 · 법구경 · 11개 언어 · Vue 3 · GitHub Pages</td><td class="hrs"></td><td class="st" data-s="완료"><span>완료</span></td><td>2026.01.30</td><td>2026.08.25</td><td class="wd"></td></tr>
+      <tr class="grp p2"><td class="ko">2차</td><td class="ko">HoneySaltLove.com 서버 개발</td><td colspan="2" id="total-1"><b>17~26일 · 약 4~6주</b></td><td class="st" id="st-total-1" data-def="진행 중"><span>진행 중</span></td><td colspan="3" id="real-1"></td></tr>
+      <tr data-id="design"><td></td><td class="ko">설계</td><td class="n">화면 시안 · 데이터 설계(ERD · UML) · API 설계 · 핵심 처리 규칙 · 비기능 설계</td><td class="hrs">—</td><td class="st" id="st-design" data-def="진행 중">진행 중</td><td><input type="date" id="start-design" aria-label="설계 시작"></td><td><input type="date" id="end-design" aria-label="설계 완료"></td><td class="wd" id="wd-design"></td></tr>
+      <tr data-id="base"><td></td><td class="ko">서버 바탕</td><td class="n">도메인 · HTTPS · nginx · 배포 · DB 연결 · 헬스 체크</td><td class="hrs">6~10</td><td class="st" id="st-base">예정</td><td><input type="date" id="start-base" aria-label="서버 바탕 시작"></td><td><input type="date" id="end-base" aria-label="서버 바탕 완료"></td><td class="wd" id="wd-base"></td></tr>
+      <tr data-id="entity"><td></td><td class="ko">엔티티</td><td class="n">전체 · Flyway · 로컬 · 서버 적용</td><td class="hrs">4~6</td><td class="st" id="st-entity">예정</td><td><input type="date" id="start-entity" aria-label="엔티티 시작"></td><td><input type="date" id="end-entity" aria-label="엔티티 완료"></td><td class="wd" id="wd-entity"></td></tr>
+      <tr data-id="check1"><td></td><td class="ko">서버 배포</td><td class="n">CI/CD (Jenkins — Testcontainers 테스트 · 서버 배포)</td><td class="hrs">6~10</td><td class="st" id="st-check1">예정</td><td><input type="date" id="start-check1" aria-label="서버 배포 시작"></td><td><input type="date" id="end-check1" aria-label="서버 배포 완료"></td><td class="wd" id="wd-check1"></td></tr>
+      <tr data-id="spec"><td></td><td class="ko">API 명세</td><td class="n">웹 · 앱 API 주소 · DTO · 오류 형식 · Swagger</td><td class="hrs">2~3</td><td class="st" id="st-spec">예정</td><td><input type="date" id="start-spec" aria-label="API 명세 시작"></td><td><input type="date" id="end-spec" aria-label="API 명세 완료"></td><td class="wd" id="wd-spec"></td></tr>
+      <tr data-id="ui"><td></td><td class="ko">화면</td><td class="n">메인 · 목록 · 상세(고민 · 생각 · 활동 · 스케줄) · 활동바구니 · 글쓰기 팝업 · 가짜 데이터로</td><td class="hrs">10~14</td><td class="st" id="st-ui">예정</td><td><input type="date" id="start-ui" aria-label="화면 시작"></td><td><input type="date" id="end-ui" aria-label="화면 완료"></td><td class="wd" id="wd-ui"></td></tr>
+      <tr data-id="api"><td></td><td class="ko">API 구현</td><td class="n">고민 · 생각꿀팁 · 활동꿀팁 · 활동 · 스케줄 · 좋아요 · 댓글 · 태그 · 활동바구니 · 의견 · 기본 데이터(태그 · 약관) → 가짜 데이터 교체</td><td class="hrs">8~13</td><td class="st" id="st-api">예정</td><td><input type="date" id="start-api" aria-label="API 구현 시작"></td><td><input type="date" id="end-api" aria-label="API 구현 완료"></td><td class="wd" id="wd-api"></td></tr>
+      <tr data-id="unit"><td></td><td class="ko">단위 테스트</td><td class="n">서비스 · 리포지토리 (JUnit)</td><td class="hrs">4~6</td><td class="st" id="st-unit">예정</td><td><input type="date" id="start-unit" aria-label="단위 테스트 시작"></td><td><input type="date" id="end-unit" aria-label="단위 테스트 완료"></td><td class="wd" id="wd-unit"></td></tr>
+      <tr data-id="check2"><td></td><td class="ko">통합 테스트</td><td class="n">화면 + API 연결 · 버그</td><td class="hrs">4~7</td><td class="st" id="st-check2">예정</td><td><input type="date" id="start-check2" aria-label="2차 통합 테스트 시작"></td><td><input type="date" id="end-check2" aria-label="2차 통합 테스트 완료"></td><td class="wd" id="wd-check2"></td></tr>
+      <tr data-id="login"><td></td><td class="ko">로그인</td><td class="n">구글만 · 세션 · 닉네임(비우면 자동 생성) · 내 정보(태그) · 앱 키 발급 · 탈퇴</td><td class="hrs">6~8</td><td class="st" id="st-login">예정</td><td><input type="date" id="start-login" aria-label="로그인 시작"></td><td><input type="date" id="end-login" aria-label="로그인 완료"></td><td class="wd" id="wd-login"></td></tr>
+      <tr data-id="loginui"><td></td><td class="ko">로그인 화면</td><td class="n">로그인 창 · 닉네임 · 내 정보 · 내 계정(내가 쓴 글) 틀</td><td class="hrs">4~6</td><td class="st" id="st-loginui">예정</td><td><input type="date" id="start-loginui" aria-label="로그인 화면 시작"></td><td><input type="date" id="end-loginui" aria-label="로그인 화면 완료"></td><td class="wd" id="wd-loginui"></td></tr>
+      <tr data-id="applink"><td></td><td class="ko">앱 연결</td><td class="n">앱 키(Bearer) 검증 · 재발급 · 보낸 것 가져가기(cart) · 받음 알림(ack)</td><td class="hrs">6~10</td><td class="st" id="st-applink">예정</td><td><input type="date" id="start-applink" aria-label="앱 연결 시작"></td><td><input type="date" id="end-applink" aria-label="앱 연결 완료"></td><td class="wd" id="wd-applink"></td></tr>
+      <tr data-id="appact"><td></td><td class="ko">앱 활동 받기</td><td class="n">활동 완료(/app/activities) · 도움됨 켜기 · 끄기(/app/helpful) · 활동완료 하루 한 번 중복 막기</td><td class="hrs">3~5</td><td class="st" id="st-appact">예정</td><td><input type="date" id="start-appact" aria-label="앱 활동 받기 시작"></td><td><input type="date" id="end-appact" aria-label="앱 활동 받기 완료"></td><td class="wd" id="wd-appact"></td></tr>
+      <tr data-id="e2e"><td></td><td class="ko">전체 테스트</td><td class="n">로그인 → 글쓰기 → 바구니 → 앱 받기 · PC · 모바일</td><td class="hrs">3~5</td><td class="st" id="st-e2e">예정</td><td><input type="date" id="start-e2e" aria-label="전체 테스트 시작"></td><td><input type="date" id="end-e2e" aria-label="전체 테스트 완료"></td><td class="wd" id="wd-e2e"></td></tr>
+      <tr data-id="folio"><td></td><td class="ko">포트폴리오</td><td class="n">README</td><td class="hrs">4~6</td><td class="st" id="st-folio">예정</td><td><input type="date" id="start-folio" aria-label="포트폴리오 시작"></td><td><input type="date" id="end-folio" aria-label="포트폴리오 완료"></td><td class="wd" id="wd-folio"></td></tr>
+      <tr class="grp p3"><td class="ko">3차</td><td class="ko">다국어 · AI 기능 도입</td><td class="n" colspan="6">화면 글자 · 번역 테이블 · AI 번역 · AI 승인(글 검사) · RAG · 약관 고치기 · 2차 끝난 뒤 따로 계획</td></tr>
     </table></div>
   </section>
 
@@ -1284,8 +1317,11 @@ window.addEventListener('afterprint', () => { __printOpen.forEach(d => d.open = 
         }
         tot.innerHTML = `<div class="line"><b>예정</b> ${plan} · 17~26일(66~102시간) · 약 4~6주</div>`;
         // 실제는 시작 칸 아래부터 (시작 · 완료일 · 작업일 3칸)
+        // 2차 상태: 하나라도 시작했으면 진행 중, 모두 끝나면 완료
+        const sc = document.getElementById(cell.replace('span-', 'st-total-'));
+        if (sc) { const st2 = done ? '완료' : starts.length ? '진행 중' : '예정'; sc.dataset.s = st2; sc.innerHTML = '<span>' + st2 + '</span>'; }
         const rc = document.getElementById(cell.replace('span-', 'real-'));
-        if (rc) rc.innerHTML = `<div class="line"><b>실제</b> ${real}</div>${offNote ? `<div class="sub">${offNote}</div>` : ''}`;
+        if (rc) rc.innerHTML = `<div class="line"><b>실적</b> ${real}</div>${offNote ? `<div class="sub">${offNote}</div>` : ''}`;
       }
     });
   }
